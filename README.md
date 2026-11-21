@@ -2,6 +2,24 @@
 
 把本目录作为一个独立的私有 GitHub 仓库。Java 接口和原生服务分别发布到 GHCR，部署目标是 Linux AMD64。原包的完整性、每个模块的构建方式及数据库缺项见 [后端检查报告](AUDIT.md)。
 
+## 源码目录
+
+| 要找的代码 | 仓库内的位置 |
+|---|---|
+| Java 的 HTTP 接口与业务逻辑 | `api/src/main/java/com/hbi/`，从 `controller/` 找接口，从 `service/` 找业务逻辑 |
+| 数据库查询映射 | Java Mapper 接口在 `api/src/main/java/com/hbi/mapper/`，对应的 MyBatis XML 在 `api/src/main/resources/mapper/` |
+| Java 调用游戏服务 | `api/src/main/java/com/hbi/impl/groupgame/GroupGameImpl.java` 负责开房、解散和退房的 TCP 消息 |
+| 大厅、用户、数据、金币服务 | `native/services/hall/`、`user/`、`data/`、`gold/`，四个目录均位于 `native/services/` 下 |
+| 房间分配与赛事 | `native/services/alloc/Game/`，其中 `GameServerMatches.cpp` 集中处理赛事的创建、查找、加入和列表 |
+| 原生依赖与牛牛程序 | `native/vendor/hiredis/` 为第三方库源码，`native/prebuilt/douniu/` 为现有牛牛程序和运行库 |
+| 构建与容器启动 | `api/Dockerfile`、`native/Dockerfile`、`native/build.sh`，原生服务入口和健康检查在 `native/container/` |
+| 部署与数据库 | 根目录 `docker-compose.yml`，配置模板在 `config/`，建表脚本在 `database/`，配置生成与核验工具在 `tools/` |
+| 已停用的 Java 源文件 | `archive/java/` 保留原包路径和文件内容，供追溯历史 |
+
+排查房间问题时，可以先看 `com/hbi/service/game/FreeGameService.java` 如何选择游戏服务器，再到 `GroupGameImpl.java` 核对发往该地址的消息字段。
+
+1Panel 部署包只包含编排、模板、数据库脚本、部署工具和说明。查看或修改业务代码时，请打开完整源码仓库。
+
 ## 推送和自动打包
 
 在 GitHub 新建空的私有仓库，进入本目录，执行以下命令。将 OWNER、REPO 替换为实际所有者和仓库名。
