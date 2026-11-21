@@ -11,9 +11,12 @@ import com.hbi.model.TGoods;
 import com.hbi.service.common.GoodsService;
 import com.hbi.utils.CommonUtil;
 import com.hbi.vo.response.Response;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 //import com.hbi.model.TUserGoods;
@@ -36,7 +39,7 @@ import java.util.List;
  *
  */
 
-@Api(basePath = "/", value = "商品信息接口", position = 1)
+@Tag(name = "商品信息接口")
 @Controller
 public class GoodsController extends BaseController {
 
@@ -47,11 +50,11 @@ public class GoodsController extends BaseController {
 	
 	@ResponseBody
 	@RequestMapping(value = "goods/queryGoods", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "获取商品信息", position = 2, response = Response.class, notes = "获取商品信息")
+	@Operation(summary = "获取商品信息", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "获取商品信息")
 	public String queryGoods (
-			@ApiParam(required = true, name = "type", value = "物品类型") @RequestParam(value = "type") String type,
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+			@Parameter(required = true, name = "type", description = "物品类型") @RequestParam(value = "type") String type,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
@@ -72,13 +75,13 @@ public class GoodsController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "goods/exchange", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "兑换商品", position = 2, response = Response.class, notes = "兑换商品")
+//	@Operation(summary = "兑换商品", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "兑换商品")
 //	public String exchange (
-//			@ApiParam(required = true, name = "userId", value = "用户id")
+//			@Parameter(required = true, name = "userId", description = "用户id")
 //			@RequestParam(value = "userId") Long userId,
-//			@ApiParam(required = true, name = "goodsId", value = "用户id")
+//			@Parameter(required = true, name = "goodsId", description = "用户id")
 //			@RequestParam(value = "goodsId") Long goodsId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
@@ -99,10 +102,10 @@ public class GoodsController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "goods/queryExchangeHistory", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "兑换历史", position = 2, response = Response.class, notes = "兑换历史")
+//	@Operation(summary = "兑换历史", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "兑换历史")
 //	public String queryExchangeHistory (
-//			@ApiParam(required = true, name = "userId", value = "用户id") @RequestParam(value = "userId") Long userId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "userId", description = "用户id") @RequestParam(value = "userId") Long userId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -122,12 +125,12 @@ public class GoodsController extends BaseController {
 	
 //	@ResponseBody
 //	@RequestMapping(value = "goods/queryGoodsList", method = {RequestMethod.POST, RequestMethod.GET}, produces = "text/xml; charset=utf-8")
-//	@ApiOperation(value = "获取道具列表", position = 2, response = Response.class, notes = "获取道具列表")
+//	@Operation(summary = "获取道具列表", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "获取道具列表")
 //	public String queryGoodsList (
-//			@ApiParam(required = false, name = "type", value = "物品类型") @RequestParam(required = false,value = "type") String type,
-//			@ApiParam(required = false, name = "device", value = "登录设备，0:IOS;1：ANDROID;2：PC;3：其他") @RequestParam(required = false, value = "device") Integer device,
-//			@ApiParam(required = false, name = "userId", value = "userId") @RequestParam(required = false, value = "userId") Long userId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(required = false, name = "type", description = "物品类型") @RequestParam(required = false,value = "type") String type,
+//			@Parameter(required = false, name = "device", description = "登录设备，0:IOS;1：ANDROID;2：PC;3：其他") @RequestParam(required = false, value = "device") Integer device,
+//			@Parameter(required = false, name = "userId", description = "userId") @RequestParam(required = false, value = "userId") Long userId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();

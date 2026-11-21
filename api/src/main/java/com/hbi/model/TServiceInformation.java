@@ -1,6 +1,6 @@
 package com.hbi.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Table(name = "t_service_information")
 public class TServiceInformation {

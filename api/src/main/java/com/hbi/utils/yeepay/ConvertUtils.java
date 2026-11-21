@@ -1,6 +1,5 @@
 package com.hbi.utils.yeepay;
 
-import sun.misc.BASE64Encoder;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Date;
@@ -337,14 +336,7 @@ public abstract class ConvertUtils {
 	 */
 	public static String hexStr2Base64Str(String src){
 		byte[] bytes = hex2byte(src);
-		String strs = new BASE64Encoder().encodeBuffer(bytes);
-		StringBuilder sb = new StringBuilder(strs.length());
-		for(int i=0;i< strs.length();i++){
-			if(strs.charAt(i) != '\r' && strs.charAt(i) != '\n'){
-				sb.append(strs.charAt(i));
-			}
-		}
-		return sb.toString();
+		return java.util.Base64.getEncoder().encodeToString(bytes);
 	}
 	
 	/**

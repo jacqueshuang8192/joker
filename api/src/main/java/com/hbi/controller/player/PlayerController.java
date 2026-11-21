@@ -20,9 +20,12 @@ import com.hbi.utils.CommonUtil;
 import com.hbi.utils.InfServerException;
 import com.hbi.vo.response.Response;
 import com.hbi.vo.response.user.OAuthVo;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,8 +41,8 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.sql.SQLException;
@@ -56,7 +59,7 @@ import java.util.Date;
  *
  */
 
-@Api(basePath = "/", value = "玩家相关接口", position = 2)
+@Tag(name = "玩家相关接口")
 @Controller
 public class PlayerController extends BaseController {
 
@@ -82,23 +85,23 @@ public class PlayerController extends BaseController {
 	
 //	@ResponseBody
 //	@RequestMapping(value = "playerRegister", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "玩家注册",  response = Response.class, notes = "玩家注册")
+//	@Operation(summary = "玩家注册", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "玩家注册")
 //	public String playerRegister(
-//			@ApiParam(required = true, name = "phone", value = "手机号") @RequestParam(value = "phone") String phone,
-//			@ApiParam(required = true, name = "password", value = "密码，MD5加密之后的密码") @RequestParam(value = "password") String password,
-//			@ApiParam(required = false, name = "photo", value = "头像，url") @RequestParam(value = "photo", required = false) String photo,
-//			@ApiParam(name = "roomPhoto", value = "房间图片，url")
+//			@Parameter(required = true, name = "phone", description = "手机号") @RequestParam(value = "phone") String phone,
+//			@Parameter(required = true, name = "password", description = "密码，MD5加密之后的密码") @RequestParam(value = "password") String password,
+//			@Parameter(required = false, name = "photo", description = "头像，url") @RequestParam(value = "photo", required = false) String photo,
+//			@Parameter(name = "roomPhoto", description = "房间图片，url")
 //			@RequestParam(required = false, value = "roomPhoto") String roomPhoto,
-//			@ApiParam(name = "livePhoto", value = "直播间图片，url")
+//			@Parameter(name = "livePhoto", description = "直播间图片，url")
 //			@RequestParam(required = false, value = "photo") String livePhoto,
-//			@ApiParam(required = true, name = "nickname", value = "昵称") @RequestParam(value = "nickname") String nickname,
-//			@ApiParam(required = true, name = "sex", value = "性别：0保密，1男，2女") @RequestParam(value = "sex") String sex,
-//			@ApiParam(required = false, name = "invitationCode", value = "邀请码") @RequestParam(value = "invitationCode", required = false) String invitationCode,
-//			@ApiParam(required = false, name = "qq", value = "邀请码") @RequestParam(value = "qq", required = false) String qq,
-//			@ApiParam(required = false, name = "wechat", value = "邀请码") @RequestParam(value = "wechat", required = false) String wechat,
-//			@ApiParam(required = false, name = "weibo", value = "邀请码") @RequestParam(value = "weibo", required = false) String weibo,
-//			@ApiParam(required = true, name = "code", value = "验证码") @RequestParam(value = "code") String code,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(required = true, name = "nickname", description = "昵称") @RequestParam(value = "nickname") String nickname,
+//			@Parameter(required = true, name = "sex", description = "性别：0保密，1男，2女") @RequestParam(value = "sex") String sex,
+//			@Parameter(required = false, name = "invitationCode", description = "邀请码") @RequestParam(value = "invitationCode", required = false) String invitationCode,
+//			@Parameter(required = false, name = "qq", description = "邀请码") @RequestParam(value = "qq", required = false) String qq,
+//			@Parameter(required = false, name = "wechat", description = "邀请码") @RequestParam(value = "wechat", required = false) String wechat,
+//			@Parameter(required = false, name = "weibo", description = "邀请码") @RequestParam(value = "weibo", required = false) String weibo,
+//			@Parameter(required = true, name = "code", description = "验证码") @RequestParam(value = "code") String code,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
@@ -148,15 +151,15 @@ public class PlayerController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping(value = "playerUser/quickRegister", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "快速注册", position = 1, response = Response.class)
+	@Operation(summary = "快速注册", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String quickRegister(
-			@ApiParam(required = false, name = "photo", value = "头像，url") @RequestParam(value = "photo", required = false) String photo,
-			@ApiParam(required = false, name = "nickname", value = "昵称") @RequestParam(value = "nickname", required = false) String nickname,
-			@ApiParam(required = false, name = "sex", value = "性别：0保密，1男，2女") @RequestParam(value = "sex", required = false) String sex,
-			@ApiParam(required = false, name = "qq", value = "qq") @RequestParam(value = "qq", required = false) String qq,
-			@ApiParam(required = false, name = "wechat", value = "wechat") @RequestParam(value = "wechat", required = false) String wechat,
-			@ApiParam(required = false, name = "weibo", value = "weibo") @RequestParam(value = "weibo", required = false) String weibo,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+			@Parameter(required = false, name = "photo", description = "头像，url") @RequestParam(value = "photo", required = false) String photo,
+			@Parameter(required = false, name = "nickname", description = "昵称") @RequestParam(value = "nickname", required = false) String nickname,
+			@Parameter(required = false, name = "sex", description = "性别：0保密，1男，2女") @RequestParam(value = "sex", required = false) String sex,
+			@Parameter(required = false, name = "qq", description = "qq") @RequestParam(value = "qq", required = false) String qq,
+			@Parameter(required = false, name = "wechat", description = "wechat") @RequestParam(value = "wechat", required = false) String wechat,
+			@Parameter(required = false, name = "weibo", description = "weibo") @RequestParam(value = "weibo", required = false) String weibo,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
@@ -193,17 +196,17 @@ public class PlayerController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping(value = "playerUser/quickRegisterByPhone", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "手机注册", position = 1, response = Response.class)
+	@Operation(summary = "手机注册", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String quickRegisterByPhone(
-			@ApiParam(required = true, name = "phone", value = "头像，url") @RequestParam(value = "phone", required = true) String phone,
-			@ApiParam(required = true, name = "nickname", value = "昵称") @RequestParam(value = "nickname", required = true) String nickname,
-			@ApiParam(required = true, name = "passWord", value = "密码") @RequestParam(value = "passWord", required = true) String passWord,
+			@Parameter(required = true, name = "phone", description = "头像，url") @RequestParam(value = "phone", required = true) String phone,
+			@Parameter(required = true, name = "nickname", description = "昵称") @RequestParam(value = "nickname", required = true) String nickname,
+			@Parameter(required = true, name = "passWord", description = "密码") @RequestParam(value = "passWord", required = true) String passWord,
 
-			@ApiParam(required = false, name = "photo", value = "头像，url,必须是以.png结尾") @RequestParam(value = "photo", required = false) String photo,
-			@ApiParam(required = false, name = "sex", value = "性别: 1男，2女") @RequestParam(value = "sex", required = false, defaultValue = "1") String sex,
+			@Parameter(required = false, name = "photo", description = "头像，url,必须是以.png结尾") @RequestParam(value = "photo", required = false) String photo,
+			@Parameter(required = false, name = "sex", description = "性别: 1男，2女") @RequestParam(value = "sex", required = false, defaultValue = "1") String sex,
 
 
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
@@ -234,11 +237,11 @@ public class PlayerController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping(value = "playerUser/uploadPhoto", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "上传头像", position = 1, response = Response.class)
+	@Operation(summary = "上传头像", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String uploadPhoto(
-			@ApiParam(required = true, name = "photo", value = "上传头像") @RequestParam(value = "photo", required = true) MultipartFile photo,
+			@Parameter(required = true, name = "photo", description = "上传头像") @RequestParam(value = "photo", required = true) MultipartFile photo,
 
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
@@ -263,14 +266,14 @@ public class PlayerController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "playerUser/quickRegisterRobot", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "快速注册机器人", position = 1, response = Response.class)
+//	@Operation(summary = "快速注册机器人", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String quickRegisterRobot(
-//			@ApiParam(required = false, name = "photo", value = "头像，url") @RequestParam(value = "photo", required = false) String photo,
-//			@ApiParam(required = false, name = "sex", value = "性别：0保密，1男，2女") @RequestParam(value = "sex", required = false) String sex,
-//			@ApiParam(required = false, name = "qq", value = "qq") @RequestParam(value = "qq", required = false) String qq,
-//			@ApiParam(required = false, name = "wechat", value = "wechat") @RequestParam(value = "wechat", required = false) String wechat,
-//			@ApiParam(required = false, name = "weibo", value = "weibo") @RequestParam(value = "weibo", required = false) String weibo,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(required = false, name = "photo", description = "头像，url") @RequestParam(value = "photo", required = false) String photo,
+//			@Parameter(required = false, name = "sex", description = "性别：0保密，1男，2女") @RequestParam(value = "sex", required = false) String sex,
+//			@Parameter(required = false, name = "qq", description = "qq") @RequestParam(value = "qq", required = false) String qq,
+//			@Parameter(required = false, name = "wechat", description = "wechat") @RequestParam(value = "wechat", required = false) String wechat,
+//			@Parameter(required = false, name = "weibo", description = "weibo") @RequestParam(value = "weibo", required = false) String weibo,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
@@ -304,12 +307,12 @@ public class PlayerController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping(value = "playerUser/bindPhone", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "绑定手机号", position = 1, response = Response.class)
+	@Operation(summary = "绑定手机号", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String bindPhone(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
-			@ApiParam(required = true, name = "phone", value = "手机号") @RequestParam(value = "phone") String phone,
-			@ApiParam(required = false, name = "code", value = "验证码") @RequestParam( required = false, value = "code") String code,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
+			@Parameter(required = true, name = "phone", description = "手机号") @RequestParam(value = "phone") String phone,
+			@Parameter(required = false, name = "code", description = "验证码") @RequestParam( required = false, value = "code") String code,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -336,10 +339,10 @@ public class PlayerController extends BaseController {
 	}
 //	@ResponseBody
 //	@RequestMapping(value = "playerUser/queryPhoneByUid", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "查询玩家的电话号码", position = 1, response = Response.class)
+//	@Operation(summary = "查询玩家的电话号码", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String queryPhoneByUid(
-//			@ApiParam(required = true, name = "userId", value = "玩家id") @RequestParam(value = "userId") Long userId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "userId", description = "玩家id") @RequestParam(value = "userId") Long userId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -365,11 +368,11 @@ public class PlayerController extends BaseController {
 	
 	@ResponseBody
     @RequestMapping(value = "playerUser/OAuthCheck", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "检测第三方账号是否有注册", httpMethod = "POST", position = 1, response = Response.class)
+    @Operation(summary = "检测第三方账号是否有注册", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String OAuthCheck(
-            @ApiParam(required = false, name = "type", value = "第三方登陆渠道，QQ:qq;微博:weibo;微信:wechat")
+            @Parameter(required = false, name = "type", description = "第三方登陆渠道，QQ:qq;微博:weibo;微信:wechat")
             @RequestParam( required = false,value = "type") String type,
-            @ApiParam(required = false, name = "code", value = "第三方登陆验证code")
+            @Parameter(required = false, name = "code", description = "第三方登陆验证code")
             @RequestParam(required = false,  value = "code") String code,
             HttpServletRequest request) {
         Response vo = new Response();
@@ -394,10 +397,10 @@ public class PlayerController extends BaseController {
 	
 //	@ResponseBody
 //	@RequestMapping(value = "playerUser/getUserInfo", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "获取个人资料", httpMethod = "POST", position = 1, response = Response.class, notes = "获取个人资料")
+//	@Operation(summary = "获取个人资料", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "获取个人资料")
 //	public String getUserInfo(
-//			@ApiParam(required = true, name = "userId", value = "用户名,唯一") @RequestParam(value = "userId") String userId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(required = true, name = "userId", description = "用户名,唯一") @RequestParam(value = "userId") String userId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //			Response response = new Response();
@@ -418,9 +421,9 @@ public class PlayerController extends BaseController {
 	
 	@ResponseBody
     @RequestMapping(value = "playerUser/getUserInfo4GameServer", method = {RequestMethod.POST,RequestMethod.GET}, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "游戏服务器获取个人资料", httpMethod = "POST", position = 1, response = Response.class, notes = "获取个人资料")
+    @Operation(summary = "游戏服务器获取个人资料", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "获取个人资料")
     public String getUserInfo4GameServer(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
             HttpServletRequest request) {
             Response response = new Response();
         try {
@@ -444,19 +447,19 @@ public class PlayerController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "playerUser/modifyUserInfo", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "修改个人资料", position = 1, response = Response.class, notes = "修改个人资料")
+//	@Operation(summary = "修改个人资料", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "修改个人资料")
 //	public String modifyUserInfo(
-//			@ApiParam(name = "userId", value = "用户名,唯一", required = true) @RequestParam(value = "userId") String userId,
-//			@ApiParam(name = "photo", value = "图像", required = false) @RequestParam(value = "photo", required = false) String photo,
-//			@ApiParam(name = "nickName", value = "昵称", required = false) @RequestParam(value = "nickName", required = false) String nickName,
-//			@ApiParam(name = "name", value = "名称", required = false) @RequestParam(value = "name", required = false) String name,
-//			@ApiParam(name = "birthday", value = "生日", required = false) @RequestParam(value = "birthday", required = false) String birthday,
-//			@ApiParam(name = "provinceId", value = "省份", required = false) @RequestParam(value = "provinceId", required = false) String provinceId,
-//			@ApiParam(name = "cityId", value = "城市", required = false) @RequestParam(value = "cityId", required = false) String cityId,
-//			@ApiParam(name = "townId", value = "区", required = false) @RequestParam(value = "townId", required = false) String townId,
-//			@ApiParam(name = "sign", value = "名称", required = false) @RequestParam(value = "sign", required = false) String sign,
-//			@ApiParam(name = "gender", value = "性别", required = false) @RequestParam(value = "gender", required = false) String gender,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(name = "userId", description = "用户名,唯一", required = true) @RequestParam(value = "userId") String userId,
+//			@Parameter(name = "photo", description = "图像", required = false) @RequestParam(value = "photo", required = false) String photo,
+//			@Parameter(name = "nickName", description = "昵称", required = false) @RequestParam(value = "nickName", required = false) String nickName,
+//			@Parameter(name = "name", description = "名称", required = false) @RequestParam(value = "name", required = false) String name,
+//			@Parameter(name = "birthday", description = "生日", required = false) @RequestParam(value = "birthday", required = false) String birthday,
+//			@Parameter(name = "provinceId", description = "省份", required = false) @RequestParam(value = "provinceId", required = false) String provinceId,
+//			@Parameter(name = "cityId", description = "城市", required = false) @RequestParam(value = "cityId", required = false) String cityId,
+//			@Parameter(name = "townId", description = "区", required = false) @RequestParam(value = "townId", required = false) String townId,
+//			@Parameter(name = "sign", description = "名称", required = false) @RequestParam(value = "sign", required = false) String sign,
+//			@Parameter(name = "gender", description = "性别", required = false) @RequestParam(value = "gender", required = false) String gender,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
@@ -514,17 +517,17 @@ public class PlayerController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "playerUser/validateAppStoreCharge", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "验证APPstore充值订单", position = 1, response = Response.class)
+//	@Operation(summary = "验证APPstore充值订单", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String validateAppStoreCharge(
-//			@ApiParam(required = true, name = "userId", value = "玩家id")
+//			@Parameter(required = true, name = "userId", description = "玩家id")
 //			@RequestParam(value = "userId") Long userId,
-//			@ApiParam(required = true, name = "payAmount", value = "购买价格")
+//			@Parameter(required = true, name = "payAmount", description = "购买价格")
 //			@RequestParam(value = "payAmount") Integer payAmount,
-//			@ApiParam(required = true, name = "coinAmount", value = "购买价格")
+//			@Parameter(required = true, name = "coinAmount", description = "购买价格")
 //			@RequestParam(value = "coinAmount") Integer coinAmount,
-//			@ApiParam(required = true, name = "receipt", value = "支付凭证")
+//			@Parameter(required = true, name = "receipt", description = "支付凭证")
 //			@RequestParam(value = "receipt") String receipt,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
@@ -553,7 +556,7 @@ public class PlayerController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "playerUser/receivePlayerCharge", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "Ping++充值回调", httpMethod = "POST", position = 1, response = BaseResultVo.class, notes = "玩家充值")
+//	@Operation(summary = "Ping++充值回调", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BaseResultVo.class))), description = "玩家充值")
 //	public String receivePlayerCharge(HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -600,10 +603,10 @@ public class PlayerController extends BaseController {
 	
 //	@ResponseBody
 //	@RequestMapping(value = "playerUser/queryRechargeRecord", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "玩家充值记录", position = 1, response = Response.class, notes = "玩家充值记录")
+//	@Operation(summary = "玩家充值记录", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "玩家充值记录")
 //	public String queryRechargeRecord(
-//			@ApiParam(required = true, name = "userId", value = "用户id") @RequestParam(value = "userId") String userId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "userId", description = "用户id") @RequestParam(value = "userId") String userId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -631,10 +634,10 @@ public class PlayerController extends BaseController {
 	
 //	@ResponseBody
 //    @RequestMapping(value = "playerUser/bindCompere", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "绑定主播", httpMethod = "POST", position = 1, response = Response.class, notes = "绑定主播")
+//    @Operation(summary = "绑定主播", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "绑定主播")
 //    public String bindCompere(
-//    		@ApiParam(required = true, name = "userId", value = "用户id") @RequestParam(value = "userId") String userId,
-//    		@ApiParam(required = true, name = "invitationCode", value = "邀请码") @RequestParam(value = "invitationCode") String invitationCode,
+//    		@Parameter(required = true, name = "userId", description = "用户id") @RequestParam(value = "userId") String userId,
+//    		@Parameter(required = true, name = "invitationCode", description = "邀请码") @RequestParam(value = "invitationCode") String invitationCode,
 //    		HttpServletRequest request) {
 //	    Response response = new Response();
 //        try {
@@ -652,10 +655,10 @@ public class PlayerController extends BaseController {
 	
 //	@ResponseBody
 //    @RequestMapping(value = "playerUser/myAttentions", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "关注的主播", position = 1, response = Response.class, notes = "关注的主播")
+//    @Operation(summary = "关注的主播", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "关注的主播")
 //    public String myAttentions(
-//    		@ApiParam(required = true, name = "userId", value = "用户id") @RequestParam(value = "userId") String userId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//    		@Parameter(required = true, name = "userId", description = "用户id") @RequestParam(value = "userId") String userId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //    		HttpServletRequest request) {
 //	    Response response = new Response();
@@ -678,10 +681,10 @@ public class PlayerController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "userBindingAgent", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "玩家绑定代理", httpMethod = "POST", response = Response.class, notes = "玩家绑定代理")
+    @Operation(summary = "玩家绑定代理", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "玩家绑定代理")
     public String userBindingAgent(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-			@ApiParam(required = true, name = "agentId", value = "代理ID") @RequestParam(value = "agentId") String agentId,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+			@Parameter(required = true, name = "agentId", description = "代理ID") @RequestParam(value = "agentId") String agentId,
             HttpServletRequest request) {
         Response response = new Response();
 
@@ -709,10 +712,10 @@ public class PlayerController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping(value = "userBindingAgentByGold", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "玩家绑的代理", httpMethod = "POST", response = Response.class, notes = "玩家绑定代理")
+	@Operation(summary = "玩家绑的代理", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "玩家绑定代理")
 	public String userBindingAgentByGold(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-			@ApiParam(required = true, name = "agentId", value = "代理ID") @RequestParam(value = "agentId") String agentId,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+			@Parameter(required = true, name = "agentId", description = "代理ID") @RequestParam(value = "agentId") String agentId,
 			HttpServletRequest request) {
 		Response response = new Response();
 
@@ -733,12 +736,12 @@ public class PlayerController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "playerRegister2Agent", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "玩家充值后成为代理", httpMethod = "POST", response = Response.class, notes = "玩家绑定代理")
+//	@Operation(summary = "玩家充值后成为代理", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "玩家绑定代理")
 //	public String playerRegister2Agent(
-//			@ApiParam(required = true, name = "userId", value = "用户ID") @RequestParam(value = "userId") Long userId,
-//			@ApiParam(required = true, name = "loginName", value = "登陆名") @RequestParam(value = "loginName") String loginName,
-//			@ApiParam(required = true, name = "passWord", value = "passWord") @RequestParam(value = "passWord") String passWord,
-//			@ApiParam(required = true, name = "phone", value = "phone") @RequestParam(value = "phone") String phone,
+//			@Parameter(required = true, name = "userId", description = "用户ID") @RequestParam(value = "userId") Long userId,
+//			@Parameter(required = true, name = "loginName", description = "登陆名") @RequestParam(value = "loginName") String loginName,
+//			@Parameter(required = true, name = "passWord", description = "passWord") @RequestParam(value = "passWord") String passWord,
+//			@Parameter(required = true, name = "phone", description = "phone") @RequestParam(value = "phone") String phone,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //
@@ -760,10 +763,10 @@ public class PlayerController extends BaseController {
 //	@ResponseBody
 //	@RequestMapping(value = "queryUseBiqiHistory", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "使用比奇卡的记录", position = 2, response = Response.class)
+//	@Operation(summary = "使用比奇卡的记录", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String queryUseBiqiHistory(
-//			@ApiParam(required = true, name = "playerId", value = "玩家ID") @RequestParam(value = "playerId") Long playerId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "playerId", description = "玩家ID") @RequestParam(value = "playerId") Long playerId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -786,14 +789,14 @@ public class PlayerController extends BaseController {
 //	@ResponseBody
 //	@RequestMapping(value = "playerXXX", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "玩家放炮次数", position = 2, response = Response.class)
+//	@Operation(summary = "玩家放炮次数", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String playerXXX(
-//			@ApiParam(required = true, name = "playerId1", value = "玩家ID") @RequestParam(value = "playerId1") Integer playerId1,
-//			@ApiParam(required = true, name = "playerId2", value = "玩家ID") @RequestParam(value = "playerId2") Integer playerId2,
-//			@ApiParam(required = true, name = "count", value = "count") @RequestParam(value = "count") Integer count,
-//			@ApiParam(required = false, name = "remark", value = "remark") @RequestParam(required = false,value = "remark") String remark,
-//			@ApiParam(required = true, name = "sign", value = "sign") @RequestParam(value = "sign") String sign,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "playerId1", description = "玩家ID") @RequestParam(value = "playerId1") Integer playerId1,
+//			@Parameter(required = true, name = "playerId2", description = "玩家ID") @RequestParam(value = "playerId2") Integer playerId2,
+//			@Parameter(required = true, name = "count", description = "count") @RequestParam(value = "count") Integer count,
+//			@Parameter(required = false, name = "remark", description = "remark") @RequestParam(required = false,value = "remark") String remark,
+//			@Parameter(required = true, name = "sign", description = "sign") @RequestParam(value = "sign") String sign,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -815,13 +818,13 @@ public class PlayerController extends BaseController {
 //	@ResponseBody
 //	@RequestMapping(value = "queryPlayerXXX", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "查询玩家放炮次数,还未实现", position = 2, response = Response.class)
+//	@Operation(summary = "查询玩家放炮次数,还未实现", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String queryPlayerXXX(
-//			@ApiParam(required = true, name = "playerId1", value = "玩家ID") @RequestParam(value = "playerId1") Integer playerId,
-//			@ApiParam(required = true, name = "type", value = "1 ; 放炮人  2 : 被放炮人") @RequestParam(value = "type") Integer type,
-//			@ApiParam(required = true, name = "currentPage", value = "当前页") @RequestParam(value = "currentPage") String currentPage,
-//			@ApiParam(required = false, name = "pageSize", value = "每页显示数,可以不穿,默认为30") @RequestParam(required = false,value = "pageSize") String pageSize,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "playerId1", description = "玩家ID") @RequestParam(value = "playerId1") Integer playerId,
+//			@Parameter(required = true, name = "type", description = "1 ; 放炮人  2 : 被放炮人") @RequestParam(value = "type") Integer type,
+//			@Parameter(required = true, name = "currentPage", description = "当前页") @RequestParam(value = "currentPage") String currentPage,
+//			@Parameter(required = false, name = "pageSize", description = "每页显示数,可以不穿,默认为30") @RequestParam(required = false,value = "pageSize") String pageSize,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -844,12 +847,12 @@ public class PlayerController extends BaseController {
 //	@ResponseBody
 //	@RequestMapping(value = "queryPlayerWaiWeiHistory", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "查询玩家三公外围的记录", position = 2, response = Response.class)
+//	@Operation(summary = "查询玩家三公外围的记录", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String queryPlayerWaiWeiHistory(
-//			@ApiParam(required = true, name = "playerId1", value = "玩家ID") @RequestParam(value = "playerId1") Integer playerId,
-//			@ApiParam(required = true, name = "currentPage", value = "当前页") @RequestParam(value = "currentPage") String currentPage,
-//			@ApiParam(required = false, name = "pageSize", value = "每页显示数,可以不穿,默认为30") @RequestParam(required = false,value = "pageSize") String pageSize,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "playerId1", description = "玩家ID") @RequestParam(value = "playerId1") Integer playerId,
+//			@Parameter(required = true, name = "currentPage", description = "当前页") @RequestParam(value = "currentPage") String currentPage,
+//			@Parameter(required = false, name = "pageSize", description = "每页显示数,可以不穿,默认为30") @RequestParam(required = false,value = "pageSize") String pageSize,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -872,10 +875,10 @@ public class PlayerController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "queryMyAgentAdvice", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "查询我的代理的公告", position = 2, response = Response.class)
+	@Operation(summary = "查询我的代理的公告", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String queryMyAgentAdvice(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -898,10 +901,10 @@ public class PlayerController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "isAgent", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "查看这个Id是否是代理", position = 2, response = Response.class)
+	@Operation(summary = "查看这个Id是否是代理", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String isAgent(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -924,11 +927,11 @@ public class PlayerController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "applyAgent", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "玩家申请成为代理", httpMethod = "POST", response = Response.class, notes = "玩家绑定代理")
+//	@Operation(summary = "玩家申请成为代理", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "玩家绑定代理")
 //	public String applyAgent(
-////			@ApiParam(required = true, name = "userId", value = "用户ID") @RequestParam(value = "userId") Long userId,
-//			@ApiParam(required = true, name = "phone", value = "用户手机号") @RequestParam(value = "phone") String phone,
-//			@ApiParam(required = true, name = "name", value = "代理名称") @RequestParam(value = "name") String name,
+////			@Parameter(required = true, name = "userId", description = "用户ID") @RequestParam(value = "userId") Long userId,
+//			@Parameter(required = true, name = "phone", description = "用户手机号") @RequestParam(value = "phone") String phone,
+//			@Parameter(required = true, name = "name", description = "代理名称") @RequestParam(value = "name") String name,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -947,11 +950,11 @@ public class PlayerController extends BaseController {
     
 //    @ResponseBody
 //    @RequestMapping(value = "test", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "测试接口", httpMethod = "POST", response = TaskListVo.class, notes = "领取任务奖励")
+//    @Operation(summary = "测试接口", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = TaskListVo.class))), description = "领取任务奖励")
 //    public String test(
-//            @ApiParam(required = true, name = "userId", value = "玩家id")
+//            @Parameter(required = true, name = "userId", description = "玩家id")
 //            @RequestParam(value = "userId") Long userId,
-//            @ApiParam(required = true, name = "exp", value = "任务id")
+//            @Parameter(required = true, name = "exp", description = "任务id")
 //            @RequestParam(value = "exp") Integer exp,
 //            HttpServletRequest request) {
 //        Response response = new Response();
@@ -987,9 +990,9 @@ public class PlayerController extends BaseController {
 //	@ResponseBody
 //	@RequestMapping(value = "authorize", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "authorize", position = 2, response = Response.class)
+//	@Operation(summary = "authorize", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String authorize(
-//			@ApiParam(required = false, name = "code", value = "code") @RequestParam(required = false, value = "code") String code,
+//			@Parameter(required = false, name = "code", description = "code") @RequestParam(required = false, value = "code") String code,
 //			HttpServletRequest req, HttpServletResponse resp) throws Exception {
 //
 //		String appid = ConfigUtil.get("weixin.AppId");
@@ -1062,9 +1065,9 @@ public class PlayerController extends BaseController {
 //	@ResponseBody
 //	@RequestMapping(value = "authorizeWXXCX", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "authorizeWXXCX", position = 2, response = Response.class)
+//	@Operation(summary = "authorizeWXXCX", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String authorizeWXXCX(
-//			@ApiParam(required = true, name = "code", value = "code") @RequestParam(required = true, value = "code") String code,
+//			@Parameter(required = true, name = "code", description = "code") @RequestParam(required = true, value = "code") String code,
 //			HttpServletRequest req, HttpServletResponse resp) throws Exception {
 //
 //		String appid = ConfigUtil.get("WXXCX.AppId");
@@ -1109,11 +1112,11 @@ public class PlayerController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "sendSMS4bindPhone", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "sendSMS4bindPhone", position = 2, response = Response.class)
+	@Operation(summary = "sendSMS4bindPhone", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String sendSMS4bindPhone(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
-			@ApiParam(required = true, name = "phone", value = "电话号码") @RequestParam(value = "phone") String phone,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
+			@Parameter(required = true, name = "phone", description = "电话号码") @RequestParam(value = "phone") String phone,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = null;
 		try {
@@ -1136,13 +1139,13 @@ public class PlayerController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "bindPhoneBySms", method = { RequestMethod.POST,
             RequestMethod.GET }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "bindPhoneBySms", position = 2, response = Response.class)
+    @Operation(summary = "bindPhoneBySms", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String bindPhoneBySms(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
-			@ApiParam(required = true, name = "phone", value = "电话号码") @RequestParam(value = "phone") String phone,
-            @ApiParam(required = true, name = "code", value = "电话号码") @RequestParam(value = "code") String code,
-            @ApiParam(required = true, name = "password", value = "电话号码") @RequestParam(value = "password") String password,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
+			@Parameter(required = true, name = "phone", description = "电话号码") @RequestParam(value = "phone") String phone,
+            @Parameter(required = true, name = "code", description = "电话号码") @RequestParam(value = "code") String code,
+            @Parameter(required = true, name = "password", description = "电话号码") @RequestParam(value = "password") String password,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request) {
         Response response = new Response();
         try {
@@ -1165,11 +1168,11 @@ public class PlayerController extends BaseController {
 //	@ResponseBody
 //	@RequestMapping(value = "test", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "test", position = 2, response = Response.class)
+//	@Operation(summary = "test", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String test(
-//			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
-//			@ApiParam(required = true, name = "groupId", value = "groupId") @RequestParam(value = "groupId") Integer groupId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
+//			@Parameter(required = true, name = "groupId", description = "groupId") @RequestParam(value = "groupId") Integer groupId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -1194,12 +1197,12 @@ public class PlayerController extends BaseController {
 //    @ResponseBody
 //    @RequestMapping(value = "updatePassBySms", method = { RequestMethod.POST,
 //            RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "updatePassBySms", position = 2, response = Response.class)
+//    @Operation(summary = "updatePassBySms", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String updatePassBySms(
-//            @ApiParam(required = true, name = "phone", value = "phone") @RequestParam(value = "phone") String phone,
-//            @ApiParam(required = true, name = "code", value = "code") @RequestParam(value = "code") String code,
-//            @ApiParam(required = true, name = "password", value = "password") @RequestParam(value = "password") String password,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//            @Parameter(required = true, name = "phone", description = "phone") @RequestParam(value = "phone") String phone,
+//            @Parameter(required = true, name = "code", description = "code") @RequestParam(value = "code") String code,
+//            @Parameter(required = true, name = "password", description = "password") @RequestParam(value = "password") String password,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response = new Response();
 //        try {

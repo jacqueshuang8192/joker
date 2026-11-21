@@ -1,0 +1,80 @@
+x-native: &native
+  platform: linux/amd64
+  restart: unless-stopped
+  network_mode: service:redis-link
+  image: ${IMAGE_PREFIX:?Run tools/configure.py}-native:${IMAGE_TAG:?Image tag required}
+  depends_on:
+    redis-link: {condition: service_healthy}
+    flyway: {condition: service_completed_successfully}
+  security_opt: [no-new-privileges:true]
+x-hall: &hall
+  <<: *native
+  volumes:
+    - ./runtime/hall-config.xml:/srv/hall/conf/config.xml:ro
+    - ./runtime/hall-server.xml:/srv/hall/conf/server.xml:ro
+services:
+  # Local Redis connection for legacy game clients. Authenticates to the panel's Redis.
+  redis-link:
+    image: ${IMAGE_PREFIX}-native:${IMAGE_TAG:?Run tools/configure.py}
+    platform: linux/amd64
+    restart: unless-stopped
+    networks: [panel]
+    entrypoint: [python3, /usr/local/bin/redis-link]
+    volumes:
+      - ./runtime/redis.json:/srv/redis.json:ro
+    ports:
+      - "${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080"
+      - "${GAME_BIND:-127.0.0.1}:4700-4704:4700-4704"
+      - "${GAME_BIND:-127.0.0.1}:13600:13600"
+    healthcheck:
+      test: [CMD, python3, /usr/local/bin/redis-link, check]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  user:
+    <<: *native
+    command: [user, -h, 127.0.0.1, -p, "7500", -s, "1", -m, "500000"]
+    volumes: [./runtime/user.ini:/srv/user/conf/config.ini:ro]
+  data:
+    <<: *native
+    command: [data, -h, 127.0.0.1, -p, "6001", -s, "0"]
+    volumes: [./runtime/data.xml:/srv/data/bin/config.xml:ro]
+  alloc:
+    <<: *native
+    command: [alloc, -p, "11603", -l, "302", -s, "63", -u, "4", -m, "400", -d]
+    volumes:
+      - ./runtime/alloc.xml:/srv/alloc/bin/server.xml:ro
+      - ./runtime/alloc.ini:/srv/alloc/bin/config.ini:ro
+      - ./runtime/game.ini:/srv/alloc/bin/GameServer.ini:ro
+  douniu:
+    <<: *native
+    depends_on:
+      alloc: {condition: service_healthy}
+    command: [douniu, -p, "13600", -s, "1802", -l, "302", -d]
+    volumes: [./runtime/douniu.xml:/srv/douniu/bin/server.xml:ro]
+  gold:
+    <<: *native
+    profiles: [gold]
+    command: [gold, -h, 127.0.0.1, -p, "6005", -s, "0"]
+    volumes:
+      - type: bind
+        source: ./runtime/gold.xml
+        target: /srv/gold/bin/config.xml
+        read_only: true
+        bind: {create_host_path: false}
+  hall-4700:
+    <<: *hall
+    command: [hall, -p, "4700", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+  hall-4701:
+    <<: *hall
+    command: [hall, -p, "4701", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+  hall-4702:
+    <<: *hall
+    command: [hall, -p, "4702", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+  hall-4703:
+    <<: *hall
+    command: [hall, -p, "4703", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+  hall-4704:
+    <<: *hall
+    command: [hall, -p, "4704", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]

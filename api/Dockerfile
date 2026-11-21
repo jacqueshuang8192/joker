@@ -1,7 +1,7 @@
-FROM tomcat:9-jdk8-temurin
-COPY target/hbiInterface.war /tmp/app.war
-RUN mkdir -p webapps/hbiInterface && cd webapps/hbiInterface && jar xf /tmp/app.war && rm /tmp/app.war && \
-    test -e WEB-INF/classes/com/hbi/controller/player/PlayerController.class && test ! -e WEB-INF/classes/config.properties && \
-    mkdir -p /srv/uploads && chown -R 10001:10001 /srv/uploads /usr/local/tomcat
+FROM eclipse-temurin:23-jre-noble
+WORKDIR /srv/joker
+COPY target/joker-api.jar ./joker-api.jar
+RUN mkdir -p /srv/uploads && chown 10001:10001 /srv/uploads
 USER 10001:10001
-CMD ["catalina.sh", "run"]
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/srv/joker/joker-api.jar"]

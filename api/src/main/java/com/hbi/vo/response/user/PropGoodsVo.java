@@ -3,19 +3,19 @@ package com.hbi.vo.response.user;
 import java.util.List;
 
 import com.hbi.vo.response.base.BaseResultVo;
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "道具物品")
+@Schema(description = "道具物品")
 public class PropGoodsVo extends BaseResultVo {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@ApiModelProperty(value = "返回行数", required = true)
+	@Schema(title = "返回行数", required = true)
 	private int count;
-	@ApiModelProperty(value = "物品清单", required = true)
+	@Schema(title = "物品清单", required = true)
 	private List<GoodsVo> goods;
 
 	public int getCount() {

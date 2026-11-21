@@ -1,7 +1,7 @@
 package com.hbi.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
 import com.hbi.cache.CacheManager;
@@ -47,6 +47,10 @@ public class TokenInterceptor implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest req, HttpServletResponse res,
 			Object arg2) {
 
+		// Static files were served directly by the old servlet container.
+		if (arg2 instanceof org.springframework.web.servlet.resource.ResourceHttpRequestHandler) {
+			return true;
+		}
 		ICache cache = null;
 		try {
 			cache = CacheManager.getCache();

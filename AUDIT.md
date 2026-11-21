@@ -2,13 +2,21 @@
 
 检查日期为 2026-11-21。核对范围为原整理目录的整个后端，部署仓库选用 `interface_yuan`、五个 Alloc 原生项目及牛牛程序。原归档保留在部署仓库之外。
 
+## Java 23 迁移核验
+
+`joker-api` 使用 Spring Boot 3.5.16、Java 23 和内嵌 Tomcat 10.1。使用 JDK 23 执行 Maven 清洁构建后，在 Linux/amd64 容器中以普通用户启动同一份可执行 JAR。JAR 包含首页 JSP 和七张支付 JSP，数据库凭据由 Compose 挂载。
+
+在隔离的 Compose 环境中，通过 HTTP 逐张请求七个支付视图，检查返回的表单已经执行 JSP 和 EL。使用合成用户、单价 15 的商品和数量 2 请求 `/sfPay/rongZhouPayOrder`，核对麒麟支付视图的表单字段和数据库订单的金额均为 30。验证止于表单生成。另使用临时登录态读取 `/api-docs`，从生成的 OpenAPI 描述中取得 105 个接口路径。
+
+1Panel 外置服务模式已在隔离的 Docker 网络中验证。测试把 MySQL 5.7.44、启用密码的 Redis 7、启用认证的 MongoDB 4.4 和 Memcached 1.6 放在独立的编排中。应用编排通过容器名连接，Flyway 在专用空库中建成 148 张业务表，第二次执行时跳过已完成的迁移。使用 JAR 内实际的 Mongo 客户端完成集合读取，通过用户服务配置的 Memcached 地址完成写入与读取。大厅、分配、牛牛及可选金币服务均通过容器健康检查。测试覆盖本地 Docker 环境，正式的玩家对局仍需业务数据和客户端验收。
+
 ## 文件与构建
 
 将原迁移清单中的 5,089 个后端文件与当前文件重新计算 SHA-256 对比。清单内仅 `Alloc/.DS_Store` 变化，另外发现 9 个新增的 Finder 元数据文件。清单内的业务文件均在且哈希一致。该清单记录的是收到的归档，无法证明最初提供方已经交齐所有模块。
 
 | 组件 | 本次检查结果 | 镜像内容 |
 |---|---|---|
-| Java API，`interface_yuan` | 用 JDK 8 从清洁源码目录成功生成 WAR。原工程有 807 个 Java 源文件。部署副本将其中 356 个仅含注释或空行的文件移入 `archive/java/`，其余 451 个保留在 Maven 源码目录。归档 WAR 和重建 WAR 均有 469 个应用 class 文件。 | 使用部署副本源码重新构建，保留原上下文路径 `/hbiInterface`，由 Tomcat 9 运行。 |
+| Java API，`interface_yuan` | 用 JDK 8 从清洁源码目录成功生成 WAR。原工程有 807 个 Java 源文件。部署副本将其中 356 个仅含注释或空行的文件移入 `archive/java/`，其余 451 个保留在 Maven 源码目录。归档 WAR 和重建 WAR 均有 469 个应用 class 文件。 | 历史部署基线为 Tomcat 9。当前部署使用 Spring Boot 可执行 JAR、内嵌 Tomcat 和 Java 23，沿用 `/hbiInterface`。 |
 | 另一份 Java 工程，`Alloc/interface` | 有 806 个 Java 文件。使用当前 Maven 验证原 POM 时因重复声明 `org.apache.httpcomponents:httpmime:4.5` 在模型校验阶段失败。两个接口工程存在内容差异。 | 选用已编译通过且附带可对照 WAR 的 `interface_yuan`。 |
 | 大厅 `CCHallServer` | 核心库、大厅代码和 hiredis 均能重新编译。 | C++ 源码构建，启动 4700–4704 五个实例。 |
 | 用户 `CCUserServer` | 原依赖目录内的 hiredis 只有库文件。使用同一归档其他模块的 hiredis 源码，处理旧头文件名和编译器兼容性后完成编译。 | C++ 源码构建，监听 7500。 |
@@ -57,6 +65,6 @@ Flyway 接入后，以 MySQL 5.7.44 和 Flyway Community 11.15.0 在隔离的 Li
 
 引入 Flyway 前，默认编排中的 14 个容器通过启动检查；另启用示例 gold 配置复测时，15 个容器也均通过。测试环境内分配服务与牛牛服务分别监听 11603 和 13600。金币样例验证到进程监听，未验证真实余额变动。
 
-Java 的 Maven 依赖已在空缓存、空自定义配置下解析，并在 Linux/amd64 用 JDK 8 离线编译通过。部署 POM 主要使用 Maven Central，对历史支付 SDK 的坐标保留 HTTPS 仓库回退。部署副本已将发现的固定协议及开户凭据移入运行配置，已对提交的文本执行 Gitleaks 扫描。
+迁移前，Java 的 Maven 依赖已在空缓存、空自定义配置下解析，并在 Linux/amd64 用 JDK 8 离线编译通过。部署 POM 主要使用 Maven Central，对历史支付 SDK 的坐标保留 HTTPS 仓库回退。部署副本已将发现的固定协议及开户凭据移入运行配置，已对提交的文本执行 Gitleaks 扫描。
 
 原生服务健康检查核对指定端口的监听状态。HTTP 首页用于容器存活检查，业务接口另行验证。真实客户端登录、牌局、结算、支付、生产负载及 1Panel 真机发布尚未验收。归档含第三方支付、短信、云存储等配置，部署仓库使用本机生成的配置文件，保留原通道实现以便按需对接。上线使用的协议密钥还要与客户端配套。

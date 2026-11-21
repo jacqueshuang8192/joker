@@ -2,10 +2,10 @@ package com.hbi.vo.response.user;
 
 import java.util.List;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ListVo {
-    @ApiModelProperty(value = "返回码", required = true)
+    @Schema(title = "返回码", required = true)
     private String returnCode;
     
     private int count;

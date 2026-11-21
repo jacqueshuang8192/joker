@@ -3,7 +3,7 @@
   <GAME GameID="0" ServerType="0" MemServerIP="127.0.0.1" MemServerPort="6379" UpdateInteval="60" password="">
     <Log level="1"/>
     <DBList>
-      <DB ip="127.0.0.1" port="3306" user="shenshou_game" pwd="@DB_PASSWORD@" tableName="bullfight_gameinfo" dbName="shenshou_game" dbNum="1" tableNum="10"/>
+      <DB ip="@DB_HOST@" port="@DB_PORT@" user="@DB_USER@" pwd="@DB_PASSWORD@" tableName="bullfight_gameinfo" dbName="@DB_NAME@" dbNum="1" tableNum="10"/>
     </DBList>
   </GAME>
 </SYSTEM>

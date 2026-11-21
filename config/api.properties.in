@@ -1,8 +1,9 @@
-jdbc.url=jdbc:mysql://127.0.0.1:3306/shenshou_game?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-jdbc.user=shenshou_game
+jdbc.url=jdbc:mysql://@DB_HOST@:@DB_PORT@/@DB_NAME@?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+jdbc.user=@DB_USER@
 jdbc.password=@DB_PASSWORD@
 redis.ip=127.0.0.1
 redis.port=6379
+redis.port1=6379
 redis.port3=6379
 redis.password=
 payChannel=
@@ -49,8 +50,7 @@ my.baidu.ak=
 upload.src=/srv/uploads
 upload.image.suffix=.png
 image.http=
-mongodb.ip=127.0.0.1
-mongodb.port=27017
+mongodb.uri=@MONGO_URI@
 cache.type=redis
 cache.url=127.0.0.1
 cache.port=6379

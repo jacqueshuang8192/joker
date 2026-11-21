@@ -1,7 +1,7 @@
 package com.hbi.vo.response.user;
 
 import com.hbi.vo.response.base.BaseResultVo;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UserVo extends BaseResultVo {
 
@@ -9,33 +9,33 @@ public class UserVo extends BaseResultVo {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@ApiModelProperty(value = "姓名", required = true)
+	@Schema(title = "姓名", required = true)
 	private String name;
-	@ApiModelProperty(value = "昵称", required = true)
+	@Schema(title = "昵称", required = true)
 	private String nickName;
-	@ApiModelProperty(value = "图像", required = true)
+	@Schema(title = "图像", required = true)
 	private String photoURL;
-	@ApiModelProperty(value = "性别", required = true)
+	@Schema(title = "性别", required = true)
 	private String sex;
-	@ApiModelProperty(value = "生日", required = true)
+	@Schema(title = "生日", required = true)
 	private String birthday;
-	@ApiModelProperty(value = "省份", required = true)
+	@Schema(title = "省份", required = true)
 	private String province;
-	@ApiModelProperty(value = "省份ID", required = true)
+	@Schema(title = "省份ID", required = true)
 	private String provinceId;
-	@ApiModelProperty(value = "城市", required = true)
+	@Schema(title = "城市", required = true)
 	private String city;
-	@ApiModelProperty(value = "城市ID", required = true)
+	@Schema(title = "城市ID", required = true)
 	private String cityId;
-	@ApiModelProperty(value = "个性签名", required = true)
+	@Schema(title = "个性签名", required = true)
 	private String sign;
-	@ApiModelProperty(value = "所属公会", required = true)
+	@Schema(title = "所属公会", required = true)
 	private String society;
-	@ApiModelProperty(value = "公会ID", required = true)
+	@Schema(title = "公会ID", required = true)
 	private Long societyId;
-	@ApiModelProperty(value = "状态,0：离线；1：在线；2：正在直播；3：正在直播，同时玩游戏", required = true)
+	@Schema(title = "状态,0：离线；1：在线；2：正在直播；3：正在直播，同时玩游戏", required = true)
 	private String status;
-	@ApiModelProperty(value = "游戏名称", required = true)
+	@Schema(title = "游戏名称", required = true)
 	private String playingGame;
 	private Long attack;
 	private Long defense;

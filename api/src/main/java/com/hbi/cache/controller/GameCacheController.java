@@ -80,8 +80,6 @@ public class GameCacheController {
 //    private TGameAwardPoolDeductPondMapper gameAwardPoolDeductPondMapper;
     @Autowired
     private GameCacheLoader gameCacheLoader;
-    @Autowired
-    private BaseCacheController baseCacheController;
 
     public boolean isExistFreeGameCreatedByUserId(String userId, ICache cache) {
     	String key = FREEGAME_USER_TABLE_STATE_PREFIX + userId;

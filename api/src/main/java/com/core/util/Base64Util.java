@@ -3,12 +3,15 @@ package com.core.util;
 import com.core.constants.ErrorConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import java.io.*;
 
 public class Base64Util {
+    // The original encoder terminates each full 57-byte input line, including the last.
+    static String encodeLines(byte[] data) {
+        String result = java.util.Base64.getMimeEncoder(76, new byte[] {10}).encodeToString(data);
+        return data.length > 0 && data.length % 57 == 0 ? result + "\n" : result;
+    }
 
 	private static Logger logger = Logger.getLogger(Base64Util.class);
 	
@@ -31,8 +34,7 @@ public class Base64Util {
         	return "";
         }
         //对字节数组Base64编码
-        BASE64Encoder encoder = new BASE64Encoder();
-        return encoder.encode(data);//返回Base64编码过的字节数组字符串
+        return Base64Util.encodeLines(data);//返回Base64编码过的字节数组字符串
     }
     
 	/**
@@ -48,8 +50,8 @@ public class Base64Util {
 		}
 		base64Str = base64Str.replaceAll(" ", "\\+");
 		// input byte base64
-		BASE64Decoder decoder = new BASE64Decoder();
-		byte[] cb = decoder.decodeBuffer(base64Str);
+		java.util.Base64.Decoder decoder = java.util.Base64.getMimeDecoder();
+		byte[] cb = decoder.decode(base64Str);
 		ByteArrayInputStream in = new ByteArrayInputStream(cb);
 		return in;
 	}
@@ -63,12 +65,12 @@ public class Base64Util {
 	    {   //对字节数组字符串进行Base64解码并生成图片
 	        if (StringUtils.isBlank(base64Str)) //图像数据为空
 	            return false;
-	        BASE64Decoder decoder = new BASE64Decoder();
+	        java.util.Base64.Decoder decoder = java.util.Base64.getMimeDecoder();
 	        try 
 	        {
 	        	base64Str = base64Str.replaceAll(" ", "\\+");
 	            //Base64解码
-	            byte[] b = decoder.decodeBuffer(base64Str);
+	            byte[] b = decoder.decode(base64Str);
 	           /* //生成图片
 	            //String imgFilePath = "C://Users//apple//Desktop//222.png";
 	            OutputStream out = new FileOutputStream(fileName);    

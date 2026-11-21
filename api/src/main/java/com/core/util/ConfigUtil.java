@@ -11,8 +11,16 @@ import org.apache.log4j.Logger;
  * 
  */
 public class ConfigUtil {
+	private static ResourceBundle loadConfig() {
+		String path = System.getenv().getOrDefault("JOKER_CONFIG", "config.properties");
+		try (var reader = java.nio.file.Files.newBufferedReader(java.nio.file.Path.of(path))) {
+			return new java.util.PropertyResourceBundle(reader);
+		} catch (java.io.IOException e) {
+			throw new IllegalStateException("Cannot load API configuration: " + path, e);
+		}
+	}
 
-	private static final ResourceBundle bundle = java.util.ResourceBundle.getBundle("config");
+	private static final ResourceBundle bundle = loadConfig();
 	private static ResourceBundle customBundle=null;
 	private static final Logger log = Logger
 			.getLogger(ConfigUtil.class);

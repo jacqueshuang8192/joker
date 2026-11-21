@@ -12,3 +12,5 @@ runtime/
 *.sql
 !database/migrations/V*__*.sql
 !tools/check-schema.sql
+
+/panel.ini

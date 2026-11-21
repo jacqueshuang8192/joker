@@ -2,10 +2,10 @@ package com.hbi.model;
 
 import com.hbi.vo.request.common.TLevelFenChangVo;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.util.List;
 
 @Table(name = "t_game")

@@ -1,24 +1,24 @@
 package com.hbi.vo.response.user;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "物品详情")
+@Schema(description = "物品详情")
 public class GoodsVo {
 
-	@ApiModelProperty(value = "物品ID", required = true)
+	@Schema(title = "物品ID", required = true)
 	private String goodsId;
-	@ApiModelProperty(value = "物品名称", required = true)
+	@Schema(title = "物品名称", required = true)
 	private String name;
-	@ApiModelProperty(value = "说明", required = true)
+	@Schema(title = "说明", required = true)
 	private String desc;
-	@ApiModelProperty(value = "类型", required = true)
+	@Schema(title = "类型", required = true)
 	private String type;
-	@ApiModelProperty(value = "数量", required = true)
+	@Schema(title = "数量", required = true)
 	private int amount;
-	@ApiModelProperty(value = "总价", required = true)
+	@Schema(title = "总价", required = true)
 	private int price;
-	@ApiModelProperty(value = "物品图片", required = true)
+	@Schema(title = "物品图片", required = true)
 	private String photo;
 
 	public String getGoodsId() {

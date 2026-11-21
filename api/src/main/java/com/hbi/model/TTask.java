@@ -1,6 +1,6 @@
 package com.hbi.model;
 
-import javax.persistence.Table;
+import jakarta.persistence.Table;
 
 @Table(name = "t_task")
 public class TTask {

@@ -18,7 +18,6 @@ import com.hbi.service.playerGroup.TGroupXiaoHaoHistoryService;
 import com.hbi.utils.OSSUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

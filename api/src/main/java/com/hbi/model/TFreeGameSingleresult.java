@@ -1,11 +1,11 @@
 package com.hbi.model;
 
 
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Table(name = "t_free_game_singleresult")
 public class TFreeGameSingleresult {

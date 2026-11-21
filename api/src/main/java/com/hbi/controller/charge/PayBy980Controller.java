@@ -9,9 +9,12 @@ import com.hbi.utils.InfServerException;
 import com.hbi.utils.XMLUtil;
 import com.hbi.utils.XmlUtils;
 import com.hbi.vo.response.Response;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,14 +25,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.*;
 
-@Api(basePath = "", value = "sf支付接口", position = 1)
+@Tag(name = "sf支付接口")
 @RequestMapping(value = "/sfPay")
 @Controller
 public class  PayBy980Controller {
@@ -41,13 +44,13 @@ public class  PayBy980Controller {
 
     @ResponseBody
     @RequestMapping(value = "/payOrder", method = { RequestMethod.POST, RequestMethod.GET})
-//    @ApiOperation(value = "sf订单支付接口", position = 2, response = Response.class)
+//    @Operation(summary = "sf订单支付接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public ModelAndView payOrder(
-            @ApiParam(required = true, name = "userId", value = "用户id") @RequestParam(value = "userId") Long userId,
-            @ApiParam(required = true, name = "goodsId", value = "商品id") @RequestParam(value = "goodsId") Long goodsId,
-            @ApiParam(required = true, name = "amount", value = "商品数量") @RequestParam(value = "amount") Integer amount,
-            @ApiParam(name = "payType", value = "支付类型 wei_qr:微信支付   qq_qr:QQ支付",required = false) @RequestParam(value = "payType") String payType,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+            @Parameter(required = true, name = "userId", description = "用户id") @RequestParam(value = "userId") Long userId,
+            @Parameter(required = true, name = "goodsId", description = "商品id") @RequestParam(value = "goodsId") Long goodsId,
+            @Parameter(required = true, name = "amount", description = "商品数量") @RequestParam(value = "amount") Integer amount,
+            @Parameter(name = "payType", description = "支付类型 wei_qr:微信支付   qq_qr:QQ支付", required = false) @RequestParam(value = "payType") String payType,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request,Model model) {
         Response response = new Response();
         ModelAndView modelAndView = null;
@@ -84,14 +87,14 @@ public class  PayBy980Controller {
 
     @ResponseBody
     @RequestMapping(value = "payOrderCallback", method = { RequestMethod.GET }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "sf支付回调接口", position = 2, response = Response.class)
+    @Operation(summary = "sf支付回调接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String payOrderCallback(
-            @ApiParam(required = false, name = "memberid", value = "商户Id") @RequestParam(required = false,value = "memberid") String memberid,
-            @ApiParam(required = false, name = "orderid", value = "orderid") @RequestParam(required = false,value = "orderid") String orderid,
-            @ApiParam(required = false, name = "amount", value = "amount") @RequestParam(required = false,value = "amount") Long amount,
-            @ApiParam(required = false, name = "datetime", value = "datetime") @RequestParam(required = false,value = "datetime") String datetime,
-            @ApiParam(required = false, name = "returncode", value = "returncode") @RequestParam(required = false,value = "returncode") String returncode,
-            @ApiParam(required = false, name = "sign", value = "sign") @RequestParam(required = false,value = "sign") String sign,
+            @Parameter(required = false, name = "memberid", description = "商户Id") @RequestParam(required = false,value = "memberid") String memberid,
+            @Parameter(required = false, name = "orderid", description = "orderid") @RequestParam(required = false,value = "orderid") String orderid,
+            @Parameter(required = false, name = "amount", description = "amount") @RequestParam(required = false,value = "amount") Long amount,
+            @Parameter(required = false, name = "datetime", description = "datetime") @RequestParam(required = false,value = "datetime") String datetime,
+            @Parameter(required = false, name = "returncode", description = "returncode") @RequestParam(required = false,value = "returncode") String returncode,
+            @Parameter(required = false, name = "sign", description = "sign") @RequestParam(required = false,value = "sign") String sign,
 
 
             HttpServletRequest request) {
@@ -115,13 +118,13 @@ public class  PayBy980Controller {
     //多个支付的渠道
     @ResponseBody
     @RequestMapping(value = "/rongZhouPayOrder", method = { RequestMethod.POST, RequestMethod.GET})
-    @ApiOperation(value = "荣舟订单支付接口", position = 2, response = Response.class)
+    @Operation(summary = "荣舟订单支付接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public ModelAndView rongZhouPayOrder(
-            @ApiParam(required = true, name = "userId", value = "用户id") @RequestParam(value = "userId") Long userId,
-            @ApiParam(required = true, name = "goodsId", value = "商品id") @RequestParam(value = "goodsId") Long goodsId,
-            @ApiParam(required = true, name = "amount", value = "商品数量") @RequestParam(value = "amount") Integer amount,
-            @ApiParam(name = "payType", value = "W : 微信支付 ， Z ： 支付宝支付 ， Y ： 银联支付",required = false) @RequestParam(value = "payType") String payType,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+            @Parameter(required = true, name = "userId", description = "用户id") @RequestParam(value = "userId") Long userId,
+            @Parameter(required = true, name = "goodsId", description = "商品id") @RequestParam(value = "goodsId") Long goodsId,
+            @Parameter(required = true, name = "amount", description = "商品数量") @RequestParam(value = "amount") Integer amount,
+            @Parameter(name = "payType", description = "W : 微信支付 ， Z ： 支付宝支付 ， Y ： 银联支付", required = false) @RequestParam(value = "payType") String payType,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request,Model model) {
         Response response = new Response();
         ModelAndView modelAndView = null;
@@ -203,13 +206,13 @@ public class  PayBy980Controller {
 
     @ResponseBody
     @RequestMapping(value = "/biqiPayOrder", method = { RequestMethod.POST, RequestMethod.GET})
-    @ApiOperation(value = "比奇订单支付接口", position = 2, response = Response.class)
+    @Operation(summary = "比奇订单支付接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String biqiPayOrder(
-            @ApiParam(required = true, name = "userId", value = "用户id") @RequestParam(value = "userId") Long userId,
-            @ApiParam(required = true, name = "goodsId", value = "商品id") @RequestParam(value = "goodsId") Long goodsId,
-            @ApiParam(required = true, name = "amount", value = "商品数量") @RequestParam(value = "amount") Integer amount,
-            @ApiParam(name = "payType", value = "W : 微信支付 ， Z ： 支付宝支付 ， Y ： 银联支付",required = false) @RequestParam(value = "payType") String payType,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+            @Parameter(required = true, name = "userId", description = "用户id") @RequestParam(value = "userId") Long userId,
+            @Parameter(required = true, name = "goodsId", description = "商品id") @RequestParam(value = "goodsId") Long goodsId,
+            @Parameter(required = true, name = "amount", description = "商品数量") @RequestParam(value = "amount") Integer amount,
+            @Parameter(name = "payType", description = "W : 微信支付 ， Z ： 支付宝支付 ， Y ： 银联支付", required = false) @RequestParam(value = "payType") String payType,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request,Model model) {
         Response response = null;
 //        ModelAndView modelAndView = null;
@@ -245,7 +248,7 @@ public class  PayBy980Controller {
 
     @ResponseBody
     @RequestMapping(value = "/payOrderCallbackBiQi", method = { RequestMethod.POST, RequestMethod.GET})
-    @ApiOperation(value = "比奇支付回调", position = 2, response = Response.class)
+    @Operation(summary = "比奇支付回调", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String payOrderCallbackBiQi(HttpServletRequest request,
                                        HttpServletResponse response) throws Exception {
 
@@ -267,15 +270,15 @@ public class  PayBy980Controller {
 
     @ResponseBody
     @RequestMapping(value = "payOrderCallbackRongZhou", method = { RequestMethod.GET }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "比奇支付回调接口", position = 2, response = Response.class)
+    @Operation(summary = "比奇支付回调接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String payOrderCallbackRongZhou(
-            @ApiParam(required = false, name = "orderid", value = "orderid") @RequestParam(required = false,value = "orderid") String orderid,
-            @ApiParam(required = false, name = "ovalue", value = "ovalue") @RequestParam(required = false,value = "ovalue") String ovalue,
-            @ApiParam(required = false, name = "completiontime", value = "completiontime") @RequestParam(required = false,value = "completiontime") String completiontime,
-            @ApiParam(required = false, name = "opstate", value = "opstate") @RequestParam(required = false,value = "opstate") String opstate,
-            @ApiParam(required = false, name = "sign", value = "sign") @RequestParam(required = false,value = "sign") String sign,
-            @ApiParam(required = false, name = "attach", value = "attach") @RequestParam(required = false,value = "attach") String attach,
-            @ApiParam(required = false, name = "msg", value = "msg") @RequestParam(required = false,value = "msg") String msg,
+            @Parameter(required = false, name = "orderid", description = "orderid") @RequestParam(required = false,value = "orderid") String orderid,
+            @Parameter(required = false, name = "ovalue", description = "ovalue") @RequestParam(required = false,value = "ovalue") String ovalue,
+            @Parameter(required = false, name = "completiontime", description = "completiontime") @RequestParam(required = false,value = "completiontime") String completiontime,
+            @Parameter(required = false, name = "opstate", description = "opstate") @RequestParam(required = false,value = "opstate") String opstate,
+            @Parameter(required = false, name = "sign", description = "sign") @RequestParam(required = false,value = "sign") String sign,
+            @Parameter(required = false, name = "attach", description = "attach") @RequestParam(required = false,value = "attach") String attach,
+            @Parameter(required = false, name = "msg", description = "msg") @RequestParam(required = false,value = "msg") String msg,
 
             HttpServletRequest request) {
         try {
@@ -295,7 +298,7 @@ public class  PayBy980Controller {
 
     @ResponseBody
     @RequestMapping(value = "payOrderCallbackShanyun", method = { RequestMethod.POST }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "闪云支付回调接口", position = 2, response = Response.class)
+    @Operation(summary = "闪云支付回调接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public void payOrderCallbackShanyun(
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -320,18 +323,18 @@ public class  PayBy980Controller {
 
     @ResponseBody
     @RequestMapping(value = "payOrderCallbackJFT", method = { RequestMethod.GET,RequestMethod.POST }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "竣付通回调接口", position = 2, response = Response.class)
+    @Operation(summary = "竣付通回调接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String payOrderCallbackJFT(
-            @ApiParam(required = false, name = "p1_yingyongnum", value = "p1_yingyongnum") @RequestParam(required = false,value = "p1_yingyongnum") String p1_yingyongnum,
-            @ApiParam(required = false, name = "p2_ordernumber", value = "p2_ordernumber") @RequestParam(required = false,value = "p2_ordernumber") String p2_ordernumber,
-            @ApiParam(required = false, name = "p3_money", value = "p3_money") @RequestParam(required = false,value = "p3_money") String p3_money,
-            @ApiParam(required = false, name = "p4_zfstate", value = "p4_zfstate") @RequestParam(required = false,value = "p4_zfstate") String p4_zfstate,
-            @ApiParam(required = false, name = "p5_orderid", value = "p5_orderid") @RequestParam(required = false,value = "p5_orderid") String p5_orderid,
-            @ApiParam(required = false, name = "p6_productcode", value = "p6_productcode") @RequestParam(required = false,value = "p6_productcode") String p6_productcode,
-            @ApiParam(required = false, name = "p10_sign", value = "p10_sign") @RequestParam(required = false,value = "p10_sign") String p10_sign,
-            @ApiParam(required = false, name = "p11_pdesc", value = "p11_pdesc") @RequestParam(required = false,value = "p11_pdesc") String p11_pdesc,
-            @ApiParam(required = false, name = "p12_remark", value = "p12_remark") @RequestParam(required = false,value = "p12_remark") String p12_remark,
-            @ApiParam(required = false, name = "p13_zfmoney", value = "p13_zfmoney") @RequestParam(required = false,value = "p13_zfmoney") String p13_zfmoney,
+            @Parameter(required = false, name = "p1_yingyongnum", description = "p1_yingyongnum") @RequestParam(required = false,value = "p1_yingyongnum") String p1_yingyongnum,
+            @Parameter(required = false, name = "p2_ordernumber", description = "p2_ordernumber") @RequestParam(required = false,value = "p2_ordernumber") String p2_ordernumber,
+            @Parameter(required = false, name = "p3_money", description = "p3_money") @RequestParam(required = false,value = "p3_money") String p3_money,
+            @Parameter(required = false, name = "p4_zfstate", description = "p4_zfstate") @RequestParam(required = false,value = "p4_zfstate") String p4_zfstate,
+            @Parameter(required = false, name = "p5_orderid", description = "p5_orderid") @RequestParam(required = false,value = "p5_orderid") String p5_orderid,
+            @Parameter(required = false, name = "p6_productcode", description = "p6_productcode") @RequestParam(required = false,value = "p6_productcode") String p6_productcode,
+            @Parameter(required = false, name = "p10_sign", description = "p10_sign") @RequestParam(required = false,value = "p10_sign") String p10_sign,
+            @Parameter(required = false, name = "p11_pdesc", description = "p11_pdesc") @RequestParam(required = false,value = "p11_pdesc") String p11_pdesc,
+            @Parameter(required = false, name = "p12_remark", description = "p12_remark") @RequestParam(required = false,value = "p12_remark") String p12_remark,
+            @Parameter(required = false, name = "p13_zfmoney", description = "p13_zfmoney") @RequestParam(required = false,value = "p13_zfmoney") String p13_zfmoney,
 
             HttpServletRequest request) {
         try {
@@ -351,7 +354,7 @@ public class  PayBy980Controller {
 
     @ResponseBody
     @RequestMapping(value = "payOrderCallbackMZF", method = { RequestMethod.GET,RequestMethod.POST }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "码支付通回调接口", position = 2, response = Response.class)
+    @Operation(summary = "码支付通回调接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String payOrderCallbackMZF(
             HttpServletRequest request) {
         try {
@@ -371,14 +374,14 @@ public class  PayBy980Controller {
 
     @ResponseBody
     @RequestMapping(value = "payOrderCallbackQilin", method = { RequestMethod.GET,RequestMethod.POST }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "麒麟支付回调接口", position = 2, response = Response.class)
+    @Operation(summary = "麒麟支付回调接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String payOrderCallbackQilin(
-            @ApiParam(required = false, name = "paysapi_id", value = "paysapi_id") @RequestParam(required = false,value = "paysapi_id") String paysapi_id,
-            @ApiParam(required = false, name = "orderid", value = "orderid") @RequestParam(required = false,value = "orderid") String orderid,
-            @ApiParam(required = false, name = "price", value = "price") @RequestParam(required = false,value = "price") String price,
-            @ApiParam(required = false, name = "realprice", value = "realprice") @RequestParam(required = false,value = "realprice") String realprice,
-            @ApiParam(required = false, name = "orderuid", value = "orderuid") @RequestParam(required = false,value = "orderuid") String orderuid,
-            @ApiParam(required = false, name = "key", value = "key") @RequestParam(required = false,value = "key") String key,
+            @Parameter(required = false, name = "paysapi_id", description = "paysapi_id") @RequestParam(required = false,value = "paysapi_id") String paysapi_id,
+            @Parameter(required = false, name = "orderid", description = "orderid") @RequestParam(required = false,value = "orderid") String orderid,
+            @Parameter(required = false, name = "price", description = "price") @RequestParam(required = false,value = "price") String price,
+            @Parameter(required = false, name = "realprice", description = "realprice") @RequestParam(required = false,value = "realprice") String realprice,
+            @Parameter(required = false, name = "orderuid", description = "orderuid") @RequestParam(required = false,value = "orderuid") String orderuid,
+            @Parameter(required = false, name = "key", description = "key") @RequestParam(required = false,value = "key") String key,
 
             HttpServletRequest request) {
         try {

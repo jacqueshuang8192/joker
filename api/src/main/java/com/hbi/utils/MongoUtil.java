@@ -1,6 +1,5 @@
 package com.hbi.utils;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,33 +13,28 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 public class MongoUtil {
 
     private static final Logger log = Logger.getLogger(MongoUtil.class);
     
-    private static MongoClient mongoClient = null;
-    private static String MONGODB_IP;
-    private static int MONGODB_PORT;
+    private static class ClientHolder {
+        private static final MongoClient CLIENT = createClient();
 
-    static {
-        // 读取相关的配置
-        MONGODB_IP = ConfigUtil.get("mongodb.ip");
-        MONGODB_PORT = Integer.parseInt(ConfigUtil.get("mongodb.port"));
-    }
-
-    /**
-     * 获取实例
-     * @return
-     * @throws UnknownHostException
-     */
-    public static MongoClient MongoInstance() {
-        if (null == mongoClient) {
-            mongoClient = new MongoClient(MONGODB_IP, MONGODB_PORT);
+        private static MongoClient createClient() {
+            String uri = ConfigUtil.get("mongodb.uri");
+            if (uri != null && !uri.isBlank()) {
+                return new MongoClient(new MongoClientURI(uri));
+            }
+            return new MongoClient(ConfigUtil.get("mongodb.ip"), Integer.parseInt(ConfigUtil.get("mongodb.port")));
         }
-        return mongoClient;
     }
-    
+
+    public static MongoClient MongoInstance() {
+        return ClientHolder.CLIENT;
+    }
+
     public static DBCollection getCollection() {
         return MongoInstance().getDB("douyoudb").getCollection("douyoudb");
     }

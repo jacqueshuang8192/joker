@@ -9,7 +9,7 @@ import com.core.util.JSONUtil;
 import com.hbi.constants.Constants;
 import com.hbi.vo.response.Response;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class CommonUtil {
 

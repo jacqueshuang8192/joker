@@ -28,6 +28,7 @@ RUN set -eu; for exe in hall/bin/CCHallServer user/bin/UserServerSHM data/bin/CC
     for exe in hall/bin/CCHallServer user/bin/UserServerSHM data/bin/CCMemDataServer alloc/bin/AllocRoomServer douniu/bin/DouNiuServerGroup_new gold/bin/CCGoldUpdateServer; do \
       libs=$(LD_LIBRARY_PATH="/srv/$(dirname "$exe")" ldd "$exe"); echo "$libs"; case "$libs" in *"not found"*) exit 1;; esac; \
     done; chown -R 10001:10001 /srv
+COPY container/redis-link.py /usr/local/bin/redis-link
 COPY container/health.py /usr/local/bin/check-port
 HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=6 CMD ["python3", "/usr/local/bin/check-port"]
 USER 10001:10001

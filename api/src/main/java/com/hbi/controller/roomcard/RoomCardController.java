@@ -12,8 +12,11 @@ import com.hbi.utils.CommonUtil;
 import com.hbi.utils.GameServerUtil;
 import com.hbi.utils.InfServerException;
 import com.hbi.vo.response.Response;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -40,19 +43,19 @@ public class RoomCardController {
     private GoldService goldService;
 
     @ResponseBody
-    @ApiOperation(value = "扣除房卡接口", response = String.class, notes = "API-USERCENTER-8 扣除房卡接口")
+    @Operation(summary = "扣除房卡接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = String.class))), description = "API-USERCENTER-8 扣除房卡接口")
     @RequestMapping(value = "roomCard/deductCard", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json; charset=utf-8")
     public String deductCard(
         HttpServletRequest request,
-        @ApiParam(required = true, name = "userId", value = "玩家ID")
+        @Parameter(required = true, name = "userId", description = "玩家ID")
         @RequestParam(value = "userId") Long userId,
-        @ApiParam(required = true, name = "level", value = "游戏Level")
+        @Parameter(required = true, name = "level", description = "游戏Level")
         @RequestParam(value = "level") Integer level,
-        @ApiParam(required = true, name = "activityId", value = "activityId")
+        @Parameter(required = true, name = "activityId", description = "activityId")
         @RequestParam(value = "activityId") Long activityId,
-        @ApiParam(required = true, name = "round", value = "组局")
+        @Parameter(required = true, name = "round", description = "组局")
         @RequestParam(required = true,value = "round") Integer round,
-        @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+        @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
         @RequestParam(required = false, value = "interfaceType") String interfaceType) {
         Response response = new Response();
         try {
@@ -70,17 +73,17 @@ public class RoomCardController {
     }
     
 //    @ResponseBody
-//    @ApiOperation(value = "大赢家模式扣除房卡接口", response = String.class, notes = "API-USERCENTER-8 大赢家模式扣除房卡接口")
+//    @Operation(summary = "大赢家模式扣除房卡接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = String.class))), description = "API-USERCENTER-8 大赢家模式扣除房卡接口")
 //    @RequestMapping(value = "roomCard/deductWinerCard", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json; charset=utf-8")
 //    public String deductWinerCard(
 //        HttpServletRequest request,
-//        @ApiParam(required = true, name = "activeId", value = "组局ID")
+//        @Parameter(required = true, name = "activeId", description = "组局ID")
 //        @RequestParam(value = "activeId") Long activeId,
-//        @ApiParam(required = true, name = "winerList", value = "赢家列表")
+//        @Parameter(required = true, name = "winerList", description = "赢家列表")
 //        @RequestParam(value = "winerList") String winerList,
-//        @ApiParam(required = true, name = "payCount", value = "扣除房卡数")
+//        @Parameter(required = true, name = "payCount", description = "扣除房卡数")
 //        @RequestParam(required = true,value = "payCount") Integer payCount,
-//        @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//        @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //        @RequestParam(required = false, value = "interfaceType") String interfaceType) {
 //        Response response = new Response();
 //        try {
@@ -99,11 +102,11 @@ public class RoomCardController {
 //
 //    @ResponseBody
 //    @RequestMapping(value = "roomCard/setRoomCard", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "设置房卡数量", position = 2, response = Response.class)
+//    @Operation(summary = "设置房卡数量", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String setRoomCard (
-//            @ApiParam(required = true, name = "userId", value = "用户ID") @RequestParam(value = "userId") Long userId,
-//            @ApiParam(required = true, name = "num", value = "num") @RequestParam(value = "num") Integer num,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//            @Parameter(required = true, name = "userId", description = "用户ID") @RequestParam(value = "userId") Long userId,
+//            @Parameter(required = true, name = "num", description = "num") @RequestParam(value = "num") Integer num,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //            @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response= new Response();
@@ -127,10 +130,10 @@ public class RoomCardController {
 //
     @ResponseBody
     @RequestMapping(value = "roomCard/queryRoomCardCount", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "查询房卡数量", position = 2, response = Response.class)
+    @Operation(summary = "查询房卡数量", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String queryRoomCardCount (
-            @ApiParam(required = true, name = "userId", value = "用户ID") @RequestParam(value = "userId") Long userId,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+            @Parameter(required = true, name = "userId", description = "用户ID") @RequestParam(value = "userId") Long userId,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
             @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request) {
         Response response= new Response();
@@ -171,10 +174,10 @@ public class RoomCardController {
 //
 //    @ResponseBody
 //    @RequestMapping(value = "roomCard/giftRoomCardEveryDay", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "每日登陆送房卡  0:成功 1:失败 2:已经领取", position = 2, response = Response.class)
+//    @Operation(summary = "每日登陆送房卡  0:成功 1:失败 2:已经领取", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String giftRoomCardEveryDay (
-//            @ApiParam(required = true, name = "userId", value = "用户ID") @RequestParam(value = "userId") Long userId,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//            @Parameter(required = true, name = "userId", description = "用户ID") @RequestParam(value = "userId") Long userId,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //            @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response= new Response();
@@ -204,10 +207,10 @@ public class RoomCardController {
 //     */
 //    @ResponseBody
 //    @RequestMapping(value = "roomCard/cutRoomCardByUsersAndNum", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "批量扣除房卡的功能 格式{\"users\":\"[1,2,3]\",\"CardNum\":\"1\"}", position = 2, response = Response.class)
+//    @Operation(summary = "批量扣除房卡的功能 格式{\"users\":\"[1,2,3]\",\"CardNum\":\"1\"}", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String giftRoomCardEveryDay (
-//            @ApiParam(required = true, name = "usersAndNum", value = "用户和房卡数") @RequestParam(value = "usersAndNum") String json,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//            @Parameter(required = true, name = "usersAndNum", description = "用户和房卡数") @RequestParam(value = "usersAndNum") String json,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response= new Response();
 //        try {

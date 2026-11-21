@@ -2,7 +2,7 @@ package com.hbi.model;
 
 import java.util.List;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Table(name = "t_province_agent")
 public class TProvinceAgent {

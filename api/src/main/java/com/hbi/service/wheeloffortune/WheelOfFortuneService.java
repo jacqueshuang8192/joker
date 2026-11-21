@@ -1,6 +1,5 @@
 package com.hbi.service.wheeloffortune;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.core.beanUtil.BeanMapUtils;

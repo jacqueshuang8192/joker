@@ -6,11 +6,11 @@
         <MaxClient>1000</MaxClient>
     </ServerInfo>
     <DBInfo>
-        <ip>127.0.0.1</ip>
-        <port>3306</port>
-        <user>shenshou_game</user>
+        <ip>@DB_HOST@</ip>
+        <port>@DB_PORT@</port>
+        <user>@DB_USER@</user>
         <password>@DB_PASSWORD@</password>
-        <database>shenshou_game</database>
+        <database>@DB_NAME@</database>
     </DBInfo>
     <LogServer>
         <ip>127.0.0.1</ip>

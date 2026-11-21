@@ -2,7 +2,7 @@ package com.hbi.model;
 
 import java.util.Date;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Table(name = "t_player")
 public class TPlayer {

@@ -2,9 +2,9 @@ package com.hbi.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Table(name = "t_announcement")
 public class TAnnouncement {

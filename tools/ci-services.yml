@@ -1,0 +1,43 @@
+# External services for the disposable Actions smoke test.
+services:
+  mysql:
+    image: mysql:5.7.44
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: joker_ci
+      MYSQL_USER: joker_ci
+      MYSQL_PASSWORD: ${CI_DB_PASSWORD:?}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -h127.0.0.1 -u\"$$MYSQL_USER\" \"$$MYSQL_DATABASE\" -Nse 'SELECT 1'"]
+      interval: 3s
+      timeout: 4s
+      retries: 50
+  redis:
+    image: redis:7-alpine
+    command: [redis-server, --requirepass, "${CI_CACHE_PASSWORD:?}"]
+    environment:
+      REDISCLI_AUTH: ${CI_CACHE_PASSWORD:?}
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  mongo:
+    image: mongo:4.4
+    platform: linux/amd64
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo_ci
+      MONGO_INITDB_ROOT_PASSWORD: ${CI_MONGO_PASSWORD:?}
+    healthcheck:
+      test: ["CMD-SHELL", "mongo --quiet --host 127.0.0.1 --authenticationDatabase admin -u \"$$MONGO_INITDB_ROOT_USERNAME\" -p \"$$MONGO_INITDB_ROOT_PASSWORD\" --eval 'quit(db.runCommand({connectionStatus:1}).authInfo.authenticatedUsers.length ? 0 : 1)'"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  memcached:
+    image: memcached:1.6.39-alpine
+
+networks:
+  default:
+    external: true
+    name: ${PANEL_NETWORK:?}

@@ -1,6 +1,6 @@
 package com.hbi.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Table(name = "t_game_type")
 public class TGameType {

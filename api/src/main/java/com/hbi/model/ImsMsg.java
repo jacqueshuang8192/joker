@@ -1,6 +1,6 @@
 package com.hbi.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Table(name = "ims_msg")
 public class ImsMsg {

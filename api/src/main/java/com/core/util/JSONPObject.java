@@ -1,11 +1,11 @@
 package com.core.util;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class JSONPObject {
-	@ApiModelProperty(value="function",notes="jsonp回调方法",dataType="String")
+	@Schema(title = "function", description = "jsonp回调方法")
 	private String function;// JSONP回调方法
-	@ApiModelProperty(value="json",notes="json对象",dataType="Object")
+	@Schema(title = "json", description = "json对象")
 	private Object json;// 真正的Json对象
 
 	public JSONPObject(String function, Object json) {

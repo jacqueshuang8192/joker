@@ -1,7 +1,7 @@
 package com.hbi.model;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Created by dzesla on 2017/2/16.

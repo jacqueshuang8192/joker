@@ -1,12 +1,12 @@
 package com.hbi.vo.response.user;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class AccountVo {
 
-	@ApiModelProperty(value = "宝贝币余额", required = true)
+	@Schema(title = "宝贝币余额", required = true)
 	private Long coinAmount;
-	@ApiModelProperty(value = "房卡余额", required = true)
+	@Schema(title = "房卡余额", required = true)
 	private Long jewelAmount;
 
 	private String receiverName;

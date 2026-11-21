@@ -1,7 +1,7 @@
 package com.hbi.vo.response.user;
 
 import com.hbi.vo.response.base.BaseResultVo;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class AccountChargeHistoryVo extends BaseResultVo {
 
@@ -10,13 +10,13 @@ public class AccountChargeHistoryVo extends BaseResultVo {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "充值渠道", required = true)
+	@Schema(title = "充值渠道", required = true)
 	private String channel;
-	@ApiModelProperty(value = "充值金额", required = true)
+	@Schema(title = "充值金额", required = true)
 	private int rmbAmount;
-	@ApiModelProperty(value = "游戏币", required = true)
+	@Schema(title = "游戏币", required = true)
 	private int coinAmount;
-	@ApiModelProperty(value = "充值时间", required = true)
+	@Schema(title = "充值时间", required = true)
 	private String chargeDate;
 
 	public String getChannel() {

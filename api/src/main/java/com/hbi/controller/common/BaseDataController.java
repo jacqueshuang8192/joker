@@ -1,6 +1,6 @@
 package com.hbi.controller.common;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,11 +17,14 @@ import com.hbi.constants.Constants;
 import com.hbi.service.common.BaseDataService;
 import com.hbi.utils.CommonUtil;
 import com.hbi.vo.response.Response;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
 
-@Api(basePath = "/", value = "基础数据接口", position = 1)
+@Tag(name = "基础数据接口")
 @Controller
 public class BaseDataController extends BaseController {
 
@@ -32,10 +35,10 @@ public class BaseDataController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "baseData/queryAnnouncements", method = RequestMethod.POST, produces = "text/xml; charset=utf-8")
-    @ApiOperation(value = "查询公告", httpMethod = "POST", position = 2, response = Response.class, notes = "查询公告")
+    @Operation(summary = "查询公告", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "查询公告")
     public String queryVersion(
-            @ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-            @ApiParam(required = false, name = "type", value = "1：购买房卡；2：走马灯；3，查询消息；4商品兑换说明。不传返回所有")
+            @Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+            @Parameter(required = false, name = "type", description = "1：购买房卡；2：走马灯；3，查询消息；4商品兑换说明。不传返回所有")
             @RequestParam(required = false, value = "type") String type,
             HttpServletRequest request) {
         Response response = new Response();
@@ -52,10 +55,10 @@ public class BaseDataController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "baseData/queryConfig", method = RequestMethod.POST, produces = "text/xml; charset=utf-8")
-    @ApiOperation(value = "查询配置", httpMethod = "POST", position = 2, response = Response.class, notes = "查询公告")
+    @Operation(summary = "查询配置", method = "POST", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "查询公告")
     public String queryConfig(
-            @ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-            @ApiParam(required = false, name = "type", value = "查询配置") @RequestParam(required = false, value = "type") String type,
+            @Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+            @Parameter(required = false, name = "type", description = "查询配置") @RequestParam(required = false, value = "type") String type,
             HttpServletRequest request) {
         Response response = new Response();
         try {

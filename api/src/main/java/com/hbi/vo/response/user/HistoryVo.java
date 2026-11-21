@@ -1,18 +1,18 @@
 package com.hbi.vo.response.user;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "历史记录")
+@Schema(description = "历史记录")
 public class HistoryVo {
 
-	@ApiModelProperty(value = "兑换时间", required = true)
+	@Schema(title = "兑换时间", required = true)
 	private String buyDate;
-	@ApiModelProperty(value = "购买的房卡", required = true)
+	@Schema(title = "购买的房卡", required = true)
 	private String goodsName;
-	@ApiModelProperty(value = "房卡数量", required = true)
+	@Schema(title = "房卡数量", required = true)
 	private int amount;
-	@ApiModelProperty(value = "游戏币数", required = true)
+	@Schema(title = "游戏币数", required = true)
 	private int totalPrice;
 
 	public String getBuyDate() {

@@ -3,7 +3,7 @@ package com.hbi.vo.response.user;
 import java.util.List;
 
 import com.hbi.vo.response.base.BaseResultVo;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class AccountChargeVo extends BaseResultVo {
 
@@ -12,9 +12,9 @@ public class AccountChargeVo extends BaseResultVo {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "条数", required = true)
+	@Schema(title = "条数", required = true)
 	private int count;
-	@ApiModelProperty(value = "充值金额", required = true)
+	@Schema(title = "充值金额", required = true)
 	private List<AccountChargeHistoryVo> accountChargeHistory;
 
 	public int getCount() {

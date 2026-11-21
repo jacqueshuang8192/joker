@@ -6,9 +6,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 public class AesHttpServletResponseWrapper extends HttpServletResponseWrapper {
 	
@@ -53,6 +53,10 @@ public class AesHttpServletResponseWrapper extends HttpServletResponseWrapper {
 	
 	//内部类，对ServletOutputStream进行包装
 	private class WapperedOutputStream extends ServletOutputStream{
+		@Override public boolean isReady() { return true; }
+		@Override public void setWriteListener(jakarta.servlet.WriteListener listener) {
+			throw new IllegalStateException("Synchronous response body");
+		}
 		private ByteArrayOutputStream bos=null;
 		public WapperedOutputStream(ByteArrayOutputStream stream) throws IOException{
 			bos=stream;

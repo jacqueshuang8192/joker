@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import org.apache.log4j.Logger;
-import org.apache.log4j.lf5.util.StreamUtils;
+import jakarta.servlet.ReadListener;
 import com.core.constants.YTConstants;
 import com.core.util.AesUtils;
 public class AesHttpServletRequestWrapper extends HttpServletRequestWrapper {
@@ -24,7 +24,7 @@ public class AesHttpServletRequestWrapper extends HttpServletRequestWrapper {
 	public AesHttpServletRequestWrapper(HttpServletRequest request)
 			throws IOException {
 		super(request);
-		body=StreamUtils.getBytes(request.getInputStream());
+		body=request.getInputStream().readAllBytes();
 		map = new HashMap<String, String[]>();
 		String aesStr = new String(body);
 		logger.warn(aesStr);
@@ -55,6 +55,11 @@ public class AesHttpServletRequestWrapper extends HttpServletRequestWrapper {
 		
 		final ByteArrayInputStream bais = new ByteArrayInputStream(body);
 		return new ServletInputStream() {
+			@Override public boolean isFinished() { return bais.available() == 0; }
+			@Override public boolean isReady() { return true; }
+			@Override public void setReadListener(ReadListener listener) {
+				throw new IllegalStateException("Synchronous request body");
+			}
 
 			@Override
 			public int read() throws IOException {

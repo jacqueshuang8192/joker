@@ -6,7 +6,6 @@ import com.hbi.vo.request.common.MapVo;
 import com.hbi.vo.request.common.TLevelFenChangVo;
 import com.hbi.vo.response.gold.pickUpGoldVo;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
  * Created by muzi on 16/11/2017.
  */
 
-public interface GoldMapper extends Mapper {
+public interface GoldMapper {
     public Integer getPlayerCountByPlayerBind(@Param("playerId") Long playerId);
 
     public Integer isAgent(@Param("playerId") Long playerId);

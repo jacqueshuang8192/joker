@@ -1,7 +1,5 @@
 package com.core.util;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -58,8 +56,7 @@ public class EncryptUtils {
      * @return base64加密后的结果 
      */  
     public static String encodeBase64String(String str) {  
-        BASE64Encoder encoder =  new BASE64Encoder();  
-        return encoder.encode(str.getBytes());  
+        return Base64Util.encodeLines(str.getBytes());
     }  
       
     /** 
@@ -69,8 +66,8 @@ public class EncryptUtils {
      * @throws IOException  
      */  
     public static String decodeBase64String(String str) throws IOException {  
-        BASE64Decoder encoder =  new BASE64Decoder();  
-        return new String(encoder.decodeBuffer(str));  
+        java.util.Base64.Decoder encoder = java.util.Base64.getMimeDecoder();
+        return new String(encoder.decode(str));
     }  
       
     private static String encode(String str, String method) {  

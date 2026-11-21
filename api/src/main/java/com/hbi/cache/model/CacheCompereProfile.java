@@ -3,7 +3,7 @@ package com.hbi.cache.model;
 import java.util.Date;
 import java.util.Map;
 
-import javax.persistence.Column;
+import jakarta.persistence.Column;
 
 public class CacheCompereProfile extends CacheUserProfile {
 

@@ -14,7 +14,7 @@ public class AutoGeneration {
      * 
      * Create by Mars on 15:06 2019/5/24
      * @param clz class
-     * @return ApiParam + RequestParam
+     * @return Parameter + RequestParam
      **/
     public static void printCrtlParams(Class clz){
         StringBuffer sb = new StringBuffer("");
@@ -22,9 +22,9 @@ public class AutoGeneration {
         for(Field f : fields){
             // required = true, name = "", value = "") @RequestParam(value = "", required = true) String yesterdayDayingjia
             String name = f.getName();
-            sb.append("@ApiParam(required = true, ")
+            sb.append("@Parameter(required = true, ")
                     .append("name = \"").append(name).append("\", ")
-                    .append("value = \"").append(name).append("\") ")
+                    .append("description = \"").append(name).append("\") ")
                     .append("@RequestParam(required = true, ")
                     .append("value = \"").append(name).append("\") ")
                     .append(f.getType().getSimpleName()).append(" ").append(name)
@@ -38,7 +38,7 @@ public class AutoGeneration {
      * Create by Mars on 15:06 2019/5/24
      * @param clz class
      * @param prefix 前缀
-     * @return ApiParam + RequestParam
+     * @return Parameter + RequestParam
      **/
     public static void printInsertValues(Class clz, String prefix){
         StringBuffer sb = new StringBuffer("(");

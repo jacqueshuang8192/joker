@@ -1,6 +1,6 @@
 package com.hbi.vo.response.user;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import com.hbi.vo.response.base.BaseResultVo;
 
@@ -10,9 +10,9 @@ public class UserGoodsHistoryVo extends BaseResultVo {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@ApiModelProperty(value = "返回行数", required = true)
+	@Schema(title = "返回行数", required = true)
 	private int count;
-	@ApiModelProperty(value = "兑换历史列表", required = true)
+	@Schema(title = "兑换历史列表", required = true)
 	private List<HistoryVo> history;
 
 	public int getCount() {

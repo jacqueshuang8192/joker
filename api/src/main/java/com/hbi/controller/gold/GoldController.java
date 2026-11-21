@@ -10,9 +10,12 @@ import com.hbi.utils.IDCardUtil;
 import com.hbi.utils.InfServerException;
 import com.hbi.vo.response.Response;
 import com.hbi.vo.response.gold.pickUpGoldVo;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,14 +24,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by muzi on 16/11/2017.
  */
-@Api(basePath = "/gold", value = "房卡场相关接口", position = 1)
+@Tag(name = "房卡场相关接口")
 @RequestMapping(value = "gold")
 @Controller
 public class GoldController {
@@ -39,10 +42,10 @@ public class GoldController {
 
 //    @ResponseBody
 //    @RequestMapping(value = "getPlayerCountByPlayerBind", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "查询玩家绑定代理的数量", position = 2, response = Response.class)
+//    @Operation(summary = "查询玩家绑定代理的数量", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String getPlayerCountByPlayerBind(
-//            @ApiParam(required = true, name = "userId", value = "玩家ID") @RequestParam(required = true, value = "userId") Long playerId,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//            @Parameter(required = true, name = "userId", description = "玩家ID") @RequestParam(required = true, value = "userId") Long playerId,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response = new Response();
 //        try {
@@ -67,13 +70,13 @@ public class GoldController {
 
     @ResponseBody
     @RequestMapping(value = "authIdCard", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "实名认证", position = 2, response = Response.class)
+    @Operation(summary = "实名认证", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String authIdCard(
-            @ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
-            @ApiParam(required = true, name = "name", value = "name") @RequestParam(required = true, value = "name") String name,
-            @ApiParam(required = true, name = "idCardNo", value = "省份证号码") @RequestParam(required = true, value = "idCardNo") String idCardNo,
-            @ApiParam(required = true, name = "phone", value = "phone") @RequestParam(required = true, value = "phone") String phone,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+            @Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
+            @Parameter(required = true, name = "name", description = "name") @RequestParam(required = true, value = "name") String name,
+            @Parameter(required = true, name = "idCardNo", description = "省份证号码") @RequestParam(required = true, value = "idCardNo") String idCardNo,
+            @Parameter(required = true, name = "phone", description = "phone") @RequestParam(required = true, value = "phone") String phone,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request) {
         Response response = new Response();
         try {
@@ -115,11 +118,11 @@ public class GoldController {
 
 //    @ResponseBody
 //    @RequestMapping(value = "complaint2Admin", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "问题反馈", position = 2, response = Response.class)
+//    @Operation(summary = "问题反馈", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String complaint2Admin(
-//            @ApiParam(required = true, name = "userId", value = "玩家ID") @RequestParam(required = true, value = "userId") Long playerId,
-//            @ApiParam(required = true, name = "Context", value = "Context") @RequestParam(required = true, value = "Context") String context,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//            @Parameter(required = true, name = "userId", description = "玩家ID") @RequestParam(required = true, value = "userId") Long playerId,
+//            @Parameter(required = true, name = "Context", description = "Context") @RequestParam(required = true, value = "Context") String context,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response = new Response();
 //        try {
@@ -149,10 +152,10 @@ public class GoldController {
 //
 //    @ResponseBody
 //    @RequestMapping(value = "getUserInfo", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "获取用户信息", position = 2, response = Response.class)
+//    @Operation(summary = "获取用户信息", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String getUserInfo(
-//            @ApiParam(required = true, name = "userId", value = "玩家ID") @RequestParam(required = true, value = "userId") Long playerId,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//            @Parameter(required = true, name = "userId", description = "玩家ID") @RequestParam(required = true, value = "userId") Long playerId,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response = new Response();
 //        try {
@@ -179,11 +182,11 @@ public class GoldController {
 
     @ResponseBody
     @RequestMapping(value = "saveSigName", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "保存用户的个性签名", position = 2, response = Response.class)
+    @Operation(summary = "保存用户的个性签名", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String saveSigName(
-            @ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
-            @ApiParam(required = true, name = "context", value = "玩家ID") @RequestParam(required = true, value = "context") String context,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+            @Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
+            @Parameter(required = true, name = "context", description = "玩家ID") @RequestParam(required = true, value = "context") String context,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request) {
         Response response = new Response();
         try {
@@ -209,11 +212,11 @@ public class GoldController {
 
     @ResponseBody
     @RequestMapping(value = "getGameTypeByRoomType", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "查询游戏的游戏和分场详情", position = 2, response = Response.class)
+    @Operation(summary = "查询游戏的游戏和分场详情", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String getGameTypeByRoomType(
-            @ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-            @ApiParam(required = false, name = "isGoldRoom", value = "是否房卡场 1 : 房卡场, 2 : 房卡场") @RequestParam(required = false, value = "isGoldRoom") Integer roomType,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+            @Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+            @Parameter(required = false, name = "isGoldRoom", description = "是否房卡场 1 : 房卡场, 2 : 房卡场") @RequestParam(required = false, value = "isGoldRoom") Integer roomType,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request) {
         Response response = new Response();
         try {
@@ -237,10 +240,10 @@ public class GoldController {
 
     @ResponseBody
     @RequestMapping(value = "getGameConfigByLevelAndGold", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "查询游戏配置", position = 2, response = Response.class)
+    @Operation(summary = "查询游戏配置", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String getGameConfigByLevelAndGold(
-            @ApiParam(required = true, name = "level", value = "通过level查询游戏配置") @RequestParam(required = true, value = "level") Integer level,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+            @Parameter(required = true, name = "level", description = "通过level查询游戏配置") @RequestParam(required = true, value = "level") Integer level,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request) {
         Response response = new Response();
         try {
@@ -263,12 +266,12 @@ public class GoldController {
 
 //    @ResponseBody
 //    @RequestMapping(value = "save2repository", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "仓库存取房卡", position = 2, response = Response.class)
+//    @Operation(summary = "仓库存取房卡", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String save2repository(
-//            @ApiParam(required = true, name = "playerId", value = "玩家ID") @RequestParam(required = true, value = "playerId") Long playerId,
-//            @ApiParam(required = true, name = "count", value = "房卡数量") @RequestParam(required = true, value = "count") Long count,
-//            @ApiParam(required = true, name = "type", value = "存取类型 : 0: 存  1 取") @RequestParam(required = true, value = "type") Long type,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//            @Parameter(required = true, name = "playerId", description = "玩家ID") @RequestParam(required = true, value = "playerId") Long playerId,
+//            @Parameter(required = true, name = "count", description = "房卡数量") @RequestParam(required = true, value = "count") Long count,
+//            @Parameter(required = true, name = "type", description = "存取类型 : 0: 存  1 取") @RequestParam(required = true, value = "type") Long type,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response = new Response();
 //        try {
@@ -294,11 +297,11 @@ public class GoldController {
 
 //    @ResponseBody
 //    @RequestMapping(value = "pickUpGold", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "房主佣金提房卡,只有提取", position = 2, response = Response.class)
+//    @Operation(summary = "房主佣金提房卡,只有提取", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String pickUpGold(
-//            @ApiParam(required = true, name = "playerId", value = "玩家ID") @RequestParam(required = true, value = "playerId") Long playerId,
-//            @ApiParam(required = true, name = "count", value = "房卡数量") @RequestParam(required = true, value = "count") Long count,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//            @Parameter(required = true, name = "playerId", description = "玩家ID") @RequestParam(required = true, value = "playerId") Long playerId,
+//            @Parameter(required = true, name = "count", description = "房卡数量") @RequestParam(required = true, value = "count") Long count,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response = new Response();
 //        try {
@@ -321,12 +324,12 @@ public class GoldController {
 //
 //    @ResponseBody
 //    @RequestMapping(value = "getPickUpGoldList", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "房主佣金提房卡记录", position = 2, response = Response.class)
+//    @Operation(summary = "房主佣金提房卡记录", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String getPickUpGoldList(
-//            @ApiParam(required = true, name = "playerId", value = "玩家ID") @RequestParam(required = true, value = "playerId") Long playerId,
-//            @ApiParam(required = true, name = "currentPage", value = "当前页") @RequestParam(value = "currentPage") String currentPage,
-//            @ApiParam(required = false, name = "pageSize", value = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize") String pageSize,
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//            @Parameter(required = true, name = "playerId", description = "玩家ID") @RequestParam(required = true, value = "playerId") Long playerId,
+//            @Parameter(required = true, name = "currentPage", description = "当前页") @RequestParam(value = "currentPage") String currentPage,
+//            @Parameter(required = false, name = "pageSize", description = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize") String pageSize,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response = new Response();
 //        try {
@@ -352,13 +355,13 @@ public class GoldController {
 //
 //    @ResponseBody
 //    @RequestMapping(value = "getPlayerCommissionList", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "房主佣金提房卡记录", position = 2, response = Response.class)
+//    @Operation(summary = "房主佣金提房卡记录", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String getPlayerCommissionList(
-//            @ApiParam(required = true, name = "playerId", value = "玩家ID") @RequestParam(required = true, value = "playerId") Long playerId,
-//            @ApiParam(required = true, name = "year", value = "年") @RequestParam(required = true, value = "year") Long year,
-//            @ApiParam(required = true, name = "month", value = "月") @RequestParam(required = true, value = "month") Long month,
+//            @Parameter(required = true, name = "playerId", description = "玩家ID") @RequestParam(required = true, value = "playerId") Long playerId,
+//            @Parameter(required = true, name = "year", description = "年") @RequestParam(required = true, value = "year") Long year,
+//            @Parameter(required = true, name = "month", description = "月") @RequestParam(required = true, value = "month") Long month,
 //
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //            HttpServletRequest request) {
 //        Response response = new Response();
 //        try {
@@ -394,9 +397,9 @@ public class GoldController {
 
 //    @ResponseBody
 //    @RequestMapping(value = "getGoldRanking", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//    @ApiOperation(value = "财富榜", position = 2, response = Response.class)
+//    @Operation(summary = "财富榜", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //    public String getGoldRanking(
-//            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType, HttpServletRequest request) {
+//            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType, HttpServletRequest request) {
 //        Response response = new Response();
 //        try {
 //
@@ -422,10 +425,10 @@ public class GoldController {
 
     @ResponseBody
     @RequestMapping(value = "getPayType", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "获取支付类型", position = 2, response = Response.class)
+    @Operation(summary = "获取支付类型", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public Response getPayType(
-            @ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType, HttpServletRequest request) {
+            @Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType, HttpServletRequest request) {
         Response response = new Response();
         try {
 

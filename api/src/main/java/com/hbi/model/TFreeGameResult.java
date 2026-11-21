@@ -1,6 +1,6 @@
 package com.hbi.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Table(name = "t_free_game_result")

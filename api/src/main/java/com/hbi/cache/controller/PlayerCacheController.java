@@ -42,8 +42,6 @@ public class PlayerCacheController {
 //    @Autowired
 //    private SocietyCacheController societyCacheController;
     @Autowired
-    private CommonCacheController commonCacheController;
-    @Autowired
     private CommonCacheLoader commonCacheLoader;
     @Autowired
     private TUserMapper tUserMapper;

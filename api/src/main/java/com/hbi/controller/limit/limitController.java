@@ -6,9 +6,12 @@ import com.hbi.model.TTestConfig;
 import com.hbi.service.limit.TTestConfigService;
 import com.hbi.utils.CommonUtil;
 import com.hbi.vo.response.Response;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,14 +20,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Administrator on 2017/7/21.
  */
-@Api(basePath = "/", value = "受限的相关控制", position = 1)
+@Tag(name = "受限的相关控制")
 @Controller
 @RequestMapping(value = "/limit")
 public class limitController {
@@ -34,12 +37,12 @@ public class limitController {
 
     @ResponseBody
     @RequestMapping(value = "verify", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "校验数据", position = 1, response = Response.class)
+    @Operation(summary = "校验数据", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String verify(
-            @ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-            @ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level", required = true) String level,
-            @ApiParam(required = true, name = "verify", value = "verify") @RequestParam(value = "verify", required = true) String verify,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+            @Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+            @Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level", required = true) String level,
+            @Parameter(required = true, name = "verify", description = "verify") @RequestParam(value = "verify", required = true) String verify,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request) {
         Response response = new Response();
         try {
@@ -64,10 +67,10 @@ public class limitController {
 
     @ResponseBody
     @RequestMapping(value = "getDataByUidOrLevel", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "根据level 查询数据uid", position = 1, response = Response.class)
+    @Operation(summary = "根据level 查询数据uid", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
     public String getDataByUidOrLevel(
-            @ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level", required = true) String level,
-            @ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+            @Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level", required = true) String level,
+            @Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
             HttpServletRequest request) {
         Response response = new Response();
         try {

@@ -8,6 +8,7 @@ import com.hbi.mapper.*;
 import com.hbi.model.*;
 import com.hbi.utils.InfServerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -32,7 +33,8 @@ public class GoodsService {
 	@Autowired
 	private BaseCacheController baseCacheController;
 	@Autowired
-	private UserService userService;
+    @Lazy
+    private UserService userService;
 
 	/**
 	 * 根据userId查询是否已有代理

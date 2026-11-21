@@ -54,9 +54,6 @@ public class BaseCacheController {
     @Autowired
     private TGroupGameMapper groupGameMapper;
     
-    @Autowired
-    private GameCacheController gameCacheController;
-    
     private static final String LIVE_GAME_LIST_KEY = "LIVE_GAME_LIST";
     
     private static final String LIVE_VOICE_KEY = "LIVE_VOICE";

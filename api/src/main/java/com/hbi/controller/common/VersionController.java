@@ -10,9 +10,12 @@ import com.hbi.service.common.VersionService;
 import com.hbi.utils.CommonUtil;
 import com.hbi.utils.InfServerException;
 import com.hbi.vo.response.Response;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@Api(basePath = "/", value = "版本接口", position = 1)
+@Tag(name = "版本接口")
 @Controller
 public class VersionController extends BaseController {
 
@@ -36,12 +39,12 @@ public class VersionController extends BaseController {
 	
 	@ResponseBody
 	@RequestMapping(value = "version/queryVersion", method = {RequestMethod.POST, RequestMethod.GET}, produces = "text/xml; charset=utf-8")
-	@ApiOperation(value = "查询最新版本号", position = 2, response = Response.class, notes = "查询最新版本号")
+	@Operation(summary = "查询最新版本号", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "查询最新版本号")
 	public String queryVersion (
-			@ApiParam(required = true, name = "type", value = "1：应用；2：游戏大厅；3：游戏") @RequestParam(value = "type") String type,
-			@ApiParam(required = false, name = "applicationType", value = "应用类型，type为1时，必填。1:IOS主播端;2:IOS玩家端;3:安卓主播端;4:安卓玩家端;5:APP html5;6:官网;7:后台;8:接口") @RequestParam(value = "applicationType", required = false) String applicationType,
-			@ApiParam(required = false, name = "gameId", value = "游戏ID，type为3时必填") @RequestParam(value = "gameId", required = false) String gameId,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+			@Parameter(required = true, name = "type", description = "1：应用；2：游戏大厅；3：游戏") @RequestParam(value = "type") String type,
+			@Parameter(required = false, name = "applicationType", description = "应用类型，type为1时，必填。1:IOS主播端;2:IOS玩家端;3:安卓主播端;4:安卓玩家端;5:APP html5;6:官网;7:后台;8:接口") @RequestParam(value = "applicationType", required = false) String applicationType,
+			@Parameter(required = false, name = "gameId", description = "游戏ID，type为3时必填") @RequestParam(value = "gameId", required = false) String gameId,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
@@ -62,10 +65,10 @@ public class VersionController extends BaseController {
 	
 //	@ResponseBody
 //	@RequestMapping(value = "version/downloadRecordsByLevel", method = {RequestMethod.POST, RequestMethod.GET}, produces = "text/xml; charset=utf-8")
-//	@ApiOperation(value = "下载游戏的所有回放", position = 2, response = Response.class, notes = "查询最新版本号")
+//	@Operation(summary = "下载游戏的所有回放", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "查询最新版本号")
 //	public String downloadRecordsByLevel (
-//			@ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level", required = true) int level,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level", required = true) int level,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
@@ -85,11 +88,11 @@ public class VersionController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "version/queryBaseDataVersion", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "获取基础数据版本", position = 2, response = Response.class, notes = "获取基础数据版本")
+//	@Operation(summary = "获取基础数据版本", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "获取基础数据版本")
 //	public String queryBaseDataVersion (
-//			@ApiParam(required = true, name = "type", value = "基础数据类型，VIP：vip")
+//			@Parameter(required = true, name = "type", description = "基础数据类型，VIP：vip")
 //			@RequestParam(value = "type") String type,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
@@ -114,9 +117,9 @@ public class VersionController extends BaseController {
 
 //	@ResponseBody
 //	@RequestMapping(value = "version/queryAllBaseDataVersion", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "获取基础数据版本", position = 2, response = Response.class, notes = "获取基础数据版本")
+//	@Operation(summary = "获取基础数据版本", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))), description = "获取基础数据版本")
 //	public String queryAllBaseDataVersion (
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P")
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P")
 //			@RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();

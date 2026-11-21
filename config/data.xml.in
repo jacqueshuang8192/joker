@@ -1,7 +1,12 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <SYSTEM>
-    <Game ID="0" Type="0">
-        <Redis ID="1" IP="127.0.0.1" Port="6379" />
-        <DB IP="127.0.0.1" Port="3306" User="shenshou_game" Password="@DB_PASSWORD@" DBName="shenshou_game" DBNum="1" />
-    </Game>
+  <GAME GameID="0" ServerType="0">
+    <Log level="1"/>
+    <RedisList>
+      <Redis svid="1" ip="127.0.0.1" port="6379"/>
+    </RedisList>
+    <DBList>
+      <DB ip="@DB_HOST@" port="@DB_PORT@" user="@DB_USER@" pwd="@DB_PASSWORD@" dbName="@DB_NAME@" tableName="bullfight_gameinfo" dbNum="1" tableNum="10"/>
+    </DBList>
+  </GAME>
 </SYSTEM>

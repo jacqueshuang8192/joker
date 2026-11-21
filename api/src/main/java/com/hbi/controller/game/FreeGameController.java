@@ -18,9 +18,12 @@ import com.hbi.utils.CommonUtil;
 import com.hbi.utils.InfServerException;
 import com.hbi.utils.OSSUtil;
 import com.hbi.vo.response.Response;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +40,7 @@ import java.util.Map;
 /**
  * Created by ceeuoo on 8/19/2016.
  */
-@Api(basePath = "/", value = "游戏组局相关接口", position = 1)
+@Tag(name = "游戏组局相关接口")
 @Controller
 @RequestMapping(value = "/freeGame")
 public class FreeGameController {
@@ -51,13 +54,13 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "uploadFreeGameRound", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "上传组局单场记录接口", position = 2, response = Response.class)
+//	@Operation(summary = "上传组局单场记录接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String uploadFreeGameRound(
-//			@ApiParam(required = true, name = "activityId", value = "组局id") @RequestParam(value = "activityId") Long activityId,
-//			@ApiParam(required = true, name = "content", value = "内容") @RequestParam(value = "content") String content,
-//			@ApiParam(required = true, name = "level", value = "游戏level") @RequestParam(value = "level") Integer level,
-//			@ApiParam(required = true, name = "index", value = "当前盘数index") @RequestParam(value = "index") Integer index,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "activityId", description = "组局id") @RequestParam(value = "activityId") Long activityId,
+//			@Parameter(required = true, name = "content", description = "内容") @RequestParam(value = "content") String content,
+//			@Parameter(required = true, name = "level", description = "游戏level") @RequestParam(value = "level") Integer level,
+//			@Parameter(required = true, name = "index", description = "当前盘数index") @RequestParam(value = "index") Integer index,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -91,12 +94,12 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "uploadFreeGameResult", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "上传组局结果接口", position = 2, response = Response.class)
+//	@Operation(summary = "上传组局结果接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String uploadFreeGameResult(
-//			@ApiParam(required = true, name = "activityId", value = "组局id") @RequestParam(value = "activityId") Long activityId,
-//			@ApiParam(required = true, name = "content", value = "内容") @RequestParam(value = "content") String content,
-//			@ApiParam(required = true, name = "level", value = "游戏level") @RequestParam(value = "level") Integer level,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "activityId", description = "组局id") @RequestParam(value = "activityId") Long activityId,
+//			@Parameter(required = true, name = "content", description = "内容") @RequestParam(value = "content") String content,
+//			@Parameter(required = true, name = "level", description = "游戏level") @RequestParam(value = "level") Integer level,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -121,12 +124,12 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "uploadConfigCard", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "上传配牌结果接口", position = 2, response = Response.class)
+//	@Operation(summary = "上传配牌结果接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String uploadConfigCard(
-//			@ApiParam(required = true, name = "invitationCode", value = "邀请码") @RequestParam(value = "invitationCode") String invitationCode,
-//			@ApiParam(required = true, name = "content", value = "内容") @RequestParam(value = "content") String content,
-//			@ApiParam(required = true, name = "location", value = "位置") @RequestParam(value = "location") Integer location,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "invitationCode", description = "邀请码") @RequestParam(value = "invitationCode") String invitationCode,
+//			@Parameter(required = true, name = "content", description = "内容") @RequestParam(value = "content") String content,
+//			@Parameter(required = true, name = "location", description = "位置") @RequestParam(value = "location") Integer location,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -151,12 +154,12 @@ public class FreeGameController {
 	@ResponseBody
 	@RequestMapping(value = "queryFreeGameRound", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "查询组局单场记录接口", position = 2, response = Response.class)
+	@Operation(summary = "查询组局单场记录接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String queryFreeGameRound(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-			@ApiParam(required = true, name = "activityId", value = "组局id") @RequestParam(value = "activityId") Long activityId,
-			@ApiParam(required = true, name = "roundIndex", value = "盘index") @RequestParam(value = "roundIndex") Integer roundIndex,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+			@Parameter(required = true, name = "activityId", description = "组局id") @RequestParam(value = "activityId") Long activityId,
+			@Parameter(required = true, name = "roundIndex", description = "盘index") @RequestParam(value = "roundIndex") Integer roundIndex,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -184,10 +187,10 @@ public class FreeGameController {
 	//@ResponseBody
 	//@RequestMapping(value = "queryFreeGameResult", method = { RequestMethod.POST,
 	//		RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	//@ApiOperation(value = "查询组局结果接口", position = 2, response = Response.class)
+	//@Operation(summary = "查询组局结果接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	//public String queryFreeGameResult(
-	//		@ApiParam(required = true, name = "activityId", value = "组局id") @RequestParam(value = "activityId") Long activityId,
-	//		@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+	//		@Parameter(required = true, name = "activityId", description = "组局id") @RequestParam(value = "activityId") Long activityId,
+	//		@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {
@@ -214,11 +217,11 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "queryFreeGameVersion", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "查询游戏版本接口", position = 2, response = Response.class)
+//	@Operation(summary = "查询游戏版本接口", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String queryFreeGameVersion(
-//			@ApiParam(required = false, name = "gameId", value = "游戏id") @RequestParam(required = false,value = "gameId") Long gameId,
-//			@ApiParam(required = false, name = "invitationCode", value = "邀请码") @RequestParam(required = false,value = "invitationCode") String invitationCode,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = false, name = "gameId", description = "游戏id") @RequestParam(required = false,value = "gameId") Long gameId,
+//			@Parameter(required = false, name = "invitationCode", description = "邀请码") @RequestParam(required = false,value = "invitationCode") String invitationCode,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -245,10 +248,10 @@ public class FreeGameController {
 	//@ResponseBody
 	//@RequestMapping(value = "querRoundsByActivityId", method = { RequestMethod.POST,
 	//		RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	//@ApiOperation(value = "查询某个组局所有盘", position = 2, response = Response.class)
+	//@Operation(summary = "查询某个组局所有盘", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	//public String querRoundsByActivityId(
-	//		@ApiParam(required = true, name = "activityId", value = "组局id") @RequestParam(value = "activityId") Long activityId,
-	//		@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+	//		@Parameter(required = true, name = "activityId", description = "组局id") @RequestParam(value = "activityId") Long activityId,
+	//		@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {
@@ -274,18 +277,18 @@ public class FreeGameController {
 	//@ResponseBody
 	//@RequestMapping(value = "createGroupGame", method = { RequestMethod.POST,
 	//		RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	//@ApiOperation(value = "创建组局综合", position = 2, response = Response.class)
+	//@Operation(summary = "创建组局综合", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	//public String createGroupGame(
-	//		@ApiParam(required = true, name = "userId", value = "用户ID") @RequestParam(value = "userId") String userId,
-	//		@ApiParam(required = true, name = "gameId", value = "游戏ID") @RequestParam(value = "gameId") String gameId,
-	//		@ApiParam(required = true, name = "name", value = "组局名称") @RequestParam(value = "name") String name,
-	//		@ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level") Integer level,
-	//		@ApiParam(required = true, name = "round", value = "round") @RequestParam(value = "round") Integer round,
-	//		@ApiParam(required = true, name = "invitationCode", value = "邀请码") @RequestParam(value = "invitationCode") String invitationCode,
-	//		@ApiParam(required = false, name = "activityId", value = "活动ID") @RequestParam(required = false, value = "activityId") String activityId,
-	//		@ApiParam(required = true, name = "json", value = "json") @RequestParam(value = "json") String json,
-	//		@ApiParam(required = false, name = "discription", value = "discription") @RequestParam(required = false, value = "discription") String discription,
-	//		@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+	//		@Parameter(required = true, name = "userId", description = "用户ID") @RequestParam(value = "userId") String userId,
+	//		@Parameter(required = true, name = "gameId", description = "游戏ID") @RequestParam(value = "gameId") String gameId,
+	//		@Parameter(required = true, name = "name", description = "组局名称") @RequestParam(value = "name") String name,
+	//		@Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level") Integer level,
+	//		@Parameter(required = true, name = "round", description = "round") @RequestParam(value = "round") Integer round,
+	//		@Parameter(required = true, name = "invitationCode", description = "邀请码") @RequestParam(value = "invitationCode") String invitationCode,
+	//		@Parameter(required = false, name = "activityId", description = "活动ID") @RequestParam(required = false, value = "activityId") String activityId,
+	//		@Parameter(required = true, name = "json", description = "json") @RequestParam(value = "json") String json,
+	//		@Parameter(required = false, name = "discription", description = "discription") @RequestParam(required = false, value = "discription") String discription,
+	//		@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {
@@ -319,16 +322,16 @@ public class FreeGameController {
 	//@ResponseBody
 	//@RequestMapping(value = "createFreeGame", method = { RequestMethod.POST,
 	//		RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	//@ApiOperation(value = "创建组局", position = 2, response = Response.class)
+	//@Operation(summary = "创建组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	//public String createFreeGame(
-	//		@ApiParam(required = true, name = "userId", value = "用户ID") @RequestParam(value = "userId") String userId,
-	//		@ApiParam(required = true, name = "gameId", value = "游戏ID") @RequestParam(value = "gameId") String gameId,
-	//		@ApiParam(required = true, name = "name", value = "组局名称") @RequestParam(value = "name") String name,
-	//		@ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level") Integer level,
-	//		@ApiParam(required = true, name = "round", value = "round") @RequestParam(value = "round") Integer round,
-	//		@ApiParam(required = true, name = "json", value = "json") @RequestParam(value = "json") String json,
-	//		@ApiParam(required = false, name = "discription", value = "discription") @RequestParam(required = false, value = "discription") String discription,
-	//		@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+	//		@Parameter(required = true, name = "userId", description = "用户ID") @RequestParam(value = "userId") String userId,
+	//		@Parameter(required = true, name = "gameId", description = "游戏ID") @RequestParam(value = "gameId") String gameId,
+	//		@Parameter(required = true, name = "name", description = "组局名称") @RequestParam(value = "name") String name,
+	//		@Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level") Integer level,
+	//		@Parameter(required = true, name = "round", description = "round") @RequestParam(value = "round") Integer round,
+	//		@Parameter(required = true, name = "json", description = "json") @RequestParam(value = "json") String json,
+	//		@Parameter(required = false, name = "discription", description = "discription") @RequestParam(required = false, value = "discription") String discription,
+	//		@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {
@@ -359,22 +362,22 @@ public class FreeGameController {
 	
 	@ResponseBody
 	@RequestMapping(value = "createFreeGameByOthers", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "代开组局", position = 2, response = Response.class)
+	@Operation(summary = "代开组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String createFreeGameByOthers(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-			@ApiParam(required = true, name = "gameId", value = "游戏ID") @RequestParam(value = "gameId") String gameId,
-			@ApiParam(required = true, name = "name", value = "组局名称") @RequestParam(value = "name") String name,
-			@ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level") Integer level,
-			@ApiParam(required = true, name = "round", value = "round") @RequestParam(value = "round") Integer round,
-			@ApiParam(name = "others", value = " 0 : 代开  1 : 自己开") @RequestParam(value = "others") Integer others,
-			@ApiParam(name = "baseChip", value = "底注,由前段发送给java,再发送给c++") @RequestParam(value = "baseChip") Integer baseChip,
-			@ApiParam(required = true, name = "json", value = "json") @RequestParam(value = "json") String json,
-			@ApiParam(required = false, name = "groupId", value = "由某个联盟创建的") @RequestParam(required = false,value = "groupId") Integer groupId,
-			@ApiParam(required = false, name = "password", value = "password") @RequestParam(required = false,value = "password") String password,
-			@ApiParam(required = false, name = "discription2Server", value = "discription2Server") @RequestParam(required = false, value = "discription2Server") String discription2Server,
-			@ApiParam(required = false, name = "discription", value = "discription") @RequestParam(required = false, value = "discription") String discription,
-			@ApiParam(required = false, name = "configId", value = "configId") @RequestParam(required = false, value = "configId") Integer configId,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+			@Parameter(required = true, name = "gameId", description = "游戏ID") @RequestParam(value = "gameId") String gameId,
+			@Parameter(required = true, name = "name", description = "组局名称") @RequestParam(value = "name") String name,
+			@Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level") Integer level,
+			@Parameter(required = true, name = "round", description = "round") @RequestParam(value = "round") Integer round,
+			@Parameter(name = "others", description = " 0 : 代开  1 : 自己开") @RequestParam(value = "others") Integer others,
+			@Parameter(name = "baseChip", description = "底注,由前段发送给java,再发送给c++") @RequestParam(value = "baseChip") Integer baseChip,
+			@Parameter(required = true, name = "json", description = "json") @RequestParam(value = "json") String json,
+			@Parameter(required = false, name = "groupId", description = "由某个联盟创建的") @RequestParam(required = false,value = "groupId") Integer groupId,
+			@Parameter(required = false, name = "password", description = "password") @RequestParam(required = false,value = "password") String password,
+			@Parameter(required = false, name = "discription2Server", description = "discription2Server") @RequestParam(required = false, value = "discription2Server") String discription2Server,
+			@Parameter(required = false, name = "discription", description = "discription") @RequestParam(required = false, value = "discription") String discription,
+			@Parameter(required = false, name = "configId", description = "configId") @RequestParam(required = false, value = "configId") Integer configId,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -407,11 +410,11 @@ public class FreeGameController {
 	@ResponseBody
 	@RequestMapping(value = "A2IcreateFreeGame", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "代开组局", position = 2, response = Response.class)
+	@Operation(summary = "代开组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String A2IcreateFreeGame(
-			@ApiParam(required = true, name = "clubId", value = "clubId") @RequestParam(value = "clubId") Integer clubId,
-			@ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level", required = true) String level,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "clubId", description = "clubId") @RequestParam(value = "clubId") Integer clubId,
+			@Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level", required = true) String level,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -437,12 +440,12 @@ public class FreeGameController {
 	@ResponseBody
 	@RequestMapping(value = "extendFreeGameByOthers", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "续开组局", position = 2, response = Response.class)
+	@Operation(summary = "续开组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String extendFreeGameByOthers(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-			@ApiParam(required = true, name = "activityId", value = "组局ID") @RequestParam(value = "activityId") Long activityId,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+			@Parameter(required = true, name = "activityId", description = "组局ID") @RequestParam(value = "activityId") Long activityId,
 
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -472,21 +475,21 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "createFreeGameByRobot", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "批量创建组局", position = 2, response = Response.class)
+//	@Operation(summary = "批量创建组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String createFreeGameByRobot(
-//			@ApiParam(required = true, name = "userId", value = "用户ID") @RequestParam(value = "userId") String userId,
-//			@ApiParam(required = true, name = "gameId", value = "游戏ID") @RequestParam(value = "gameId") String gameId,
-//			@ApiParam(required = true, name = "name", value = "组局名称") @RequestParam(value = "name") String name,
-//			@ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level") Integer level,
-//			@ApiParam(required = true, name = "round", value = "round") @RequestParam(value = "round") Integer round,
-//			@ApiParam(name = "others", value = " 0 : 代开  1 : 自己开") @RequestParam(value = "others") Integer others,
-//			@ApiParam(name = "baseChip", value = "底注,由前段发送给java,再发送给c++") @RequestParam(value = "baseChip") Integer baseChip,
-//			@ApiParam(required = true, name = "json", value = "json") @RequestParam(value = "json") String json,
-//			@ApiParam(required = false, name = "groupId", value = "由某个联盟创建的") @RequestParam(required = false,value = "groupId") Integer groupId,
-//			@ApiParam(required = false, name = "discription2Server", value = "discription2Server") @RequestParam(required = false, value = "discription2Server") String discription2Server,
-//			@ApiParam(required = false, name = "discription", value = "discription") @RequestParam(required = false, value = "discription") String discription,
-//			@ApiParam(required = false, name = "times", value = "times") @RequestParam(required = true, value = "times") Integer times,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "userId", description = "用户ID") @RequestParam(value = "userId") String userId,
+//			@Parameter(required = true, name = "gameId", description = "游戏ID") @RequestParam(value = "gameId") String gameId,
+//			@Parameter(required = true, name = "name", description = "组局名称") @RequestParam(value = "name") String name,
+//			@Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level") Integer level,
+//			@Parameter(required = true, name = "round", description = "round") @RequestParam(value = "round") Integer round,
+//			@Parameter(name = "others", description = " 0 : 代开  1 : 自己开") @RequestParam(value = "others") Integer others,
+//			@Parameter(name = "baseChip", description = "底注,由前段发送给java,再发送给c++") @RequestParam(value = "baseChip") Integer baseChip,
+//			@Parameter(required = true, name = "json", description = "json") @RequestParam(value = "json") String json,
+//			@Parameter(required = false, name = "groupId", description = "由某个联盟创建的") @RequestParam(required = false,value = "groupId") Integer groupId,
+//			@Parameter(required = false, name = "discription2Server", description = "discription2Server") @RequestParam(required = false, value = "discription2Server") String discription2Server,
+//			@Parameter(required = false, name = "discription", description = "discription") @RequestParam(required = false, value = "discription") String discription,
+//			@Parameter(required = false, name = "times", description = "times") @RequestParam(required = true, value = "times") Integer times,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -516,10 +519,10 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "queryGameNameByLevel", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "通过level查询游戏名字", position = 2, response = Response.class)
+//	@Operation(summary = "通过level查询游戏名字", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String queryGameNameByLevel(
-//			@ApiParam(required = false, name = "level", value = "level") @RequestParam(required = false, value = "level") String level,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = false, name = "level", description = "level") @RequestParam(required = false, value = "level") String level,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -544,10 +547,10 @@ public class FreeGameController {
 	//@ResponseBody
 	//@RequestMapping(value = "queryActivitiesByUserId", method = { RequestMethod.POST,
 	//		RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	//@ApiOperation(value = "查询用户所有组局", position = 2, response = Response.class)
+	//@Operation(summary = "查询用户所有组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	//public String queryActivitiesByUserId(
-	//		@ApiParam(required = true, name = "userId", value = "用户id") @RequestParam(value = "userId") Long userId,
-	//		@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+	//		@Parameter(required = true, name = "userId", description = "用户id") @RequestParam(value = "userId") Long userId,
+	//		@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {
@@ -574,12 +577,12 @@ public class FreeGameController {
 	@ResponseBody
 	@RequestMapping(value = "queryGoldActivitiesByUserId", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "查询某个用户的房卡的战绩记录", position = 2, response = Response.class)
+	@Operation(summary = "查询某个用户的房卡的战绩记录", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String queryGoldActivitiesByUserId(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
-			@ApiParam(required = true, name = "currentPage", value = "当前页") @RequestParam(value = "currentPage") String currentPage,
-			@ApiParam(required = false, name = "pageSize", value = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize") String pageSize,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
+			@Parameter(required = true, name = "currentPage", description = "当前页") @RequestParam(value = "currentPage") String currentPage,
+			@Parameter(required = false, name = "pageSize", description = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize") String pageSize,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -605,13 +608,13 @@ public class FreeGameController {
 	@ResponseBody
 	@RequestMapping(value = "queryGoldActivitiesByUserIdAndLevel", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "查询某个用户的房卡的战绩记录,通过level", position = 2, response = Response.class)
+	@Operation(summary = "查询某个用户的房卡的战绩记录,通过level", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String queryGoldActivitiesByUserIdAndLevel(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
-			@ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level") Long level,
-			@ApiParam(required = true, name = "currentPage", value = "当前页") @RequestParam(value = "currentPage") String currentPage,
-			@ApiParam(required = false, name = "pageSize", value = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize") String pageSize,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
+			@Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level") Long level,
+			@Parameter(required = true, name = "currentPage", description = "当前页") @RequestParam(value = "currentPage") String currentPage,
+			@Parameter(required = false, name = "pageSize", description = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize") String pageSize,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -638,16 +641,16 @@ public class FreeGameController {
 	@ResponseBody
 	@RequestMapping(value = "queryActivitiesResult", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "查询某个用户的组局的战绩记录", position = 2, response = Response.class)
+	@Operation(summary = "查询某个用户的组局的战绩记录", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String queryActivitiesResult(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
-			@ApiParam(required = false, name = "searchId", value = "searchId") @RequestParam(value = "searchId", required = false) Integer searchId,
-			@ApiParam(required = false, name = "groupId", value = "groupId") @RequestParam(value = "groupId",required = false) Integer groupId,
-			@ApiParam(required = false, name = "type", value = "2 : 积分场组局 3 : 房卡场") @RequestParam(value = "type",required = false) Integer type,
-			@ApiParam(required = false, name = "level", value = "level") @RequestParam(value = "level",required = false) Integer level,
-			@ApiParam(required = false, name = "currentPage", value = "当前页") @RequestParam(value = "currentPage",required = false,defaultValue = "1") Integer currentPage,
-			@ApiParam(required = false, name = "pageSize", value = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize",defaultValue = "10") Integer pageSize,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Integer XYUid,
+			@Parameter(required = false, name = "searchId", description = "searchId") @RequestParam(value = "searchId", required = false) Integer searchId,
+			@Parameter(required = false, name = "groupId", description = "groupId") @RequestParam(value = "groupId",required = false) Integer groupId,
+			@Parameter(required = false, name = "type", description = "2 : 积分场组局 3 : 房卡场") @RequestParam(value = "type",required = false) Integer type,
+			@Parameter(required = false, name = "level", description = "level") @RequestParam(value = "level",required = false) Integer level,
+			@Parameter(required = false, name = "currentPage", description = "当前页") @RequestParam(value = "currentPage",required = false,defaultValue = "1") Integer currentPage,
+			@Parameter(required = false, name = "pageSize", description = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize",defaultValue = "10") Integer pageSize,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -674,12 +677,12 @@ public class FreeGameController {
 	@ResponseBody
 	@RequestMapping(value = "queryCardActivitiesByUserId", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "查询某个用户的房卡场的组局的战绩记录", position = 2, response = Response.class)
+	@Operation(summary = "查询某个用户的房卡场的组局的战绩记录", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String queryCardActivitiesByUserId(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
-			@ApiParam(required = true, name = "currentPage", value = "当前页") @RequestParam(value = "currentPage") String currentPage,
-			@ApiParam(required = false, name = "pageSize", value = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize") String pageSize,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
+			@Parameter(required = true, name = "currentPage", description = "当前页") @RequestParam(value = "currentPage") String currentPage,
+			@Parameter(required = false, name = "pageSize", description = "每页显示数,可以不穿,默认为10") @RequestParam(required = false,value = "pageSize") String pageSize,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -705,12 +708,12 @@ public class FreeGameController {
 	@ResponseBody
 	@RequestMapping(value = "queryCardActivities2RoundByUserId", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "通过组局ID查询组局里面的具体回合数", position = 2, response = Response.class)
+	@Operation(summary = "通过组局ID查询组局里面的具体回合数", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String queryCardActivities2RoundByUserId(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
-			@ApiParam(required = false, name = "activityId", value = "activityId") @RequestParam(value = "activityId", required = false) Long activityId,
-			@ApiParam(required = false, name = "inviteCode", value = "inviteCode, 优先使用房间号查找战绩") @RequestParam(value = "inviteCode", required = false) String inviteCode,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") Long XYUid,
+			@Parameter(required = false, name = "activityId", description = "activityId") @RequestParam(value = "activityId", required = false) Long activityId,
+			@Parameter(required = false, name = "inviteCode", description = "inviteCode, 优先使用房间号查找战绩") @RequestParam(value = "inviteCode", required = false) String inviteCode,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -736,10 +739,10 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "queryActivitiesByOwner", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "查询用户所有创建的组局", position = 2, response = Response.class)
+//	@Operation(summary = "查询用户所有创建的组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String queryActivitiesByOwner(
-//			@ApiParam(required = true, name = "userId", value = "用户id") @RequestParam(value = "userId") Long userId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "userId", description = "用户id") @RequestParam(value = "userId") Long userId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -765,11 +768,11 @@ public class FreeGameController {
 	@ResponseBody
 	@RequestMapping(value = "queryGroupGameStatus", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	@ApiOperation(value = "查询组局状态", position = 2, response = Response.class)
+	@Operation(summary = "查询组局状态", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	public String queryGroupGameStatus(
-			@ApiParam(required = true, name = "XYUid", value = "XYUid") @RequestParam(value = "XYUid") String XYUid,
-			@ApiParam(required = true, name = "activityId", value = "组局id") @RequestParam(value = "activityId") Long activityId,
-			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+			@Parameter(required = true, name = "XYUid", description = "XYUid") @RequestParam(value = "XYUid") String XYUid,
+			@Parameter(required = true, name = "activityId", description = "组局id") @RequestParam(value = "activityId") Long activityId,
+			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 			HttpServletRequest request) {
 		Response response = new Response();
 		try {
@@ -794,11 +797,11 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "closeGroupGameByOwner", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "开房人解散组局", position = 2, response = Response.class)
+//	@Operation(summary = "开房人解散组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String closeGroupGameByOwner(
-//			@ApiParam(required = true, name = "inviteCode", value = "邀请码") @RequestParam(value = "inviteCode") String inviteCode,
-//			@ApiParam(required = true, name = "activityId", value = "组局id") @RequestParam(value = "activityId") Long activityId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "inviteCode", description = "邀请码") @RequestParam(value = "inviteCode") String inviteCode,
+//			@Parameter(required = true, name = "activityId", description = "组局id") @RequestParam(value = "activityId") Long activityId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -822,11 +825,11 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "queryGroupGameByOwner", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "查询用户所创建的房间", position = 2, response = Response.class)
+//	@Operation(summary = "查询用户所创建的房间", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String queryGroupGameByOwner(
-//			@ApiParam(required = true, name = "userId", value = "userId") @RequestParam(value = "userId") Long userId,
-//			@ApiParam(required = true, name = "roomType", value = "roomType  1:") @RequestParam(value = "roomType") Integer roomType,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "userId", description = "userId") @RequestParam(value = "userId") Long userId,
+//			@Parameter(required = true, name = "roomType", description = "roomType  1:") @RequestParam(value = "roomType") Integer roomType,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -850,11 +853,11 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "cleanGroupGameStatus", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "清除组局状态", position = 2, response = Response.class)
+//	@Operation(summary = "清除组局状态", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String cleanGroupGameStatus(
-//			@ApiParam(required = true, name = "inviteCode", value = "邀请码") @RequestParam(value = "inviteCode") String inviteCode,
-//			@ApiParam(required = true, name = "activityId", value = "组局id") @RequestParam(value = "activityId") Long activityId,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "inviteCode", description = "邀请码") @RequestParam(value = "inviteCode") String inviteCode,
+//			@Parameter(required = true, name = "activityId", description = "组局id") @RequestParam(value = "activityId") Long activityId,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -878,11 +881,11 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "cleanGroupGameByLevel", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "根据游戏清除组局", position = 2, response = Response.class)
+//	@Operation(summary = "根据游戏清除组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String cleanGroupGameByLevel(
-//			@ApiParam(required = true, name = "level", value = "level") @RequestParam(value = "level") int level,
-//			@ApiParam(required = true, name = "chain", value = "chain") @RequestParam(value = "chain") String chain,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "level", description = "level") @RequestParam(value = "level") int level,
+//			@Parameter(required = true, name = "chain", description = "chain") @RequestParam(value = "chain") String chain,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -902,10 +905,10 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "cleanAllGroupGame", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "清除所有组局", position = 2, response = Response.class)
+//	@Operation(summary = "清除所有组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String cleanAllGroupGame(
-//			@ApiParam(required = true, name = "chain", value = "chain") @RequestParam(value = "chain") String chain,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "chain", description = "chain") @RequestParam(value = "chain") String chain,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -925,9 +928,9 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "cleanWaitCloseGroupGame", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "清除所有待关闭组局", position = 2, response = Response.class)
+//	@Operation(summary = "清除所有待关闭组局", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String cleanWaitCloseGroupGame(
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response = new Response();
 //		try {
@@ -947,11 +950,11 @@ public class FreeGameController {
 	//@ResponseBody
 	//@RequestMapping(value = "queryTotalGroupRank", method = { RequestMethod.POST,
 	//		RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	//@ApiOperation(value = "查询总排行榜", position = 2, response = Response.class)
+	//@Operation(summary = "查询总排行榜", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	//public String queryTotalGroupRank(
-	//		@ApiParam(required = true, name = "userId", value = "userid") @RequestParam(value = "userId") Long userId,
-	//		@ApiParam(required = true, name = "rankcount", value = "前几名") @RequestParam(value = "rankcount") Long rankcount,
-	//		@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+	//		@Parameter(required = true, name = "userId", description = "userid") @RequestParam(value = "userId") Long userId,
+	//		@Parameter(required = true, name = "rankcount", description = "前几名") @RequestParam(value = "rankcount") Long rankcount,
+	//		@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {
@@ -1017,11 +1020,11 @@ public class FreeGameController {
 //	@ResponseBody
 //	@RequestMapping(value = "queryTotalGroupRank", method = { RequestMethod.POST,
 //			RequestMethod.GET }, produces = "application/json; charset=utf-8")
-//	@ApiOperation(value = "查询总排行榜", position = 2, response = Response.class)
+//	@Operation(summary = "查询总排行榜", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 //	public String queryTotalGroupRank(
-//			@ApiParam(required = true, name = "userId", value = "userid") @RequestParam(value = "userId") Long userId,
-//			@ApiParam(required = true, name = "rankcount", value = "前几名") @RequestParam(value = "rankcount") Long rankcount,
-//			@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+//			@Parameter(required = true, name = "userId", description = "userid") @RequestParam(value = "userId") Long userId,
+//			@Parameter(required = true, name = "rankcount", description = "前几名") @RequestParam(value = "rankcount") Long rankcount,
+//			@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 //			HttpServletRequest request) {
 //		Response response=freeGameService.queryRedisTotalGroupBank(userId);
 //		if (Constants.RETURN_TYPE_JSONP.equalsIgnoreCase(interfaceType)) {
@@ -1034,13 +1037,13 @@ public class FreeGameController {
 	//@ResponseBody
 	//@RequestMapping(value = "querySingleResult", method = { RequestMethod.POST,
 	//		RequestMethod.GET }, produces = "application/json; charset=utf-8")
-	//@ApiOperation(value = "查询某个周期内的排行榜", position = 2, response = Response.class)
+	//@Operation(summary = "查询某个周期内的排行榜", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class))))
 	//public String querySingleResult(
-	//		@ApiParam(required = true, name = "userId", value = "userId") @RequestParam(value = "userId") Long userId,
-	//		@ApiParam(required = true, name = "rankcount", value = "前几名") @RequestParam(value = "rankcount") Long rankcount,
-	//		@ApiParam(required = true, name = "startTime", value = "开始时间") @RequestParam(value = "startTime") String startTime,
-	//		@ApiParam(required = true, name = "endTime", value = "结束时间") @RequestParam(value = "endTime") String endTime,
-	//		@ApiParam(required = false, name = "interfaceType", value = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
+	//		@Parameter(required = true, name = "userId", description = "userId") @RequestParam(value = "userId") Long userId,
+	//		@Parameter(required = true, name = "rankcount", description = "前几名") @RequestParam(value = "rankcount") Long rankcount,
+	//		@Parameter(required = true, name = "startTime", description = "开始时间") @RequestParam(value = "startTime") String startTime,
+	//		@Parameter(required = true, name = "endTime", description = "结束时间") @RequestParam(value = "endTime") String endTime,
+	//		@Parameter(required = false, name = "interfaceType", description = "接口类型，JSON传J，JSONP传P") @RequestParam(required = false, value = "interfaceType") String interfaceType,
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {

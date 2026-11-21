@@ -5,7 +5,7 @@ package com.hbi.vo.response.base;
 
 import java.io.Serializable;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 
@@ -21,13 +21,13 @@ public class BaseResultVo implements Serializable {
 	private static final long serialVersionUID = -7978635757653362784L;
 
 	// 返回码，0表示成功，其它数字分别表示对应错误码
-	@ApiModelProperty(value = "响应标识", required = true, notes = "0表示成功，其它数字分别表示对应错误码")
+	@Schema(title = "响应标识", required = true, description = "0表示成功，其它数字分别表示对应错误码")
 	private String returnCode;
 	
 	private Object data;
 
 	// 返回消息，成功为“success”，失败为具体失败信息
-	@ApiModelProperty(value = "失败详情", required = false, notes = "returnCode不为0时，为具体错误详情")
+	@Schema(title = "失败详情", required = false, description = "returnCode不为0时，为具体错误详情")
 	private String resultMessage;
 
 	public BaseResultVo() {

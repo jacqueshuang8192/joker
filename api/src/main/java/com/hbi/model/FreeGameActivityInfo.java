@@ -1,6 +1,6 @@
 package com.hbi.model;
 
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;

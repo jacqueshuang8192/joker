@@ -10,7 +10,7 @@
     <CMDataServer ip="127.0.0.1" port="6001" />
     <CPropServer ip="127.0.0.1" port="6101" />
     <LogServer ip="127.0.0.1" port="6101" />
-    <DB ip="127.0.0.1" port="3306" user="shenshou_game" pwd="@DB_PASSWORD@" tableName="bullfight_gameinfo" dbName="shenshou_game" dbNum="1" tableNum="10" />
+    <DB ip="@DB_HOST@" port="@DB_PORT@" user="@DB_USER@" pwd="@DB_PASSWORD@" tableName="bullfight_gameinfo" dbName="@DB_NAME@" dbNum="1" tableNum="10" />
     <PROTO RegionID="0" />
     <ROOM>
         <Level value="302" />

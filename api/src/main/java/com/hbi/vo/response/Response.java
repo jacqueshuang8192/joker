@@ -1,16 +1,16 @@
 package com.hbi.vo.response;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Response {
 
-	@ApiModelProperty(value = "结果标识位,0为成功，1为失败", required = true)
+	@Schema(title = "结果标识位,0为成功，1为失败", required = true)
 	private String returnCode;
 
-	@ApiModelProperty(value = "错误详情", required = false)
+	@Schema(title = "错误详情", required = false)
 	private String error;
 
-	@ApiModelProperty(value = "返回详情", required = false)
+	@Schema(title = "返回详情", required = false)
 	private Object data;
 
 	public Object getData() {
