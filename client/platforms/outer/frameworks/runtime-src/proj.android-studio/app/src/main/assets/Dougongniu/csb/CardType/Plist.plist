@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>Dougongniu/csb/CardType/result_1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{852,0},{157,86}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{157,86}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_10.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{568,184},{253,91}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,91}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_11.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{284,275},{253,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,90}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_12.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{284,184},{284,91}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{284,91}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_13.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{284,0},{284,92}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{284,92}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_14.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{568,0},{284,92}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{284,92}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_15.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{284,93}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{284,93}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_16.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,185},{284,91}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{284,91}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_17.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{284,92},{284,92}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{284,92}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_18.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,93},{284,92}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{284,92}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,276},{253,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,90}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_3.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{537,275},{253,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,90}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_4.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{253,365},{253,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,90}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_5.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,366},{253,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,90}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_6.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{253,455},{253,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,90}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_7.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,456},{253,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,90}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_8.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{506,365},{253,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,90}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_9.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{759,365},{253,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{253,90}</string>
+			</dict>
+			<key>Dougongniu/csb/CardType/result_19.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{568,92},{284,92}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{284,92}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>Plist.png</string>
+			<key>realTextureFileName</key>
+			<string>Plist.png</string>
+			<key>size</key>
+			<string>{1012,546}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>1012</integer>
+			<key>height</key>
+			<integer>546</integer>
+		</dict>
+	</dict>
+</plist>

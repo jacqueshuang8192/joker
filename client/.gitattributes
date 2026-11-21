@@ -1,0 +1,12 @@
+*.csb binary
+*.csi binary
+*.png binary
+*.jpg binary
+*.wav binary
+*.mp3 binary
+*.ttf binary
+*.ttc binary
+*.jar binary
+*.icns binary
+*.ico binary
+*.bat text eol=crlf

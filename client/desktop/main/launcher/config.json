@@ -1,0 +1,21 @@
+{
+  "project_type": "cpp",
+  "project_name": "ShenshouGame",
+  "project_path": ".",
+  "engine_version": "cocos2d-x-3.10",
+  "app_name": "神兽游戏",
+  "app_id": "com.shenshou.game",
+  "package_name": "com.shenshou.game",
+  "min_platform_version": 19,
+  "target_platform_version": 28,
+  "supported_abis": [
+    "armeabi-v7a",
+    "arm64-v8a",
+    "x86"
+  ],
+  "cpp_language": "c++11",
+  "ndk_toolchain_version": "4.9",
+  "build_tools_version": "28.0.3",
+  "gradle_version": "4.10.3",
+  "android_gradle_plugin_version": "3.0.1"
+}

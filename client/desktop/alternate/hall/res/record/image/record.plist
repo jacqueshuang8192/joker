@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>hall/res/record/image/btn_more.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{391,252},{112,49}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{112,49}</string>
+			</dict>
+			<key>hall/res/record/image/btn_sel_date.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{495,426},{149,48}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{149,48}</string>
+			</dict>
+			<key>hall/res/record/image/date_bg.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{282,426},{211,55}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{211,55}</string>
+			</dict>
+			<key>hall/res/record/image/family_record_n.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{282,315},{249,109}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{249,109}</string>
+			</dict>
+			<key>hall/res/record/image/family_record_s.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{646,1},{249,109}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{249,109}</string>
+			</dict>
+			<key>hall/res/record/image/fanhui.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{558,252},{38,65}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{152,111}</string>
+			</dict>
+			<key>hall/res/record/image/head_kuang.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{533,305},{66,66}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{66,66}</string>
+			</dict>
+			<key>hall/res/record/image/sd_jiantou.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,486},{23,27}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{23,27}</string>
+			</dict>
+			<key>hall/res/record/image/sd_sel_bg.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{505,252},{51,51}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{51,51}</string>
+			</dict>
+			<key>hall/res/record/image/sel_date_bg.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1},{483,279}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{483,279}</string>
+			</dict>
+			<key>hall/res/record/image/title_img.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{282,1},{312,107}}</string>
+				<key>offset</key>
+				<string>{-1,1}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{314,108}</string>
+			</dict>
+			<key>hall/res/record/image/user_record_n.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{533,1},{249,109}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{249,109}</string>
+			</dict>
+			<key>hall/res/record/image/user_record_s.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{391,1},{249,109}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{249,109}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>record.png</string>
+			<key>realTextureFileName</key>
+			<string>record.png</string>
+			<key>size</key>
+			<string>{1024,512}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>1024</integer>
+			<key>height</key>
+			<integer>512</integer>
+		</dict>
+	</dict>
+</plist>

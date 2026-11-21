@@ -18,6 +18,14 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The client artwork is not part of either backend image.
+          sparse-checkout: |
+            api
+            native
+            config
+            database
+            tools
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

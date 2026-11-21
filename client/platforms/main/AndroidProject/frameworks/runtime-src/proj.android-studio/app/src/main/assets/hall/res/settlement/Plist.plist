@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>hall/res/settlement/title_1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{397,459},{213,43}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{213,43}</string>
+			</dict>
+			<key>hall/res/settlement/bg_1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{397,0},{240,459}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{240,459}</string>
+			</dict>
+			<key>hall/res/settlement/bg_10.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{240,0},{412,96}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{412,96}</string>
+			</dict>
+			<key>hall/res/settlement/bg_2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{240,460}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{240,460}</string>
+			</dict>
+			<key>hall/res/settlement/bg_3.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{721,233},{236,70}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{236,70}</string>
+			</dict>
+			<key>hall/res/settlement/bg_4.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{336,0},{236,60}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{236,60}</string>
+			</dict>
+			<key>hall/res/settlement/bg_5.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{774,0},{238,233}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{238,233}</string>
+			</dict>
+			<key>hall/res/settlement/bg_9.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{637,239},{84,88}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{84,88}</string>
+			</dict>
+			<key>hall/res/settlement/btn_2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{637,0},{239,84}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{239,84}</string>
+			</dict>
+			<key>hall/res/settlement/icon_1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{610,459},{164,40}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{164,40}</string>
+			</dict>
+			<key>hall/res/settlement/icon_2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{194,460},{203,46}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{203,46}</string>
+			</dict>
+			<key>hall/res/settlement/icon_3.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,460},{194,50}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{194,50}</string>
+			</dict>
+			<key>hall/res/settlement/icon_4.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{957,233},{64,68}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{64,68}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>Plist.png</string>
+			<key>realTextureFileName</key>
+			<string>Plist.png</string>
+			<key>size</key>
+			<string>{1021,510}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>1021</integer>
+			<key>height</key>
+			<integer>510</integer>
+		</dict>
+	</dict>
+</plist>

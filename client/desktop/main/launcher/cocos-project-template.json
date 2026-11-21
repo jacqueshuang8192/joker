@@ -1,0 +1,27 @@
+{
+  "project_name": "ShenshouGame",
+  "project_path": ".",
+  "engine": "cocos2d-x-3.16",
+  "templates": {
+    "cpp": {
+      "name": "C++ Game",
+      "description": "A template for creating a C++ game",
+      "dependencies": {
+        "cocos2d-x": "3.16"
+      }
+    }
+  },
+  "android": {
+    "package_name": "com.shenshou.game",
+    "app_name": "神兽游戏",
+    "min_sdk_version": 19,
+    "target_sdk_version": 28,
+    "compile_sdk_version": 28,
+    "build_tools_version": "28.0.3"
+  },
+  "ndk": {
+    "version": "r10e",
+    "toolchain_version": "4.9",
+    "app_abi": "armeabi-v7a"
+  }
+}

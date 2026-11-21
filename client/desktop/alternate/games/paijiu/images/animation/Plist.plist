@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>10.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,400},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>11.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,800},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>12.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,1200},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>13.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,1600},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{400,0},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>3.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{800,0},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>4.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1200,0},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>5.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1600,0},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>6.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{400,400},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>7.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{400,800},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>8.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{400,1200},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+			<key>9.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{400,1600},{400,400}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{400,400}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>Plist.png</string>
+			<key>realTextureFileName</key>
+			<string>Plist.png</string>
+			<key>size</key>
+			<string>{2048,2048}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>2048</integer>
+			<key>height</key>
+			<integer>2048</integer>
+		</dict>
+	</dict>
+</plist>

@@ -1,0 +1,237 @@
+--
+-- Author: Your Name
+-- Date: 2017-09-05 19:57:49
+--
+local 	UserInfoPlaneOperator = class("UserInfoPlaneOperator")
+
+function UserInfoPlaneOperator:init(headplane)
+
+	headplane:setVisible(false)
+
+	self:beginPlayCard(headplane, false)
+
+	self:showRemainCardsNum(headplane, 0, false)
+	self:showLandLord(headplane, nil, "clear")
+	self:showNetworkImg(headplane,false)
+	self:setDoubleFlag(headplane,1,false)
+	self:showAlarm(headplane, false)
+	self:setScore(headplane, "bonus", 0)
+	self:setScore(headplane, "zhua", 0)
+	local  chips = headplane:getChildByName("chips"):setVisible(false)
+end
+
+function UserInfoPlaneOperator:clearGameDatas(playerType, headplane)
+
+	self:showLandLord(headplane, nil, "clear")
+	self:setDoubleFlag(headplane, 1, false)
+	self:showRemainCardsNum(headplane, 0, false)
+	self:showAlarm(headplane, false)
+	self:clearUserDesk(playerType, headplane)
+	self:setScore(headplane, "bonus", 0)
+	self:setScore(headplane, "zhua", 0)
+end
+
+function UserInfoPlaneOperator:addScore(headplane, typ, score)
+	local txt = headplane:getChildByName(typ == "bonus" and "txt_bonus" or "txt_zhua") 
+	print("addScore", txt:getName(), score, tonumber(txt:getString()) + score)
+	self:setScore(headplane, typ, tonumber(txt:getString()) + score)
+end
+
+function UserInfoPlaneOperator:setScore(headplane, typ, score)
+	local txt = headplane:getChildByName(typ == "bonus" and "txt_bonus" or "txt_zhua") 
+	print("setScore", txt:getName(), score)
+	txt:setString(tostring(score))
+end
+
+function UserInfoPlaneOperator:clearUserDesk(playerType, headplane)
+
+    if layout_ui:getChildByName("tt"..tostring(playerType)) then
+        layout_ui:removeChildByName("tt"..tostring(playerType))
+    end
+
+    if cardScene:getChildByName("clock") then
+        cardScene:getChildByName("clock"):setVisible(false)
+    end
+
+end
+
+function UserInfoPlaneOperator:removePlayer(playerType, headplane)
+	headplane:setVisible(false)
+	self:clearGameDatas(playerType, headplane)
+end
+
+function UserInfoPlaneOperator:showAlarm(headplane, flag)
+	    
+    local alarm = headplane:getChildByName("baojing") 
+
+    if flag == false then
+    	flag = false 
+    else
+    	flag = true
+    end
+
+    if alarm then
+        alarm:setVisible(flag)
+    else
+        local s = 0.3
+        alarm = require("puchengdazha.Animation"):Alarm()
+        alarm:addTo(headplane)
+        alarm:setName("baojing")
+        alarm:setScale(s)
+        alarm:setVisible(flag)
+        alarm:setPosition(cc.p(40,108))  --alarm:getContentSize().height/4*s-20
+    end
+
+end
+
+function UserInfoPlaneOperator:showPlayerInfo(playerType,headplane,userInfo)
+     
+	dump(userInfo, "userInfo")
+
+	local uid = userInfo["uid"]
+	local icon_url = userInfo["icon_url"]
+	local sex = userInfo["sex"] 
+    local coins = userInfo["coins"] 
+    local head = headplane:getChildByName("head")
+    local nickName = userInfo["nick"] --and require("hall.GameCommon"):formatNick(userInfo["nick"], 5) or "未知昵称"
+
+
+    require("hall.GameCommon"):getUserHead(icon_url, uid, sex, head, 64 , false, nickName)
+
+	headplane:setVisible(true)
+	headplane.uid = uid
+
+	local txt_nick = headplane:getChildByName("nickName_txt")
+
+	txt_nick:setString(require("hall.GameCommon"):formatNick(nickName))
+
+	self:updateUserCoins(headplane , coins)
+
+
+	return head
+end
+
+function UserInfoPlaneOperator:updateUserCoins(plane, coins)
+    if not plane then
+        return
+    end
+
+    coins = coins/100
+    dump("------------------------1111")
+    local coins_lb = plane:getChildByName("gold_mine")
+    local coins_str = coins
+    if coins > 100000 then
+        --coins = math.floor(coins / 10000)
+        dump(coins, "-------------2222")
+        coins_str = string.format("%.1f", coins / 10000) .. "万"
+    end
+    dump(coins_str, "----------3333")
+    coins_lb:setString(coins_str)
+end
+
+function UserInfoPlaneOperator:showLandLord(headplane,_type,flag)
+	local landlord_flag = headplane:getChildByName("landlord_flag")
+
+    if flag == "clear" then
+    	landlord_flag:setVisible(false)
+    elseif _type == "LandLord" then
+    	landlord_flag:setVisible(true)
+		landlord_flag:loadTexture("puchengdazha/images/help.png")
+        -- landlord_flag:setContentSize(cc.size(65,68))
+	elseif _type == "Farmer" then
+		landlord_flag:setVisible(false)
+        -- landlord_flag:loadTexture("puchengdazha/images/Img_GameTable_Farmer.png")
+        -- landlord_flag:setContentSize(cc.size(41,42))
+    elseif _type == "Banker" then
+    	landlord_flag:setVisible(true)
+    	landlord_flag:loadTexture("puchengdazha/images/banker.png")
+	elseif _type == "du" then
+		landlord_flag:setVisible(true)
+		landlord_flag:loadTexture("puchengdazha/images/du.png")
+	end
+end
+
+function UserInfoPlaneOperator:showNetworkImg(headplane, flag)
+	local network_img = headplane:getChildByName("network_img")
+	if network_img then
+    	dump(flag,"是否显示断线图片2")
+		network_img:setVisible(flag)
+	end
+end
+
+function UserInfoPlaneOperator:updateCoin(playerType, headplane, value)
+
+	local coin_lb = headplane:getChildByName("gold_mine")
+
+	if coin_lb then
+		coin_lb:setVisible(true)
+		coin_lb:setString(require(NumberUtil_filePath):toWan(value/100, 99999, "w"))
+	end
+
+    if  isGoldGame == 0 then
+        local uid = headplane.uid
+        if  uid and require("hall.view.userInfoView.userInfoView").upDateUserInfo then
+            require("hall.view.userInfoView.userInfoView"):upDateUserInfo(uid,{["gold"] = value},"gold")
+        end
+    end
+
+end
+
+function UserInfoPlaneOperator:setDoubleFlag(headplane, times, flag)
+	local txt_player_double = headplane:getChildByName("txt_player_double")
+	if txt_player_double then
+		txt_player_double:setVisible(flag)
+	end
+end
+
+
+function UserInfoPlaneOperator:showRemainCardsNum(headplane, value, flag)
+
+    if flag == false then
+        flag = false
+    else
+        flag = true
+    end
+
+	local cardNumBack = headplane:getChildByName("cardNumBack")
+
+	if cardNumBack then
+		cardNumBack:setVisible(flag)
+		if value then
+			local cardNum_txt = cardNumBack:getChildByName("cardNum")
+			:setString(value)
+		end
+	end
+end
+
+
+
+function UserInfoPlaneOperator:beginPlayCard(headplane, flag)
+
+	local img = headplane:getChildByName("turn_img")
+     
+	if img then
+		if flag ==true then
+            img:setVisible(true)
+
+			local showTurnAc = cc.CallFunc:create(function()
+					if  img:getOpacity() > 220 then		
+						img:fadeTo(1.3, 50)
+
+					elseif img:getOpacity()<80 then	
+						img:fadeTo(1.3, 255)
+					end
+
+				end)
+
+			seqAc = cc.Sequence:create(cc.DelayTime:create(1.3), showTurnAc)
+			img:runAction(cc.RepeatForever:create(seqAc))
+
+		else
+			img:stopAllActions()
+		 	img:setVisible(false)
+		end
+	end
+end
+
+return  UserInfoPlaneOperator

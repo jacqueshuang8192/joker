@@ -1,0 +1,7 @@
+// COCOS2DX_ROOT can override the engine location used by the original project.
+gradle.ext.cocosEngineDir = new File(System.getenv('COCOS2DX_ROOT') ?: 'D:/CocosProject/cocos2d-x-3.16')
+
+include ':libcocos2dx'
+project(':libcocos2dx').projectDir = new File(settingsDir, 'libcocos2dx')
+include ':HelloLua'
+project(':HelloLua').projectDir = new File(settingsDir, 'app')

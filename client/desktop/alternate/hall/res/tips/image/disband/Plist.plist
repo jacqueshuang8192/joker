@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>hall/res/tips/image/disband/bg.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{839,578}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{839,578}</string>
+			</dict>
+			<key>hall/res/tips/image/disband/btn_jujue.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{839,103},{181,57}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{181,57}</string>
+			</dict>
+			<key>hall/res/tips/image/disband/btn_jujue_dis.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{839,160},{181,57}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{181,57}</string>
+			</dict>
+			<key>hall/res/tips/image/disband/btn_sure.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{839,217},{181,57}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{181,57}</string>
+			</dict>
+			<key>hall/res/tips/image/disband/btn_sure_dis.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{839,274},{181,57}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{181,57}</string>
+			</dict>
+			<key>hall/res/tips/image/disband/title.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{839,331},{147,40}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{147,40}</string>
+			</dict>
+			<key>hall/res/tips/image/disband/user_head_bottom.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{839,371},{103,44}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{103,44}</string>
+			</dict>
+			<key>hall/res/tips/image/disband/userInfo_bg.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{839,0},{103,103}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{103,103}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>Plist.png</string>
+			<key>realTextureFileName</key>
+			<string>Plist.png</string>
+			<key>size</key>
+			<string>{1024,1024}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>1024</integer>
+			<key>height</key>
+			<integer>1024</integer>
+		</dict>
+	</dict>
+</plist>

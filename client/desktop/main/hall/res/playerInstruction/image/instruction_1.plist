@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>hall/res/playerInstruction/image/font_hzMJ.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{960,102},{121,30}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{121,30}</string>
+			</dict>
+			<key>hall/res/playerInstruction/image/title.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{960,0},{102,52}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{102,52}</string>
+			</dict>
+			<key>hall/res/playerInstruction/image/btn_sel.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,661},{246,96}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{246,96}</string>
+			</dict>
+			<key>hall/res/playerInstruction/image/btn_sel_n.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,907},{246,96}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{246,96}</string>
+			</dict>
+			<key>hall/res/playerInstruction/image/wanfa_bg.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{960,661}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{960,661}</string>
+			</dict>
+			<key>hall/res/playerInstruction/image/player_bg.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{96,661},{81,103}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{81,103}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>instruction.png</string>
+			<key>realTextureFileName</key>
+			<string>instruction.png</string>
+			<key>size</key>
+			<string>{1024,1024}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>1024</integer>
+			<key>height</key>
+			<integer>1024</integer>
+		</dict>
+	</dict>
+</plist>

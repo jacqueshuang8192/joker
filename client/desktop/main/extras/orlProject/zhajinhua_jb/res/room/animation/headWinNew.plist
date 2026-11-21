@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>headWinMine1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{322,259},{152,74}}</string>
+				<key>offset</key>
+				<string>{-1,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWinMine10.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,174},{156,82}}</string>
+				<key>offset</key>
+				<string>{2,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWinMine2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{162,174},{156,82}}</string>
+				<key>offset</key>
+				<string>{1,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWinMine3.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{322,174},{157,81}}</string>
+				<key>offset</key>
+				<string>{-1,1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWinMine4.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,2},{160,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWinMine5.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{166,2},{160,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWinMine6.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{330,2},{160,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWinMine7.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,88},{160,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWinMine8.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{166,88},{160,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWinMine9.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{330,88},{160,82}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{160,82}</string>
+			</dict>
+			<key>headWin1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,485},{70,86}}</string>
+				<key>offset</key>
+				<string>{2,1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+			<key>headWin10.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,260},{89,110}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+			<key>headWin2.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{93,480},{81,101}}</string>
+				<key>offset</key>
+				<string>{0,1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+			<key>headWin3.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{93,374},{83,102}}</string>
+				<key>offset</key>
+				<string>{1,1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+			<key>headWin4.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2,374},{87,107}}</string>
+				<key>offset</key>
+				<string>{0,1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+			<key>headWin5.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{188,373},{87,109}}</string>
+				<key>offset</key>
+				<string>{0,1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+			<key>headWin6.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{188,260},{89,109}}</string>
+				<key>offset</key>
+				<string>{0,1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+			<key>headWin7.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{95,260},{89,110}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+			<key>headWin8.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{374,337},{87,109}}</string>
+				<key>offset</key>
+				<string>{0,1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+			<key>headWin9.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{281,337},{89,109}}</string>
+				<key>offset</key>
+				<string>{0,1}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{90,110}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>headWinNew.png</string>
+			<key>realTextureFileName</key>
+			<string>headWinNew.png</string>
+			<key>size</key>
+			<string>{492,583}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>492</integer>
+			<key>height</key>
+			<integer>583</integer>
+		</dict>
+	</dict>
+</plist>

@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>chi_01.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,122},{98,99}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{98,99}</string>
+			</dict>
+			<key>chi_02.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{500,96},{53,50}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{53,50}</string>
+			</dict>
+			<key>gang_01.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{99,212},{98,97}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{98,97}</string>
+			</dict>
+			<key>gang_02.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{568,0},{107,105}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{107,105}</string>
+			</dict>
+			<key>hu_01.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,220},{97,98}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{97,98}</string>
+			</dict>
+			<key>hu_02.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{185,107},{105,105}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{105,105}</string>
+			</dict>
+			<key>peng_01.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{675,0},{98,95}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{98,95}</string>
+			</dict>
+			<key>peng_02.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{392,96},{108,103}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{108,103}</string>
+			</dict>
+			<key>zimo_01.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{392,0},{176,96}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{176,96}</string>
+			</dict>
+			<key>zimo_02.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{185,0},{207,107}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{207,107}</string>
+			</dict>
+			<key>chaotian_01.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{185,122}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{185,122}</string>
+			</dict>
+			<key>chaotian_02.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{290,107},{140,72}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{140,72}</string>
+			</dict>
+			<key>lai_01.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{197,212},{75,78}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{75,78}</string>
+			</dict>
+			<key>lai_02.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{99,122},{77,90}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{77,90}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>gang0.png</string>
+			<key>realTextureFileName</key>
+			<string>gang0.png</string>
+			<key>size</key>
+			<string>{1024,512}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>1024</integer>
+			<key>height</key>
+			<integer>512</integer>
+		</dict>
+	</dict>
+</plist>

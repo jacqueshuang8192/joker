@@ -1,6 +1,6 @@
-# 神兽后端部署
+# 神兽客户端与后端部署
 
-把本目录作为一个独立的私有 GitHub 仓库。Java 接口和原生服务分别发布到 GHCR，部署目标是 Linux AMD64。原包的完整性、每个模块的构建方式及数据库缺项见 [后端检查报告](AUDIT.md)。
+本仓库同时维护 Cocos2d-x/Lua 客户端、Java API 和 C++ 游戏服务。客户端源码和平台工程请从 [client/README.md](client/README.md) 进入。下文说明后端镜像与 1Panel 部署方式，核验结果见 [后端检查报告](AUDIT.md)。
 
 ## 源码目录
 
@@ -22,12 +22,7 @@
 
 ## 推送和自动打包
 
-在 GitHub 新建空的私有仓库，进入本目录，执行以下命令。将 OWNER、REPO 替换为实际所有者和仓库名。
-
-```sh
-git remote add origin git@github.com:OWNER/REPO.git
-git push -u origin main
-```
+推送 `main` 或 `v*` 版本标签会触发本仓库的后端发布流程。镜像名前缀是 `ghcr.io/jacqueshuang8192/joker`。
 
 Actions 工作流会用 JDK 8 从源码生成 WAR，在 Linux 上构建两张镜像，并在隔离网络中用空数据卷启动 Compose。自动检查包括数据库建表、服务端口和一次读取临时测试版本号的 HTTP 请求。检查通过后，推送到 GHCR。PR 执行构建和检查，发布由推送 main 或 v 开头的版本标签触发。手动运行会发布该提交的 SHA 标签。
 
