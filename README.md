@@ -57,9 +57,11 @@ docker compose pull
 
 ## 业务数据与客户端配置
 
-MySQL 5.7 就绪后，Compose 会启动一次性 `flyway` 服务。它执行 `database/migrations/` 中待应用的版本，成功后 Java API 和原生业务服务才启动。空库执行 `V1__initial_schema.sql`，创建 86 张已知业务表，并通过 `flyway_schema_history` 记录版本和校验和。部署后看到 `flyway` 状态为 `Exited (0)` 表示迁移成功。
+MySQL 5.7 就绪后，Compose 会启动一次性 `flyway` 服务。它执行 `database/migrations/` 中待应用的版本，成功后 Java API 和原生业务服务才启动。空库依次执行 V1 和 V2。V1 创建原包的 86 张表，V2 按 Java 实体和 Mapper 补建 62 张兼容表，共 148 张业务表。Flyway 通过 `flyway_schema_history` 记录版本和校验和。部署后看到 `flyway` 状态为 `Exited (0)` 表示迁移成功。
 
-旧版编排升级时，先备份数据库并保留原编排名与数据卷。已有业务表且尚无迁移历史的库会以版本 0 接入，再执行 V1。V1 仅创建缺少的已知表，已有表的列和索引需单独比对。以后把核实过的结构变更保存为新的版本文件，如 `V2__add_order_tables.sql`，保留已执行的文件。每次更新同时同步编排和整个迁移目录，再在 1Panel 重新部署编排或执行 `docker compose up -d`。单独重启 Java 或 MySQL 容器不会触发 Flyway。
+旧版编排升级时，先备份数据库并保留原编排名与数据卷。已有业务表且尚无迁移历史的库会以版本 0 接入，再执行 V1 和 V2。已在 V1 的库直接执行 V2。两版迁移仅创建缺少的表，已有表的列和索引需单独比对。以后把核实过的结构变更保存为新的版本文件，如 `V3__update_order_tables.sql`，保留已执行的文件。每次更新同时同步编排和整个迁移目录，再在 1Panel 重新部署编排或执行 `docker compose up -d`。单独重启 Java 或 MySQL 容器不会触发 Flyway。
+
+V2 覆盖代理、充值、订单、联盟、任务和战绩等代码所用的表。字段来自实体及查询，类型、长度和索引按可见读写行为选取。佣金比例、商品、任务规则等业务数据需要从匹配版本的备份恢复或按实际业务配置。分表按真实后缀检查，核对命令和已知查询限制见 [数据库核验记录](AUDIT.md#数据库完整性)。
 
 迁移失败时用 `docker compose logs flyway` 定位出错语句。MySQL 5.7 的 DDL 可能已部分生效，需核对表结构和迁移历史后再重试。回退应用镜像不会回退数据库版本。
 

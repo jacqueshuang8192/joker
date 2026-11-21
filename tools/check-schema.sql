@@ -1,4 +1,5 @@
--- Read only. Select the game's database before running this check.
+-- Read only. Run with the game database selected.
+-- Expand the same 0-9 suffixes used by the game before checking physical table names.
 SELECT expected.table_name AS missing_table
 FROM (
   SELECT 'bullfight_gameinfo' AS table_name
@@ -16,8 +17,6 @@ FROM (
   SELECT 'ims_tpgold' AS table_name
   UNION ALL
   SELECT 'ims_tpgoods' AS table_name
-  UNION ALL
-  SELECT 'ims_tpmoney' AS table_name
   UNION ALL
   SELECT 'ims_tporders' AS table_name
   UNION ALL
@@ -109,10 +108,6 @@ FROM (
   UNION ALL
   SELECT 't_player_sharegift_record' AS table_name
   UNION ALL
-  SELECT 't_player_task' AS table_name
-  UNION ALL
-  SELECT 't_point_change_record' AS table_name
-  UNION ALL
   SELECT 't_province' AS table_name
   UNION ALL
   SELECT 't_province_agent' AS table_name
@@ -139,7 +134,20 @@ FROM (
   UNION ALL
   SELECT 't_version' AS table_name
   UNION ALL
-  SELECT 't_waiweiorder_history' AS table_name
+  SELECT CONCAT(families.prefix, digits.n)
+  FROM (
+    SELECT 'bullfight_gameinfo' AS prefix
+    UNION ALL SELECT 'ims_tpmoney' AS prefix
+    UNION ALL SELECT 'player_result_activityid' AS prefix
+    UNION ALL SELECT 'player_round_activityid' AS prefix
+    UNION ALL SELECT 't_player_task' AS prefix
+    UNION ALL SELECT 't_point_change_record' AS prefix
+    UNION ALL SELECT 't_waiweiorder_history' AS prefix
+  ) AS families
+  CROSS JOIN (
+    SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+  ) AS digits
 ) AS expected
 LEFT JOIN information_schema.tables AS actual
   ON actual.table_schema=DATABASE() AND LOWER(actual.table_name)=expected.table_name

@@ -21,15 +21,19 @@
 
 ## 数据库完整性
 
-从随包 SQL 提取到 86 个不同的建表名称。检查 `interface_yuan` 的 74 个 Mapper XML，剔除 XML 注释，并提取 SQL 中常见的固定业务表名。在识别到的 70 个表名中，有 36 个在归档建表语句中缺失。这里统计的是静态可识别的名称；动态表、存储过程、数据内容和列级差异需要结合实际业务库另行核对。
+V1 从原始 `数据库.sql` 提取 86 张表的定义。最初核对 Java Mapper 的 70 个表名时，有 36 个在 V1 中未按原名匹配。按代码的路由规则展开后，这 36 项对应 32 张普通表和 4 组分表。
 
-| 涉及业务 | 缺失示例 |
+| 来源 | 本次清单对应的物理表 |
 |---|---|
-| 代理、订单、充值 | `ims_tporders`、`t_account_charge`、`t_charge_pool` |
-| 联盟、积分、组局 | `t_group_union`、`t_group_union_member`、`t_point_change_record`、`t_free_game_totalranking` |
-| 消息、商品、任务 | `ims_msg`、`t_goods`、`t_task` |
+| V1 已提供 | `t_point_change_record0` 到 `t_point_change_record9`，按俱乐部 ID 对 10 取余 |
+| V2 单表 | 32 张，涉及代理、订单、充值、联盟、活动、战绩和其他业务 |
+| V2 分表 | `ims_tpmoney0…9` 按代理 ID 分表，`t_player_task0…9` 和 `t_waiweiorder_history0…9` 按玩家 ID 分表，共 30 张 |
 
-部署仓库中的 `database/migrations/V1__initial_schema.sql` 提取自一次性数据库实际导入原 `数据库.sql` 后导出的表结构。移除了历史行数据和自增计数。业务恢复前可备份目标库，然后执行以下只读检查，得到该库未按原名匹配的 Mapper 表名。部分名称是动态分表前缀，例如积分流水实际使用已提供的 `t_point_change_record0` 至 `t_point_change_record9`。
+V2 的 62 张表使用 `CREATE TABLE IF NOT EXISTS`。列名、类型和索引的依据来自 MyBatis 的增删改查、结果映射及 Java 实体。原库的精确长度、额外列、约束、触发器和业务数据仍需从匹配的备份核对。例如 `ims_tpcommissions` 的读取条件是 `id=0`，实际三级比例应由业务方提供。脚本保留已有同名表的结构和数据。
+
+在 MySQL 5.7.44 上分别验证了空库建表、从 V1 升级、已有同名自定义表和数据的保留、再次运行 Flyway。另用测试事务核对了联盟成员、任务进度、房卡收益、商品金额、玩家战绩和两类分表的实际读写。对涉及 V2 的 103 条 Mapper SQL，将参数替换为绑定占位符并在服务端预编译。默认 SQL 模式下 99 条通过，4 条被 `ONLY_FULL_GROUP_BY` 拒绝：`TFreeGameSingleresult` 的三个分时段排名查询选取了未聚合的日期，`TGameTypeGameMapper.selectByAgent` 按类型分组时选取了未聚合的玩法配置。仅在临时验证会话放宽该项后，103 条全部通过。运行编排沿用原 SQL 模式。
+
+以下只读检查使用 Mapper 需要的物理表名，覆盖包括积分流水在内的 7 组分表。无结果表示清单中的表均存在，列和业务数据需另行核验。
 
 ```sh
 docker compose -p shenshou exec -T mysql sh -ec \
@@ -47,9 +51,9 @@ docker compose -p shenshou exec -T mysql sh -ec \
 
 ## 测试范围
 
-本机使用 Docker 的 Linux/amd64 环境进行镜像构建，启动测试使用独立网络、专属容器和一次性数据卷。在旧库样本上查询版本接口能成功返回版本记录。正式发布流程另用空卷初始化 86 张表，在测试库写入一条可辨识的大厅版本号，再经 HTTP 接口读取并比对，覆盖 Spring MVC、MySQL 和 Redis 路径。测试结束后删除该临时项目及其卷。
+本机使用 Docker 的 Linux/amd64 环境进行镜像构建，启动测试使用独立网络、专属容器和一次性数据卷。在旧库样本上查询版本接口能成功返回版本记录。正式发布流程另用空卷执行全部迁移，在测试库写入一条可辨识的大厅版本号，再经 HTTP 接口读取并比对，覆盖 Spring MVC、MySQL 和 Redis 路径。测试结束后删除该临时项目及其卷。
 
-Flyway 接入后，以 MySQL 5.7.44 和 Flyway Community 11.15.0 在隔离的 Linux AMD64 编排验证。启用金币服务时，空库自动生成 86 张业务表和迁移历史表，再次执行 `migrate` 后仍能通过 HTTP 读取同一测试记录。另一组使用旧初始化脚本建库，在插入测试数据后接入 Flyway。V1 执行前后，86 张业务表导出的结构一致，测试记录保留。临时加入 V2 后重新启动编排可以应用新表；更改已应用的 V2 后，Flyway 校验失败，Compose 阻止 API 启动。测试用的 V2 只存在于临时目录。该版本 Flyway 在启动日志中提示 MySQL 5.7 已超出 Redgate 社区支持范围。
+Flyway 接入后，以 MySQL 5.7.44 和 Flyway Community 11.15.0 在隔离的 Linux AMD64 编排验证。启用金币服务时，空库自动生成 86 张业务表和迁移历史表，再次执行 `migrate` 后仍能通过 HTTP 读取同一测试记录。另一组使用旧初始化脚本建库，在插入测试数据后接入 Flyway。V1 执行前后，86 张业务表导出的结构一致，测试记录保留。临时加入 V2 后重新启动编排可以应用新表；更改已应用的 V2 后，Flyway 校验失败，Compose 阻止 API 启动。当时的 V2 测试脚本只存在于临时目录，当前仓库的 V2 是上文所述的兼容表迁移。该版本 Flyway 在启动日志中提示 MySQL 5.7 已超出 Redgate 社区支持范围。
 
 引入 Flyway 前，默认编排中的 14 个容器通过启动检查；另启用示例 gold 配置复测时，15 个容器也均通过。测试环境内分配服务与牛牛服务分别监听 11603 和 13600。金币样例验证到进程监听，未验证真实余额变动。
 

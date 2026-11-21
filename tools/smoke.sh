@@ -24,12 +24,15 @@ INSERT INTO t_version (type,status,version) VALUES ('2','2','ci-smoke');
 SQL
 # A second invocation must preserve both the test record and the migration history.
 "${dc[@]}" run --rm --no-deps -T flyway migrate
-applied=$(mysql_query <<<"SELECT COUNT(*) FROM flyway_schema_history WHERE version='1' AND type='SQL' AND success=1")
-[[ $applied == 1 ]]
+applied=$(mysql_query <<<"SELECT COUNT(*) FROM flyway_schema_history WHERE version IN ('1','2') AND type='SQL' AND success=1")
+[[ $applied == 2 ]]
 "${dc[@]}" exec -T api curl -fsS 'http://127.0.0.1:8080/hbiInterface/version/queryVersion?type=2&interfaceType=J' | python3 -c 'import json,sys; r=json.load(sys.stdin); assert r["returnCode"]=="0" and r["data"]["version"]=="ci-smoke"'
 tables=$(mysql_query <<<"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name <> 'flyway_schema_history'")
-[[ $tables -ge 86 ]]
+[[ $tables -ge 148 ]]
 
-# Report unmatched legacy mapper names, including dynamic table prefixes.
-missing=$(mysql_query < tools/check-schema.sql | wc -l)
-echo "Verified Flyway migration and application version read; business tables: $tables; unmatched mapper names: $missing."
+missing=$(mysql_query < tools/check-schema.sql)
+if [[ -n $missing ]]; then
+  printf 'Missing game tables:\n%s\n' "$missing" >&2
+  exit 1
+fi
+echo "Verified Flyway migrations, mapped tables and application version read; business tables: $tables."
