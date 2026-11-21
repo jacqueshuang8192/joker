@@ -13,7 +13,7 @@
 | 房间分配与赛事 | `native/services/alloc/Game/`，其中 `GameServerMatches.cpp` 集中处理赛事的创建、查找、加入和列表 |
 | 原生依赖与牛牛程序 | `native/vendor/hiredis/` 为第三方库源码，`native/prebuilt/douniu/` 为现有牛牛程序和运行库 |
 | 构建与容器启动 | `api/Dockerfile`、`native/Dockerfile`、`native/build.sh`，原生服务入口和健康检查在 `native/container/` |
-| 部署与数据库 | 根目录 `docker-compose.yml`，配置模板在 `config/`，建表脚本在 `database/`，配置生成与核验工具在 `tools/` |
+| 部署与数据库 | 根目录 `docker-compose.yml`，配置模板在 `config/`，Flyway 版本迁移在 `database/migrations/`，配置生成与核验工具在 `tools/` |
 | 已停用的 Java 源文件 | `archive/java/` 保留原包路径和文件内容，供追溯历史 |
 
 排查房间问题时，可以先看 `com/hbi/service/game/FreeGameService.java` 如何选择游戏服务器，再到 `GroupGameImpl.java` 核对发往该地址的消息字段。
@@ -57,7 +57,13 @@ docker compose pull
 
 ## 业务数据与客户端配置
 
-MySQL 5.7 在首次使用空卷时创建 `shenshou_game` 和原包可提取的 86 张基础表。本仓库的初始化脚本仅含建表定义。玩家、支付、渠道、版本记录和实际游戏配置需要在服务器上从自己的备份恢复。先备份现有数据，在隔离库验证恢复文件后再操作。原包的完整 SQL 含删表语句和历史数据。单纯重启编排或改镜像标签不会重新初始化已有卷。
+MySQL 5.7 就绪后，Compose 会启动一次性 `flyway` 服务。它执行 `database/migrations/` 中待应用的版本，成功后 Java API 和原生业务服务才启动。空库执行 `V1__initial_schema.sql`，创建 86 张已知业务表，并通过 `flyway_schema_history` 记录版本和校验和。部署后看到 `flyway` 状态为 `Exited (0)` 表示迁移成功。
+
+旧版编排升级时，先备份数据库并保留原编排名与数据卷。已有业务表且尚无迁移历史的库会以版本 0 接入，再执行 V1。V1 仅创建缺少的已知表，已有表的列和索引需单独比对。以后把核实过的结构变更保存为新的版本文件，如 `V2__add_order_tables.sql`，保留已执行的文件。每次更新同时同步编排和整个迁移目录，再在 1Panel 重新部署编排或执行 `docker compose up -d`。单独重启 Java 或 MySQL 容器不会触发 Flyway。
+
+迁移失败时用 `docker compose logs flyway` 定位出错语句。MySQL 5.7 的 DDL 可能已部分生效，需核对表结构和迁移历史后再重试。回退应用镜像不会回退数据库版本。
+
+玩家、支付、渠道、版本记录和实际游戏配置需要在服务器上从自己的备份恢复。先备份现有数据，在隔离库验证恢复文件后再操作。原包的完整 SQL 含删表语句和历史数据。单纯重启编排或改镜像标签不会重新初始化已有卷。
 
 部署生成的 `runtime/api.properties` 和 XML/INI 是实际运行配置。接入已有客户端时，按客户端协议核对 `protocol.aesKey`、`protocol.defaultKey`、`protocol.mtKey` 和大厅的 KEY。配置支付、短信、微信、OSS 等功能时需填写自己的服务参数。生成的 `agent.initialPassword` 用于旧代理开户流程。运行配置应仅由服务器管理员管理，备份时将 `.env`、`runtime/` 和数据库卷一起保护。配置文件以只读方式挂载；修改文件后重新创建受影响的容器。
 

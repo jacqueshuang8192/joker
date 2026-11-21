@@ -9,7 +9,7 @@ x-native: &native
   image: ${IMAGE_PREFIX:?Run tools/configure.py}-native:${IMAGE_TAG:?Image tag required}
   depends_on:
     cache: {condition: service_healthy}
-    mysql: {condition: service_healthy}
+    flyway: {condition: service_completed_successfully}
     redis: {condition: service_healthy}
   security_opt: [no-new-privileges:true]
 x-hall: &hall
@@ -43,12 +43,32 @@ services:
     command: ["--bind-address=127.0.0.1","--character-set-server=utf8mb4","--collation-server=utf8mb4_general_ci"]
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./database/001-schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -h127.0.0.1 -u\"$$MYSQL_USER\" \"$$MYSQL_DATABASE\" -Nse 'SELECT 1'"]
       interval: 10s
       timeout: 5s
       retries: 25
+  flyway:
+    <<: *peer
+    image: flyway/flyway:11.15.0-alpine
+    restart: "no"
+    depends_on:
+      mysql: {condition: service_healthy}
+    environment:
+      FLYWAY_URL: "jdbc:mysql://127.0.0.1:3306/shenshou_game?permitMysqlScheme=true"
+      FLYWAY_USER: shenshou_game
+      FLYWAY_PASSWORD: ${DB_PASSWORD:?Database password required}
+      FLYWAY_BASELINE_ON_MIGRATE: "true"
+      FLYWAY_BASELINE_VERSION: "0"
+      FLYWAY_CLEAN_DISABLED: "true"
+      FLYWAY_VALIDATE_MIGRATION_NAMING: "true"
+    volumes:
+      - type: bind
+        source: ./database/migrations
+        target: /flyway/sql
+        read_only: true
+        bind: {create_host_path: false}
+    command: [migrate]
   redis:
     <<: *peer
     image: redis:7-alpine
@@ -75,7 +95,7 @@ services:
       CATALINA_OPTS: "-Xms128m -Xmx768m"
     image: ${IMAGE_PREFIX:?Run tools/configure.py}-api:${IMAGE_TAG:?Image tag required}
     depends_on:
-      mysql: {condition: service_healthy}
+      flyway: {condition: service_completed_successfully}
       redis: {condition: service_healthy}
       mongo: {condition: service_started}
     volumes:

@@ -29,7 +29,7 @@
 | 联盟、积分、组局 | `t_group_union`、`t_group_union_member`、`t_point_change_record`、`t_free_game_totalranking` |
 | 消息、商品、任务 | `ims_msg`、`t_goods`、`t_task` |
 
-部署仓库中的 `database/001-schema.sql` 提取自一次性数据库实际导入原 `数据库.sql` 后导出的表结构。移除了历史行数据和自增计数。业务恢复前可备份目标库，然后执行以下只读检查，得到该库实际缺失的表名。
+部署仓库中的 `database/migrations/V1__initial_schema.sql` 提取自一次性数据库实际导入原 `数据库.sql` 后导出的表结构。移除了历史行数据和自增计数。业务恢复前可备份目标库，然后执行以下只读检查，得到该库未按原名匹配的 Mapper 表名。部分名称是动态分表前缀，例如积分流水实际使用已提供的 `t_point_change_record0` 至 `t_point_change_record9`。
 
 ```sh
 docker compose -p shenshou exec -T mysql sh -ec \
@@ -49,7 +49,9 @@ docker compose -p shenshou exec -T mysql sh -ec \
 
 本机使用 Docker 的 Linux/amd64 环境进行镜像构建，启动测试使用独立网络、专属容器和一次性数据卷。在旧库样本上查询版本接口能成功返回版本记录。正式发布流程另用空卷初始化 86 张表，在测试库写入一条可辨识的大厅版本号，再经 HTTP 接口读取并比对，覆盖 Spring MVC、MySQL 和 Redis 路径。测试结束后删除该临时项目及其卷。
 
-默认编排中的 14 个容器通过启动检查；另启用示例 gold 配置复测时，15 个容器也均通过。测试环境内分配服务与牛牛服务分别监听 11603 和 13600。金币样例验证到进程监听，未验证真实余额变动。
+Flyway 接入后，以 MySQL 5.7.44 和 Flyway Community 11.15.0 在隔离的 Linux AMD64 编排验证。启用金币服务时，空库自动生成 86 张业务表和迁移历史表，再次执行 `migrate` 后仍能通过 HTTP 读取同一测试记录。另一组使用旧初始化脚本建库，在插入测试数据后接入 Flyway。V1 执行前后，86 张业务表导出的结构一致，测试记录保留。临时加入 V2 后重新启动编排可以应用新表；更改已应用的 V2 后，Flyway 校验失败，Compose 阻止 API 启动。测试用的 V2 只存在于临时目录。该版本 Flyway 在启动日志中提示 MySQL 5.7 已超出 Redgate 社区支持范围。
+
+引入 Flyway 前，默认编排中的 14 个容器通过启动检查；另启用示例 gold 配置复测时，15 个容器也均通过。测试环境内分配服务与牛牛服务分别监听 11603 和 13600。金币样例验证到进程监听，未验证真实余额变动。
 
 Java 的 Maven 依赖已在空缓存、空自定义配置下解析，并在 Linux/amd64 用 JDK 8 离线编译通过。部署 POM 主要使用 Maven Central，对历史支付 SDK 的坐标保留 HTTPS 仓库回退。部署副本已将发现的固定协议及开户凭据移入运行配置，已对提交的文本执行 Gitleaks 扫描。
 

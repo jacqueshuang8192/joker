@@ -10,5 +10,5 @@ runtime/
 *.key
 *.war
 *.sql
-!database/001-schema.sql
+!database/migrations/V*__*.sql
 !tools/check-schema.sql
