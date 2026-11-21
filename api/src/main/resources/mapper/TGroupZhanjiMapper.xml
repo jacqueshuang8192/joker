@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TGroupZhanjiMapper">
+    <resultMap id="BaseResultMap" type="com.hbi.model.TGroupZhanji">
+        <!--
+          WARNING - @mbggenerated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="group_id" property="groupId" jdbcType="INTEGER"/>
+        <result column="player_id" property="playerId" jdbcType="INTEGER"/>
+        <result column="activity_id" property="activityId" jdbcType="INTEGER"/>
+        <result column="invite_code" property="inviteCode" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="is_dayingjia" property="isDayingjia" jdbcType="INTEGER"/>
+        <result column="dayingjia_points" property="dayingjiaPoints" jdbcType="INTEGER"/>
+        <result column="play_point_count" property="playPointCount" jdbcType="INTEGER"/>
+    </resultMap>
+    <update id="updateZhanjiPoint">
+        update t_group_zhanji set play_point_count = ${score}
+        where activity_id = #{activityId} and player_id = #{uid}
+    </update>
+    <select id="selectByTime" resultType="TGroupZhanji">
+        SELECT * from t_group_zhanji
+        WHERE group_id = ${groupId} and date_format(create_time,'%Y-%m-%d') >= #{startTime} and  date_format(create_time,'%Y-%m-%d') &lt;= #{endTime}
+    </select>
+
+    <select id="selectByActivityId" parameterType="hashMap" resultType="TGroupZhanji">
+        SELECT
+            *
+        FROM
+            t_group_zhanji
+        WHERE
+            activity_id=#{activityId}
+</select>
+    <select id="selectByMyExample" resultType="com.hbi.model.TGroupZhanji">
+        select * from t_group_zhanji
+        where 1 = 1
+         <if test="dateStr != null">
+             and date_format(create_time,'%Y-%m-%d') >= #{dateStr}
+         </if>
+         <if test="groupId != null">
+             and group_id = #{groupId}
+         </if>
+         <if test="tempUid != null">
+             and player_id = #{tempUid}
+         </if>
+         order by create_time desc limit ${pageIndex},${pageSize}
+    </select>
+</mapper>

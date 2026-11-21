@@ -1,0 +1,71 @@
+name: Build and publish backend images
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: images-${{ github.ref }}
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+      - name: Compile the API from source
+        run: mvn -B -f api/pom.xml -Dmaven.test.skip=true clean package
+      - name: Build and validate both images
+        shell: bash
+        run: |
+          set -euo pipefail
+          prefix="ghcr.io/${GITHUB_REPOSITORY,,}"
+          tag="sha-${GITHUB_SHA}"
+          echo "PREFIX=$prefix" >> "$GITHUB_ENV"
+          echo "TAG=$tag" >> "$GITHUB_ENV"
+          for kind in api native; do
+            docker build --platform linux/amd64 --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" --label "org.opencontainers.image.revision=$GITHUB_SHA" -t "$prefix-$kind:$tag" "$kind"
+          done
+          docker run --rm --entrypoint java "$prefix-api:$tag" -version
+          python3 tools/configure.py --image-prefix "$prefix" --tag "$tag" --advertise-ip 127.0.0.1
+          docker compose --profile gold config --quiet
+      - name: Smoke test the stack on a fresh database
+        run: bash tools/smoke.sh
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish the verified pair
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for kind in api native; do docker push "$PREFIX-$kind:$TAG"; done
+          if [[ "$GITHUB_REF" == refs/heads/main || "$GITHUB_REF" == refs/tags/v* ]]; then
+            for kind in api native; do
+              docker tag "$PREFIX-$kind:$TAG" "$PREFIX-$kind:$GITHUB_REF_NAME"
+              docker push "$PREFIX-$kind:$GITHUB_REF_NAME"
+            done
+          fi
+
+      - name: Package files for 1Panel
+        if: github.event_name != 'pull_request'
+        run: tar czf 1panel-deploy.tar.gz docker-compose.yml config database tools/configure.py tools/check-schema.sql README.md AUDIT.md
+      - uses: actions/upload-artifact@v4
+        if: github.event_name != 'pull_request'
+        with:
+          name: 1panel-deploy
+          path: 1panel-deploy.tar.gz

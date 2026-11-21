@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TGroupNoticeMapper">
+    <!-- 根据群组ID查询公告-->
+    <select id="getByGroupId" parameterType="java.lang.Integer" resultType="com.hbi.model.TGroupNotice">
+        SELECT
+            id, group_id, notice
+        FROM
+            t_group_notice
+        WHERE
+            group_id=#{groupId}
+    </select>
+
+    <!-- 添加公告-->
+    <insert id="insertTGroupNotice" parameterType="com.hbi.model.TGroupNotice" useGeneratedKeys="true" keyProperty="notice.id">
+        INSERT INTO
+            t_group_notice(group_id, notice)
+        VALUES
+            (#{notice.groupId}, #{notice.notice})
+    </insert>
+
+    <!-- 修改公告-->
+    <update id="updateTGroupNotice" parameterType="com.hbi.model.TGroupNotice">
+        UPDATE
+            t_group_notice
+        SET
+            notice=#{notice.notice}
+        WHERE
+            group_id=#{notice.groupId}
+    </update>
+
+</mapper>

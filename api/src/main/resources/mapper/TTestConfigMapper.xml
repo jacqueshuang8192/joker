@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TTestConfigMapper">
+    <update id="updateByCeshi">
+        UPDATE
+        t_test_config
+        SET
+        isTest=0,isControl=0
+        WHERE userid=#{l}
+    </update>
+    <delete id="delByCeshi">
+        DELETE
+        FROM
+        t_test_config
+        WHERE
+        agentId=88888888
+    </delete>
+    <select id="getVerifyByUidAndLevel" resultType="com.hbi.model.TTestConfig">
+        SELECT
+        userid AS userid,
+        level AS level,
+        isTest AS is_test,
+        isControl AS is_control,
+        winPercent AS win_percent,
+        verify AS verify
+        FROM
+        t_test_config
+        WHERE
+        userid=#{uid} AND level=#{level} AND isTest=1 and status=1
+    </select>
+    <select id="getAllTestConfig" resultType="com.hbi.model.TTestConfig">
+        SELECT
+        userid AS userid,
+        verify AS verify
+        FROM
+        t_test_config
+        WHERE level=#{level} AND isTest=1 and status=1
+    </select>
+
+</mapper>

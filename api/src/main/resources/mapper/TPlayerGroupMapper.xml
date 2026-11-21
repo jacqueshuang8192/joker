@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TPlayerGroupMapper">
+    <update id="updatePoingCount">
+        update t_player_group SET  point_count = point_count +#{coins} WHERE group_id = #{groupId} and player_id = #{playerId} and point_count >= -#{coins}
+    </update>
+    <delete id="deleteByPlayerIdAndGroupId">
+        DELETE
+        FROM
+        t_player_group
+        WHERE
+        player_id=#{playerId} and group_id =#{groupId}
+    </delete>
+    <delete id="deleteByGroupId">
+        DELETE
+        FROM t_player_group
+        WHERE
+        group_id =#{groupId}
+    </delete>
+    <select id="selectByPlayerIdAndGroupId" resultType="com.hbi.model.TPlayerGroup">
+        SELECT *
+        FROM t_player_group
+        WHERE
+        player_id=#{playerId} and group_id =#{groupId}
+    </select>
+    <select id="selectByPlayerId" resultType="com.hbi.model.TPlayerGroup">
+        select *
+        from t_player_group
+        WHERE player_id=#{playerId}
+    </select>
+
+    <select id="selectByGroupId" resultType="com.hbi.model.TPlayerGroup">
+        select *
+        from t_player_group
+        WHERE group_id=#{groupId}
+        <if test="playerType != null">
+        AND
+            player_type=#{playerType}
+        </if>
+        <if test="upPlayerId != null">
+        AND
+            up_player_id=#{upPlayerId}
+        </if>
+        <if test="startTime != null">
+        AND
+            create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND
+            create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+    </select>
+
+    <!-- 根据群组ID、玩家ID获取玩家类型 -->
+    <select id="getPlayTypeByGroupIdAndPlayerId" parameterType="hashMap" resultType="java.lang.Integer">
+        SELECT player_type
+        FROM t_player_group
+        WHERE group_id=#{groupId}
+        AND player_id=#{playerId}
+    </select>
+
+    <!-- 根据群组ID、玩家ID判断玩家有没有在这个群组-->
+    <select id="countByGroupIdAndPlayerId" parameterType="hashMap" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            t_player_group
+        WHERE
+            group_id=#{groupId}
+        AND
+            player_id=#{playerId}
+    </select>
+
+    <!-- 添加玩家到群组-->
+    <insert id="add" parameterType="com.hbi.model.TPlayerGroup">
+        INSERT INTO
+            t_player_group (`player_id`, `group_id`, `up_player_id`, create_time, player_type,invite_code,bonus,is_robot)
+        VALUES
+            (#{vo.playerId}, #{vo.groupId}, #{vo.upPlayerId}, #{vo.createTime}, #{vo.playerType},#{vo.inviteCode},#{vo.bonus},#{vo.isRobot});
+    </insert>
+
+    <!-- 设置玩家类型-->
+    <update id="setPlayerType" parameterType="hashMap">
+        UPDATE
+            t_player_group
+        SET
+            player_type=#{playerType},bonus = ${bonus},invite_code = #{inviteCode}
+        WHERE
+            group_id=#{groupId}
+        AND
+            player_id=#{playerId}
+    </update>
+
+    <!-- 获取合伙人列表信息-->
+    <select id="getPlayerGroupList" parameterType="hashMap" resultType="com.hbi.vo.response.hehuoren.PlayerGroupHhrListVo">
+        SELECT
+            u.userid, u.nick_name, `group_id`,
+            (SELECT COUNT(1) FROM t_group_zhanji WHERE player_id=h.player_id AND group_id=#{groupId}) game_count,
+            (SELECT COUNT(1) FROM t_group_zhanji WHERE player_id=h.player_id AND group_id=#{groupId} AND is_dayingjia=1) dayingjia_count,
+            (SELECT COALESCE(sum(choushui),0) FROM t_group_choushui_history WHERE uid=h.player_id AND group_id=#{groupId}) consume
+        FROM
+            `t_player_group` h
+        INNER JOIN
+            t_user u ON h.player_id=u.userid
+        WHERE
+            group_id=#{groupId}
+        <if test="playerType != null">
+        AND
+            player_type=#{playerType}
+        </if>
+        <if test="dateStr != null">
+            AND
+                create_time like '${dateStr}%'
+        </if>
+    </select>
+
+    <!-- 根据群组ID、玩家ID获得群成员信息-->
+    <select id="getPlayerGroupByGroupIdAndPlayerId" parameterType="hashMap" resultType="com.hbi.model.TPlayerGroup">
+        SELECT
+            id, player_id, group_id, up_player_id, player_type, bonus
+        FROM
+            t_player_group
+        WHERE
+            group_id=#{groupId}
+        AND
+            player_id=#{playerId}
+    </select>
+    <select id="selectMySonList" resultType="com.hbi.model.TPlayerGroup">
+
+        SELECT * from t_player_group
+        where  group_id = #{groupId}
+        <if test="playerId != null">
+            and up_player_id = #{playerId}
+        </if>
+        <if test="roleType != null">
+            and player_type = #{roleType}
+        </if>
+        <if test="startIndex != null">
+            limit ${startIndex},${pageSize}
+        </if>
+    </select>
+
+    <select id="selectMySonListByOne" resultType="com.hbi.model.TPlayerGroup">
+
+        SELECT * from t_player_group
+        where  group_id = #{groupId}
+        <if test="playerId != null">
+            and up_player_id = #{playerId}
+        </if>
+        <if test="roleType != null">
+            and player_type = #{roleType}
+        </if>
+        <if test="searchId != null">
+            and player_id = #{searchId}
+        </if>
+        <if test="startIndex != null">
+            limit ${startIndex},${pageSize}
+        </if>
+    </select>
+    <select id="selectMySonListCount" resultType="java.lang.Integer">
+
+        SELECT count(1)from t_player_group
+        where group_id = #{groupId}
+        <if test="playerId != null">
+            and up_player_id = #{playerId}
+        </if>
+        <if test="roleType != null">
+            and player_type = #{roleType}
+        </if>
+        <if test="searchId != null">
+            and player_id = #{searchId}
+        </if>
+    </select>
+    <select id="getClubPointRanking" resultType="com.hbi.model.TPlayerGroup">
+        select
+            player_id,
+            group_id,
+            point_count,
+            dayingjia_count
+        from t_player_group
+        where group_id = #{groupId}
+        order by point_count desc
+        limit ${startIndex},${pageSize}
+    </select>
+    <select id="getClubPointRankingCount" resultType="java.lang.Integer">
+        select
+            count(1)
+        from t_player_group
+        where group_id = #{groupId}
+    </select>
+    <select id="selectAll" resultType="com.hbi.model.TPlayerGroup">
+        select * from t_player_group
+    </select>
+    <select id="selctAllList" resultType="com.hbi.model.TPlayerGroup">
+         select
+            player_id,
+            up_player_id
+        from t_player_group
+        where group_id = #{groupId}
+    </select>
+    <select id="selectClubRepositoryPoint" resultType="com.hbi.model.TPlayerGroup">
+        select
+            player_id,
+            repository_point
+        from t_player_group
+        where group_id = #{groupId}
+    </select>
+
+    <!-- 设置分红-->
+    <update id="setBonus" parameterType="hashMap">
+        UPDATE
+            t_player_group
+        SET
+            bonus=#{bonus}
+        WHERE
+            group_id=#{groupId}
+        AND
+            up_player_id=#{playerId1}
+        AND
+            player_id=#{playerId2}
+    </update>
+    <update id="updateJifenInfo">
+        update
+            t_player_group
+        SET
+            xiaohao_count = xiaohao_count + ${xiaohaoCount},
+            dayingjia_count = dayingjia_count + ${dayingjiaCount},
+            repository_point = repository_point + ${xiaohaoCount},
+            xiaohao_today = xiaohao_today + ${xiaohaoCount}
+         WHERE
+            group_id=#{groupId}
+        AND
+            player_id=#{playerId}
+    </update>
+    <update id="updateTixianCount">
+        update t_player_group SET tixian_count = tixian_count + ${tixianCount},repository_point = repository_point - ${tixianCount}
+        WHERE group_id = ${groupId} and player_id = ${playerId} and (repository_point >= ${tixianCount})
+    </update>
+    <update id="updateUpPlayerId">
+        update t_player_group set up_player_id = #{owerId}
+            where  group_id = ${groupId} and up_player_id = ${playerId}
+    </update>
+    <update id="updateMyUpPlayerId">
+        update t_player_group set up_player_id = #{myUpUid}
+            where  group_id = ${groupId} and player_id = ${myUid}
+    </update>
+    <update id="updatePoint2Repository">
+        update t_player_group set
+--             point_count = point_count - ${savePoint},
+            repository_point = repository_point +  ${savePoint}
+        where group_id = #{groupId} and  player_id= #{playerId}
+    </update>
+    <update id="updateYesterday20">
+        update t_player_group set xiaohao_yesterday = 0,dayingjia_count_yesterday = 0, play_count_yesterday = 0,team_play_count_yesterday = 0
+    </update>
+    <update id="updateToday2Yesterday">
+        update t_player_group set xiaohao_yesterday = xiaohao_today, dayingjia_count_yesterday = dayingjia_count_today,play_count_yesterday = play_count_today
+    </update>
+    <update id="updateToday20">
+        update t_player_group set xiaohao_today = 0,dayingjia_count_today = 0, play_count_today = 0
+    </update>
+    <update id="updateDayingjiaCount">
+        update t_player_group set
+            dayingjia_count_today = dayingjia_count_today + ${dayingjiaCount}
+        where group_id = #{groupId} and  player_id= #{plaeyrId}
+    </update>
+    <update id="updateplayCountToday">
+        update t_player_group set
+            play_count_today = play_count_today +  ${playCount}
+        where group_id = #{groupId} and  player_id= #{plaeyrId}
+    </update>
+    <update id="updateTeamPlayCount">
+        update t_player_group set
+            team_play_count_yesterday = #{teamPlayerCount}
+        where group_id = #{groupId} and  player_id= #{playerId}
+    </update>
+    <update id="updateIDCard">
+        update t_player_group set
+           wxchat = #{wechat},
+           qq = #{qq},
+           xianliao = #{xianliao},
+           invite_icon = #{inviteIcon}
+        where group_id = #{groupId} and  player_id= #{playerId}
+    </update>
+    <update id="updateClubPoingCount">
+        update t_player_group SET  point_count = ${point} WHERE group_id = #{clubId} and player_id = #{uid}
+    </update>
+    <update id="updateRepositoryPoint">
+        update t_player_group
+        set repository_point = #{point}
+        where group_id = #{groupId} and player_id=#{ownerId}
+    </update>
+
+</mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TGoodsMapper" >
+  <resultMap id="BaseResultMap" type="com.hbi.model.TGoods" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="goods_id" property="goodsId" jdbcType="BIGINT" />
+    <result column="category_id" property="categoryId" jdbcType="BIGINT" />
+    <result column="category_photo" property="categoryPhoto" jdbcType="VARCHAR" />
+    <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+    <result column="category_type" property="categoryType" jdbcType="CHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="photo" property="photo" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="INTEGER" />
+    <result column="vip" property="vip" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="CHAR"/>
+  </resultMap>
+  
+  <select id="findGoodsByCategoryType" resultType="com.hbi.model.TGoods">
+  	SELECT 
+  		g.goods_id as goodsId,
+  		g.category_id as categoryId,
+  		g.category_photo as categoryPhoto,
+  		g.category_name as categoryName,
+  		g.category_code as categoryCode,
+  		g.category_type as categoryType,
+  		g.category_sort as categorySort,
+  		g.name as name,
+  		g.remark as remark,
+  		g.photo as photo,
+  		g.amount as amount,
+  		g.price as price,
+  		g.vip as vip
+  	FROM
+  		t_goods g
+  	WHERE
+  		g.status="2"
+		<if test="type != '999'">
+		AND g.category_type = #{type}
+		</if>
+
+  </select>
+	<select id="findImsGoodsByCategoryType" resultType="com.hbi.model.ImsGoods">
+		select
+			goodsid as goodsId,
+			goodsname as name,
+			cardnum as amount,
+			goodsprice*100  as price,
+			goodscreatetime as createDate,
+			goodsstatus as status,
+			category_type as categoryType,
+			goodscreateperson as remark,
+			photo as photo
+		from
+			ims_tpgoods
+		WHERE
+			goodsstatus = #{status}
+			<if test="type != null and type!=''">
+				AND category_type=#{type}
+			</if>
+		ORDER BY goodsId
+	</select>
+	<select id="findImsGoodsById" resultType="com.hbi.model.ImsGoods">
+		select
+		goodsid as goodsId,
+		goodsname as name,
+		cardnum as amount,
+		goodsprice*100  as price,
+		goodscreatetime as createDate,
+		goodsstatus as status,
+		category_type as categoryType,
+		goodscreateperson as remark,
+		photo as photo
+		from
+		ims_tpgoods
+		WHERE
+		goodsid=#{goodsId}
+
+	</select>
+</mapper>

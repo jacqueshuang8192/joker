@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<SYSTEM>
+    <Node>
+        <GameID gameID="1" />
+        <ServerList>
+              <Server svid="1" level="302" ip="127.0.0.1" port="11603" />
+        </ServerList>
+    </Node>
+    <BroadCastServer ip="127.0.0.1" port="9002" />
+    <CMDataServer ip="127.0.0.1" port="6001" />
+    <CPropServer ip="127.0.0.1" port="6101" />
+    <LogServer ip="127.0.0.1" port="6101" />
+</SYSTEM>

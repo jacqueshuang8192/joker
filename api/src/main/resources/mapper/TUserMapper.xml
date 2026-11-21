@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TUserMapper">
+	<resultMap id="BaseResultMap" type="com.hbi.model.TUser">
+		<!-- WARNING - @mbggenerated -->
+		<id column="userid" property="userid" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="CHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="last_login" property="lastLogin" jdbcType="TIMESTAMP" />
+		<result column="state" property="state" jdbcType="CHAR" />
+		<result column="online_status" property="onlineStatus"
+			jdbcType="CHAR" />
+		<result column="society_id" property="societyId" jdbcType="BIGINT" />
+		<result column="agent_id" property="agentId" jdbcType="BIGINT" />
+		<result column="large_icon" property="largeIcon" jdbcType="VARCHAR" />
+		<result column="small_icon" property="smallIcon" jdbcType="VARCHAR" />
+		<result column="account" property="account" jdbcType="VARCHAR" />
+		<result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+		<result column="gender" property="gender" jdbcType="CHAR" />
+		<result column="birthday" property="birthday" jdbcType="DATE" />
+		<result column="sign" property="sign" jdbcType="VARCHAR" />
+		<result column="longitude" property="longitude" jdbcType="REAL" />
+		<result column="latitude" property="latitude" jdbcType="REAL" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="FaceID" property="faceid" jdbcType="BIGINT" />
+		<result column="QQ" property="qq" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="RegisterIP" property="registerip" jdbcType="VARCHAR" />
+		<result column="pay_password" property="payPassword" jdbcType="VARCHAR" />
+		<result column="grade" property="grade" jdbcType="FLOAT" />
+		<result column="datingNum" property="dating_num" jdbcType="INTEGER" />
+		<result column="deprecated" property="deprecated" jdbcType="INTEGER" />
+	</resultMap>
+
+
+	<update id="updateDatingActivityInfo">
+		UPDATE
+		t_user
+		SET
+		grade = (grade * dating_num
+		+(#{onTimeGrade} + #{satisfaction}) / 2) /
+		(dating_num + 1),
+		dating_num
+		= dating_num + 1
+		WHERE
+		userid = #{userId}
+	</update>
+	<update id="updateIsYaoqing">
+		UPDATE
+		t_user
+		SET
+		is_yaoqing = 1
+		WHERE
+		userid = #{userId}
+	</update>
+	<update id="updatePoint">
+		UPDATE
+		t_user
+		SET
+		point = point + #{point}
+		WHERE
+		userid = #{userId}
+	</update>
+	
+	<update id="updatePointByUserId">
+		UPDATE
+		t_user
+		SET
+		point = #{points}+1
+		WHERE
+		userid = #{userId}
+	</update>
+
+	<update id="increaseYaoqingRoomCard">
+		UPDATE
+		t_user
+		SET
+		yaoqing_roomcards = yaoqing_roomcards
+		+ #{count}
+		WHERE
+		userid = #{userId}
+	</update>
+
+	<select id="selectRoomcardByUSerId" resultType="Long">
+		SELECT
+		card_count
+		AS cardCount
+		FROM
+		t_user
+		WHERE
+		userid = #{userId}
+	</select>
+	
+	<select id="selectPiontByUSerId" resultType="Long">
+		SELECT
+		point
+		AS point
+		FROM
+		t_user
+		WHERE
+		userid = #{userId}
+	</select>
+
+	<update id="exitSociety">
+		UPDATE
+		t_user
+		SET
+		society_id = NULL
+		WHERE
+		userid =
+		#{userId}
+	</update>
+
+	<select id="selectNickNameByUSerId" resultType="string">
+		SELECT
+		nick_name
+		AS nickName
+		FROM
+		t_user
+		WHERE
+		userid = #{userId}
+	</select>
+	<select id="selectIdentity" resultType="string">
+		SELECT
+		identity AS identity
+		FROM
+		t_user
+		WHERE
+		userid = #{userId}
+	</select>
+
+
+	<select id="queryUserByPhoneOrNickName" resultType="com.hbi.cache.model.CacheUserListProfile">
+		SELECT
+		userid
+		AS userId,
+		type AS type,
+		phone AS phone,
+		nick_name AS nickName,
+		small_icon AS photoUrl,
+		birthday AS birthday,
+		sign AS sign,
+		gender AS sex
+		FROM
+		t_user
+		WHERE
+		phone = #{condition}
+		OR nick_name LIKE
+		CONCAT('%',#{condition},'%')
+	</select>
+
+	<select id="queryUserTypes" resultType="java.util.HashMap">
+		SELECT
+		userid AS userId,
+		type AS type
+		FROM
+		t_user
+		WHERE
+		deprecated = 0
+	</select>
+	<select id="isCardCountEnough" resultType="com.hbi.vo.request.common.MapVo">
+		SELECT
+		userid as mapKey,
+		if(card_count>=${cardNum},card_count,0) as mapValue
+		from t_user
+		WHERE userid IN ${users};
+	</select>
+    <select id="getSign" resultType="java.lang.String">
+		SELECT
+		sign
+		FROM
+		t_user
+		WHERE
+		userid=${playerId}
+	</select>
+	<select id="selectRoomCardCount" resultType="java.lang.Integer">
+		SELECT
+		card_count
+		FROM
+		t_user
+		WHERE
+		userid=#{userId}
+	</select>
+    <select id="selectAgentIsExit" resultType="java.lang.Long">
+		select id from ims_tpuser where typeid = 0 and (id = #{agentId} or invite_code = #{agentId}) ORDER BY invite_code desc limit 1
+	</select>
+    <select id="selectRechangeGoldCount" resultType="java.lang.Integer">
+		select
+		recharge_gold
+		FROM
+		t_user
+		WHERE
+		userid=#{playerId}
+	</select>
+	<select id="selectMaxPoint" resultType="TUser">
+			SELECT
+			*
+			FROM
+			t_user
+			ORDER by point DESC
+			limit 0,${rankNum}
+	</select>
+    <select id="updateCardCount">
+		UPDATE t_user
+		set card_count=#{card}
+	</select>
+    <select id="selectImsTpUserById" resultType="int">
+		SELECT parentid from ims_tpuser where id = #{agentId}
+	</select>
+    <select id="selectImsCommission" resultType="com.hbi.vo.request.common.CommissionVo">
+		select commissions1 as commission1,
+		commissions2 as commission2,
+		commissions3 as commission3
+		from ims_tpcommissions WHERE id = 0;
+	</select>
+	<select id="selectBiqiCard" resultType="TBiqiCardId">
+		select
+		id as id,
+		card_id as cardId,
+		card_pw as cardPw,
+		status as status,
+		player_id as players,
+		use_time as useTime,
+		money_type as moneyTime
+		from t_biqi_cardid WHERE status=0 and money_type=#{price} LIMIT 0,1
+	</select>
+	<select id="updateBiqiCard">
+		UPDATE t_biqi_cardid SET
+		player_id=#{playerId},use_time=now(),status=1,price=#{price}
+		WHERE id=#{id}
+	</select>
+	<select id="selectAgentAdvice" resultType="string">
+		SELECT advice from ims_tpuser WHERE id=#{agentId}
+	</select>
+	<select id="selectImsTpUserByBiqiId" resultType="string">
+		SELECT biqi_id from ims_tpuser WHERE id=#{l}
+	</select>
+	<select id="selectImsTpUserByIsShare" resultType="com.hbi.vo.request.common.MapVo">
+		SELECT
+		id as mapKey,
+		is_share as mapValue
+		from ims_tpuser WHERE id=#{agentId}
+	</select>
+	<select id="selectImsTpUserByIsBind" resultType="com.hbi.vo.request.common.MapVo">
+		SELECT
+		id as mapKey,
+		is_bind as mapValue
+		from ims_tpuser WHERE id=#{agentId}
+	</select>
+	<select id="selectAllagents" resultType="string">
+		SELECT id from ims_tpuser
+	</select>
+	<select id="selectAgentMoneyCountA" resultType="_int">
+		SELECT  ifnull(sum(agentincome),0) FROM ims_tpcard WHERE agentid=#{agentId} and date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+
+	<select id="selectAgentMoneyCountB" resultType="_int">
+		SELECT ifnull(sum(parentincome),0) FROM ims_tpcard WHERE parentid=#{agentId} and date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+	<select id="selectAgentMoneyCountC" resultType="_int">
+		SELECT ifnull(sum(grandparentincome),0) FROM ims_tpcard WHERE grandparentid=#{agentId} and date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+
+
+	<select id="selectAgentMoneyCountAdmin" resultType="_int">
+		SELECT ifnull(sum(surplus),0) from ims_tpcard WHERE date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+
+	<select id="selectAgentOrderCount" resultType="_int">
+		SELECT ifnull(count(1),0) FROM ims_tpcard WHERE date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY) and agentid=${agentId}
+	</select>
+	<select id="selectAgentOrderCountAdmin" resultType="_int">
+		SELECT ifnull(count(1),0) FROM ims_tpcard WHERE date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+
+	<select id="selectAgentGoldMoneyA" resultType="_int">
+		SELECT  ifnull(sum(agentincome),0) FROM ims_tpgold WHERE agentid=#{agentId} and date_format(createtime,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+
+	<select id="selectAgentGoldMoneyB" resultType="_int">
+		SELECT ifnull(sum(parentincome),0) FROM ims_tpgold WHERE parentid=#{agentId} and date_format(createtime,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+
+	<select id="selectAgentGoldMoneyC" resultType="_int">
+		SELECT ifnull(sum(grandparentincome),0) FROM ims_tpgold WHERE grandparentid=#{agentId} and date_format(createtime,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+
+
+	<select id="selectAgentGoldMoneyAdmin" resultType="_int">
+		SELECT ifnull(sum(surplusgold),0) from ims_tpgold WHERE date_format(createtime,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY) and type=0
+	</select>
+	<select id="selectAgentGoldinfo" resultType="com.hbi.vo.request.common.MapVo">
+		SELECT ifnull(count(DISTINCT(userid)),0) as mapKey ,ifnull(count(1),0) as mapValue FROM ims_tpgold WHERE agentid=${agentId} and date_format(createtime,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+	<select id="selectAgentGoldinfoAdmin" resultType="com.hbi.vo.request.common.MapVo">
+		SELECT ifnull(count(DISTINCT(userid)),0) as mapKey ,ifnull(count(1),0) as mapValue FROM ims_tpgold WHERE date_format(createtime,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+	<select id="selectAgentUseMoney" resultType="_int">
+		SELECT ifnull(sum(gold_cound),0) FROM t_player_sharegift_record WHERE date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY) and agent_id=${agentId}
+	</select>
+	<select id="selectCommissionMoney" resultType="_int">
+	    SELECT ifnull(sum(commission_money),0) FROM ims_tporders WHERE ordersstatus=1 and date_format(from_unixtime(callback_time),'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+	<select id="selectRobotUse" resultType="_int">
+		SELECT  ifnull(sum(callback_money),0)-ifnull(sum(before_send_money),0) from t_robot_send_record WHERE callback_time is not null and date_format(callback_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+    <select id="selectAgentImsTpmoney" resultType="_int">
+		select ifnull(sum(money),0) from ims_tpmoney${ii} WHERE agent_id =${agentId} and type =1 and  date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+	<select id="selectAgentGoldinfoImsTpmoney" resultType="com.hbi.vo.request.common.MapVo">
+		  SELECT ifnull(count(DISTINCT(uid)),0) as mapKey ,ifnull(count(1),0) as mapValue FROM ims_tpmoney${ii} WHERE agent_id=${agentId} and date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+	<select id="selectAgentMoneyCountAImstpmoney" resultType="_int">
+		  SELECT  ifnull(sum(money),0) FROM ims_tpmoney${ii} WHERE agent_id=${agentId} and type=2 and date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+	<select id="selectAgentOrderCountImstpmoney" resultType="_int">
+		  SELECT ifnull(count(1),0) FROM ims_tpmoney${ii} WHERE date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY) and agent_id=${agentId} and type=2 and cj=1
+	</select>
+	<select id="selectParnetMoneyCard" resultType="_int">
+		select ifnull(sum(parent_money),0) from ims_tpmoney${i} WHERE agent_id=${agentId} and type = 2 and date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+
+	<select id="selectParnetMoneyGold" resultType="_int">
+		select ifnull(sum(parent_money),0) from ims_tpmoney${i} WHERE agent_id=${agentId} and type = 1 and date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
+	</select>
+
+
+	<insert id="insertUser" parameterType="com.hbi.model.TUser"
+		useGeneratedKeys="true" keyProperty="userid">
+		INSERT INTO t_user (
+		phone,
+		account,
+		password,
+		nick_name,
+		type,
+		state,
+		gender,
+		small_icon,
+		qq,
+		wechat,
+		weibo,
+		grade,
+		create_date,
+		deprecated,
+		card_count,
+		club_limit,
+		point,
+		gift_gold,
+		gift_gold_count,
+		yaoqing_roomcards
+		)
+		VALUES
+		(
+		#{phone},
+		#{account},
+		#{password},
+		#{nickName},
+		#{type},
+		#{state},
+		#{gender},
+		#{smallIcon},
+		#{qq},
+		#{wechat},
+		#{weibo},
+		#{grade},
+		#{createDate},
+		#{deprecated},
+		#{cardCount},
+		#{clubLimit},
+		#{point},
+		#{giftGold},
+		#{giftGoldCount},
+		#{yaoqingRoomcards}
+		);
+	</insert>
+	<insert id="insertTplayerShareGiftRecord">
+		  insert INTO t_player_sharegift_record(player_id, card_cound, gold_cound, type) VALUES (#{userId},#{cardEveryDay},#{goldEveryDay},#{type})
+	</insert>
+	<insert id="insertTplayerShareGiftRecord2AgentId">
+		insert INTO t_player_sharegift_record(player_id, card_cound, gold_cound, type,agent_id) VALUES (#{userId},#{cardEveryDay},#{goldEveryDay},#{type},#{agentId})
+	</insert>
+	<insert id="insertIntoImsTpGold" parameterType="imsTpCard">
+		insert into ims_tpcard(userid, money, agentid, agentincome, parentid, parentincome, grandparentid, grandparentincome, surplus)
+						VALUES (#{imsTpCard.userId},#{imsTpCard.money},#{imsTpCard.agentId},#{imsTpCard.agentInCome},#{imsTpCard.parentId},#{imsTpCard.parentInCome},#{imsTpCard.grandParentId},#{imsTpCard.grandParentInCome},#{imsTpCard.surplus})
+	</insert>
+	<insert id="insertIntoImstpagentcardreport">
+		INSERT INTO ims_tpagentgoldreport(agent_id, date, gold_countA,gold_countB,gold_countC, player_count, play_count,card_countA,card_countB,card_countC,order_count,use_money,channel_money,robot_use,surplus,parent_money_card,parent_money_gold) VALUES (${agentId},date_sub(curdate(),INTERVAL 1 day),${agentGoldMoneyA},${agentGoldMoneyB},${agentGoldMoneyC},${mapKey},${mapValue},${agentMoneyA},${agentMoneyB},${agentMoneyC},${agentOrderCount},${useMoney},${channelMoney},${robotUse},${surplus},${parentMoneyCard},${parentMoneyGold})
+	</insert>
+	<update id="increaseRoomCard">
+		UPDATE
+		t_user
+		SET
+		card_count = card_count + #{count}
+		WHERE
+		userid = #{userId}
+	</update>
+
+
+	<update id="increasePoint">
+		UPDATE
+		t_user
+		SET
+		point = point + #{count}
+		WHERE
+		userid =
+		#{userId}
+	</update>
+
+	<update id="userBindingAgent">
+		UPDATE
+		t_user
+		SET
+		agent_id = #{agentId}
+		WHERE
+		userid =
+		#{userId}
+	</update>
+
+	<update id="updateIdentity">
+		UPDATE
+		t_user
+		SET
+		identity = #{identity},
+		name=#{name}
+		WHERE
+		userid =
+		#{userId}
+	</update>
+
+    <update id="updateToken">
+		UPDATE
+		t_user
+		SET
+		rongCloud_token = #{token}
+		where
+		userId=#{userId}
+	</update>
+    <update id="giftRoomCardEveryDay">
+		UPDATE t_user
+		SET birthday=now(),card_count=card_count+${cardEveryDay}
+		WHERE userid=#{userId};
+	</update>
+	<update id="giftRoomCardEveryDay1">
+		UPDATE t_user
+		SET birthday=now(),card_count=card_count+${cardEveryDay},gift_times=gift_times+1
+		WHERE userid=#{userId};
+	</update>
+	<update id="cutRoomCardByUsersAndNum">
+		UPDATE
+		t_user
+		SET card_count = card_count - ${cardNum}
+		WHERE userid IN ${users};
+	</update>
+	<update id="updateSign">
+		update
+		t_user
+		SET
+		sign = #{context}
+		where
+		userid=#{playerId}
+	</update>
+    <update id="updateAgentId">
+		update t_user set agent_id=#{agentId} ,bindagent_time=now() where userid=#{userId}
+	</update>
+    <update id="pickUpGold">
+		UPDATE
+		t_user
+		SET
+		gift_gold=gift_gold-${count}
+		where userid=#{playerId}
+	</update>
+	<update id="updateRecGoldCount">
+		update t_user SET recharge_gold=recharge_gold+${count} where userid=#{userId}
+	</update>
+	<update id="updateCommissionsCardA">
+		UPDATE ims_tpuser set commission_cardA=commission_cardA + ${count} WHERE id=#{agnet};
+	</update>
+	<update id="updateCommissionsCardB">
+		UPDATE ims_tpuser set commission_cardB=commission_cardB + ${count} WHERE id=#{agnet};
+	</update>
+	<update id="updateCommissionsCardC">
+		UPDATE ims_tpuser set commission_cardC=commission_cardC + ${count} WHERE id=#{agnet};
+	</update>
+	<update id="updateUserFirstLoginStatus">
+		update t_user set first_login=1 WHERE userid=#{userId}
+	</update>
+	<update id="increaseUseGoldshare">
+		update ims_tpuser set usegold_share=usegold_share+ ${goldEveryDay} WHERE id=#{agentId}
+	</update>
+	<update id="increaseUseGoldbind">
+		update ims_tpuser set usegold_bind=usegold_bind + ${bindAgentSendGold} WHERE id=#{agentId}
+	</update>
+	<update id="updatePingTaiCard">
+		update ims_tpuser set leftrebate = leftrebate + ${count} WHERE id =1
+	</update>
+	<update id="updatePingTaiGold">
+		update ims_tpuser set withdrawrebate = withdrawrebate + ${count} WHERE id =1
+	</update>
+
+</mapper>

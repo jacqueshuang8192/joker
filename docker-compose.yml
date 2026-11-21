@@ -1,0 +1,140 @@
+# The native programs use numeric loopback addresses. All processes share a
+# private network namespace, while keeping separate PID and file namespaces.
+x-peer: &peer
+  platform: linux/amd64
+  network_mode: service:cache
+  restart: unless-stopped
+x-native: &native
+  <<: *peer
+  image: ${IMAGE_PREFIX:?Run tools/configure.py}-native:${IMAGE_TAG:?Image tag required}
+  depends_on:
+    cache: {condition: service_healthy}
+    mysql: {condition: service_healthy}
+    redis: {condition: service_healthy}
+  security_opt: [no-new-privileges:true]
+x-hall: &hall
+  <<: *native
+  volumes:
+    - ./runtime/hall-config.xml:/srv/hall/conf/config.xml:ro
+    - ./runtime/hall-server.xml:/srv/hall/conf/server.xml:ro
+services:
+  cache:
+    image: memcached:1.6.39-alpine
+    platform: linux/amd64
+    restart: unless-stopped
+    command: [memcached, -l, 127.0.0.1, -p, "11201", -U, "0", -m, "64"]
+    healthcheck:
+      test: ["CMD-SHELL", "printf 'version\\r\\n' | nc -w 1 127.0.0.1 11201 | grep -q VERSION"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    ports:
+      - "${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080"
+      - "${GAME_BIND:-127.0.0.1}:4700-4704:4700-4704"
+      - "${GAME_BIND:-127.0.0.1}:13600:13600"
+  mysql:
+    <<: *peer
+    image: mysql:5.7.44
+    environment:
+      MYSQL_DATABASE: shenshou_game
+      MYSQL_USER: shenshou_game
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Database password required}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Root password required}
+    command: ["--bind-address=127.0.0.1","--character-set-server=utf8mb4","--collation-server=utf8mb4_general_ci"]
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database/001-schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -h127.0.0.1 -u\"$$MYSQL_USER\" \"$$MYSQL_DATABASE\" -Nse 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 25
+  redis:
+    <<: *peer
+    image: redis:7-alpine
+    command: [redis-server, --bind, 127.0.0.1, --appendonly, "yes"]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 10s
+      timeout: 3s
+      retries: 15
+  mongo:
+    <<: *peer
+    image: mongo:4.4
+    command: [mongod, --bind_ip, 127.0.0.1]
+    volumes: [mongo-data:/data/db]
+    healthcheck:
+      test: [CMD, mongo, --quiet, --eval, "quit(db.runCommand({ping:1}).ok ? 0 : 1)"]
+      interval: 15s
+      timeout: 8s
+      retries: 12
+  api:
+    <<: *peer
+    environment:
+      CATALINA_OPTS: "-Xms128m -Xmx768m"
+    image: ${IMAGE_PREFIX:?Run tools/configure.py}-api:${IMAGE_TAG:?Image tag required}
+    depends_on:
+      mysql: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      mongo: {condition: service_started}
+    volumes:
+      - ./runtime/api.properties:/usr/local/tomcat/webapps/hbiInterface/WEB-INF/classes/config.properties:ro
+      - uploads:/srv/uploads
+    healthcheck:
+      test: [CMD, curl, -fsS, http://127.0.0.1:8080/hbiInterface/index.html]
+      interval: 20s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+  user:
+    <<: *native
+    command: [user, -h, 127.0.0.1, -p, "7500", -s, "1", -m, "500000"]
+    volumes: [./runtime/user.ini:/srv/user/conf/config.ini:ro]
+  data:
+    <<: *native
+    command: [data, -h, 127.0.0.1, -p, "6001", -s, "0"]
+    volumes: [./runtime/data.xml:/srv/data/bin/config.xml:ro]
+  alloc:
+    <<: *native
+    command: [alloc, -p, "11603", -l, "302", -s, "63", -u, "4", -m, "400", -d]
+    volumes:
+      - ./runtime/alloc.xml:/srv/alloc/bin/server.xml:ro
+      - ./runtime/alloc.ini:/srv/alloc/bin/config.ini:ro
+      - ./runtime/game.ini:/srv/alloc/bin/GameServer.ini:ro
+  douniu:
+    <<: *native
+    depends_on:
+      alloc: {condition: service_healthy}
+    command: [douniu, -p, "13600", -s, "1802", -l, "302", -d]
+    volumes: [./runtime/douniu.xml:/srv/douniu/bin/server.xml:ro]
+  gold:
+    <<: *native
+    profiles: [gold]
+    command: [gold, -h, 127.0.0.1, -p, "6005", -s, "0"]
+    volumes:
+      - type: bind
+        source: ./runtime/gold.xml
+        target: /srv/gold/bin/config.xml
+        read_only: true
+        bind: {create_host_path: false}
+  hall-4700:
+    <<: *hall
+    command: [hall, -p, "4700", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+  hall-4701:
+    <<: *hall
+    command: [hall, -p, "4701", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+  hall-4702:
+    <<: *hall
+    command: [hall, -p, "4702", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+  hall-4703:
+    <<: *hall
+    command: [hall, -p, "4703", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+  hall-4704:
+    <<: *hall
+    command: [hall, -p, "4704", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+volumes:
+  mysql-data:
+  redis-data:
+  mongo-data:
+  uploads:

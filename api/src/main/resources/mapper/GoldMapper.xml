@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.GoldMapper">
+    <insert id="complaint2Admin">
+        INSERT INTO
+        ims_tpcomplaint(user_id, type, advice, addtime)
+        VALUES (#{playerId},${game},${context},${date});
+
+    </insert>
+    <insert id="insertIntoReposity">
+        insert INTO repository_access_record(player_id,type,gold_count,create_time) VALUES(#{playerId},#{type},#{count},now())
+    </insert>
+    <insert id="insertPlayerTask">
+        insert into t_player_task${l}(player_id,task_id,squence,term_now,status) values(#{playerId},5,#{squence},#{recCount},0)
+    </insert>
+    <insert id="insertPlayerTask4">
+        insert into t_player_task${l}(player_id,task_id,squence,term_now,status) values(#{playerId},#{i},0,0,0)
+    </insert>
+
+    <update id="updateAuthIdCard">
+        update
+        t_user
+        SET
+        phone=#{phone},
+        name = #{name},
+        QQ = #{idCardNo}
+        where
+        userid=#{playerId}
+    </update>
+    <update id="updateMoneyRepository">
+        update
+        bullfight_gameinfo${l}
+        set
+        money_repository = money_repository + ${count}
+        where mid = #{playerId}
+    </update>
+    <select id="getPlayerCountByPlayerBind" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        t_user
+        WHERE
+        agent_id=#{playerId}
+    </select>
+    <select id="isAgent" resultType="java.lang.Integer">
+        select
+        count(1)
+        FROM
+        ims_tpuser
+        WHERE
+        id=#{playerId}
+    </select>
+    <select id="selectByRoomType" resultType="java.lang.Integer">
+        SELECT
+        id
+        FROM
+        t_game_type
+        WHERE
+        roomType=#{roomType}
+    </select>
+    <select id="queryRoomTypeList" resultType="com.hbi.vo.request.common.MapVo">
+        SELECT
+        roomType as mapKey,
+        room_name as mapValue
+        FROM
+        t_game_type where is_show=1
+        group BY roomType;
+    </select>
+    <select id="queryByRoomTypeId" resultType="com.hbi.model.TGameTypeByGold">
+                SELECT * FROM t_game_type WHERE roomType=#{mapKey} and is_show=1  AND game_type_parent_id is NULL
+    </select>
+    <select id="queryRoomTypeByParentId" resultType="com.hbi.model.TGameTypeByGold">
+        SELECT * FROM t_game_type WHERE game_type_parent_id = #{id} and is_show=1
+    </select>
+    <select id="queryGames" resultType="com.hbi.model.TGame">
+        SELECT
+        tg.*,
+        tv.version
+        FROM
+        t_game tg left JOIN t_version tv ON tg.game_id = tv.game_id
+        WHERE
+        tg.game_type = #{id}
+    </select>
+    <select id="getGameConfigByLevel" resultType="java.lang.String">
+        SELECT
+        content
+        FROM
+        t_game_config
+        WHERE
+        level =#{level}
+    </select>
+    <select id="getRepositoryMoney" resultType="java.lang.Long">
+        select money_repository from bullfight_gameinfo${l} where mid=#{playerId}
+    </select>
+    <select id="queryRepositoryMney" resultType="java.lang.Long">
+        SELECT money_repository FROM bullfight_gameinfo${l} where mid=#{userId}
+    </select>
+    <select id="queryRoomOwnerIncome" resultType="java.lang.Long">
+      select sum(owerincome) from ims_tpgold WHERE userid=#{userId} and isower=1
+    </select>
+    <select id="getPickUpGoldList" resultType="com.hbi.vo.response.gold.pickUpGoldVo">
+        SELECT
+        gold_count as goldCount,
+        create_time as createTime,
+        player_id as playerId
+        FROM
+        repository_access_record
+        WHERE
+        player_id=#{playerId} and type=3
+
+        ORDER by create_time
+
+        LIMIT
+		#{beginRowIndex},#{pageSize}
+    </select>
+    <select id="selectAllPlayerId" resultType="java.lang.Integer">
+        select
+        userid
+        FROM
+        t_user
+    </select>
+    <select id="selectOwerIncomeToday" resultType="java.lang.Integer">
+        SELECT sum(owerincome) FROM ims_tpgold where isower=1 and userid=#{playerId} and date_format(createtime,'%Y-%m-%d')= curdate()
+    </select>
+    <select id="getPlayerCommissionList" resultType="com.hbi.vo.response.gold.pickUpGoldVo">
+        SELECT
+        player as playerId,
+        date as date,
+        gold_count as goldCount
+        FROM
+        ims_tpplayergoldreport
+        WHERE
+        player=#{playerId} and date_format(date,'%Y-%m')=#{date} order by date
+  </select>
+    <select id="selectPlayerTask" resultType="java.lang.Integer">
+        select
+        count(1)
+        FROM
+        t_player_task${l}
+        where
+        player_id=#{playerId} and task_id=5
+    </select>
+    <select id="selectRecCount" resultType="java.lang.Integer">
+        select ifnull(sum(rmb_amount),0) from t_account_charge WHERE status=2 and user_id=#{playerId}
+    </select>
+    <select id="queryFenChangByGameId" resultType="com.hbi.vo.request.common.TLevelFenChangVo">
+        SELECT
+        fenchang as fenchang,
+        mis_coins_gold as misCoinsGold,
+        is_quick_match as isQuickMatch
+        FROM
+        t_level_fenchang
+        where
+        level = #{level}
+    </select>
+</mapper>

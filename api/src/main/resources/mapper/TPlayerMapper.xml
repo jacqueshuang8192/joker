@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TPlayerMapper" >
+	<!---->
+	<resultMap id="BaseResultMap" type="com.hbi.model.TPlayer" >
+	</resultMap>
+
+	<select id="queryPlayerDetails" resultType="com.hbi.cache.model.CachePlayerProfile">
+		SELECT
+			u.userid AS userId,
+			u. NAME AS NAME,
+			u.nick_name AS nickName,
+			u.small_icon AS photoUrl,
+			u.gender AS sex,
+			u.agent_id AS agentId,
+			su.fullname as agentName,
+			u.birthday AS birthday,
+			u.sign AS sign,
+			u.state AS STATUS,
+			u.account AS account,
+			u.online_status AS onlineStatus,
+			u.grade AS grade,
+			p.PROVINCE_ID AS provinceId,
+			p. NAME AS province,
+			tp. LEVEL AS LEVEL,
+			tp.MasterOrder AS vipLevel,
+			tp.promoter_id AS promoterId,
+			tp.promo_code AS promoCode,
+			tp.charge_sum AS chargeSum,
+			ct.CITY_ID AS cityId,
+			ct. NAME AS city,
+			t.TOWN_ID AS townId,
+			t. NAME AS town,
+			u.phone AS phone,
+			u.club_limit AS clubLimit
+		FROM
+			(
+				(
+					(
+						(
+							t_user u
+							LEFT JOIN t_player tp ON u.userid = tp.player_id
+						)
+						LEFT JOIN t_province p ON tp.province_id = p.PROVINCE_ID
+					)
+					LEFT JOIN t_city ct ON tp.city_id = ct.CITY_ID
+				)
+				LEFT JOIN t_town t ON tp.town_id = t.TOWN_ID
+				LEFT JOIN t_sec_user su ON su.userId = u.agent_id
+			)
+	   where u.userid=#{playerId} and tp.player_id=#{playerId}
+	</select>
+
+	<update id="updatePlayerExp">
+		UPDATE
+		  t_player t
+		SET
+		  t.level = #{level},
+		  t.expiric_value = #{exp}
+		WHERE
+		  t.player_id=#{playerId}
+	</update>
+
+	<update id="updatePlayerAttributes">
+		UPDATE
+		  t_player t
+		SET
+		  t.attack = #{attack},
+		  t.defense = #{defense},
+		  t.life = #{life},
+		  t.capture_attack = #{attack},
+		  t.capture_defense = #{defense},
+		  t.capture_life = #{life}
+		WHERE
+		  t.player_id=#{playerId}
+	</update>
+
+	<select id="queryPlayerAllRelation" resultType="com.hbi.cache.model.CachePlayerRelation">
+		SELECT
+			p.player_id AS playerId,
+			p.compere_id AS compereId,
+			su.userId AS managerId,
+			su2.userId AS thirdlyAgentId,
+			su3.userId AS secondaryAgentId,
+			su4.userId AS primaryAgentId,
+			su5.userId AS operatorId
+		FROM
+			t_player p,
+			t_compere c,
+			t_sec_user su,
+			t_sec_user su2,
+			t_sec_user su3,
+			t_sec_user su4,
+			t_sec_user su5,
+			t_user u
+		WHERE
+			p.player_id = #{playerId}
+		AND p.compere_id = c.compere_id
+		AND c.agent_id = su.userId
+		AND su.parent_id = su2.userId
+		AND su2.parent_id = su3.userId
+		AND su3.parent_id = su4.userId
+		AND su4.parent_id = su5.userId
+		AND c.compere_id = u.userid
+		AND u.deprecated = 0
+	</select>
+
+	<select id="querySubPlayers" resultType="String">
+		SELECT
+			player_id
+		FROM
+			t_player
+		WHERE
+			promoter_id = #{playerId}
+	</select>
+    <select id="queryUseBiqiHistory" resultType="TBiqiCardId">
+		select
+		card_id as cardId,
+		card_pw as cardPw,
+		status as status,
+		player_id as playerId,
+		use_time as useTime,
+		money_type as moneyTime,
+		price as price
+		from t_biqi_cardid WHERE status=1 and player_id = #{playerId}  ORDER BY use_time desc;
+	</select>
+    <select id="queryPlayerShong" resultType="TGiftRoomCard">
+		SELECT *
+		FROM t_gift_room_card
+		WHERE user_id=#{playerId} order by create_time desc
+		LIMIT #{beginRowIndex},#{pageSize}
+	</select>
+	<select id="queryPlayerShou" resultType="TGiftRoomCard">
+		SELECT *
+		FROM t_gift_room_card
+		WHERE to_user_id=#{playerId} order by create_time desc
+		LIMIT #{beginRowIndex},#{pageSize}
+	</select>
+	<select id="queryPlayerWaiWeiHistory" resultType="TWaiWriOrderHistory">
+		SELECT
+		user_id as userId,
+		order_id as orderId,
+		create_time as createTime,
+		money as money,
+		surplus_money as surplusMonry,
+		status as status,
+		result as result
+		FROM t_waiweiorder_history${i}
+		WHERE user_id=#{playerId} order by id DESC
+		LIMIT #{beginRowIndex},#{pageSize}
+	</select>
+    <select id="isAgent" resultType="_int">
+		select userid from ims_tpuser WHERE id=#{userId}
+	</select>
+
+    <insert id="createUser">
+        INSERT INTO bullfight_gameinfo (mid, sid, money, bycoins, freezemoney, exp, score, wintimes, losetimes, chip)
+        VALUES (#{mid}, #{sid}, #{money}, #{bycoins}, #{freezemoney}, #{exp}, #{score}, #{wintimes}, #{losetimes}, #{chip})
+    </insert>
+</mapper>

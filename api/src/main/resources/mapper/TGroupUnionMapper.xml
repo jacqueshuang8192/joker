@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.groupunion.GroupUnionMapper">
+
+    <!-- 添加联盟联盟-->
+    <insert id="add" parameterType="com.hbi.model.TGroupUnion" useGeneratedKeys="true" keyProperty="vo.id">
+        INSERT INTO
+            `t_group_union` (`union_name`, `create_time`)
+        VALUES
+            (#{vo.unionName}, #{vo.createTime});
+    </insert>
+
+    <!-- 设置联盟抽水-->
+    <update id="setCost" parameterType="hashMap">
+        UPDATE
+            t_group_union
+        SET
+            cost_pattern=#{costPattern},
+            commission=#{commission},
+            cost_user_type=#{costUserType}
+        WHERE
+            id=#{unionId}
+    </update>
+</mapper>

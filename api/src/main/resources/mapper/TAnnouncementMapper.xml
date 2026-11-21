@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TAnnouncementMapper">
+	
+	<select id="queryAnnouncementsByType" resultType="com.hbi.model.TAnnouncement">
+		SELECT
+			id AS id,
+			NAME AS NAME,
+			content AS content,
+			start_date AS startDate,
+			end_date AS endDate,
+			status AS status
+		FROM
+			t_announcement
+		WHERE
+			type = #{type}
+		AND STATUS = "2"
+		AND start_date &lt;= #{nowDate}
+		AND end_date &gt;= #{nowDate}
+	</select>
+
+</mapper>

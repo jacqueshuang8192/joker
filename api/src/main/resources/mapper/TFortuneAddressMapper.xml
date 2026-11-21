@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TFortuneAddressMapper" >
+
+    <select id="getAdvertList" resultType="com.hbi.vo.request.common.TAdvertVo">
+        SELECT
+        photo_url as photoUrl,
+        visit_url as visitUrl
+        FROM t_advert WHERE is_show=1
+    </select>
+</mapper>

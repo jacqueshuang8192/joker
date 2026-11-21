@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TProvinceAgentMapper">
+	<select id="selectProvinceIdByAgentId" resultType="com.hbi.model.TProvinceAgent">
+		SELECT
+		province_id AS provinceId
+		FROM
+		t_province_agent
+		WHERE
+		agent_id =
+		#{agentId}
+	</select>
+	<select id="selectByAgentIdAndProvinceId" resultType="com.hbi.model.TProvinceAgent">
+		SELECT
+		*
+		FROM
+		t_province_agent
+		WHERE
+		agent_id = #{agentId}
+		AND province_id = #{provinceId}
+	</select>
+</mapper>

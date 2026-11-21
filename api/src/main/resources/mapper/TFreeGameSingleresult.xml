@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TFreeGameSingleresultMapper">
+	<resultMap id="BaseResultMap" type="com.hbi.model.TFreeGameSingleresult">
+
+		<!-- WARNING - @mbggenerated -->
+
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="game_id" property="gameId" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="score" property="score" jdbcType="BIGINT" />
+		<result column="date" property="date" jdbcType="DATE" />
+		<result column="win" property="win" jdbcType="BIGINT" />
+		<result column="draw" property="draw" jdbcType="BIGINT" />
+		<result column="lose" property="lose" jdbcType="BIGINT" />
+		<result column="level" property="level" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="querySingleResult" resultType="com.hbi.model.TFreeGameSingleresult">
+		SELECT
+		*,
+		(@rank :=@rank + 1) AS rank
+		FROM
+		(SELECT
+		*
+		FROM
+		(
+		SELECT
+
+		f.user_id AS userId,
+		SUM(win) AS win,
+		SUM(lose) AS lose,
+		SUM(draw) AS draw,
+		SUM(total) AS total,
+		u.nick_name AS nickName,
+		u.small_icon AS samllIcon,f.date
+		FROM
+		t_free_game_singleresult f
+		JOIN
+		t_user u ON f.user_id = u.userid
+		WHERE
+		date BETWEEN #{startTime}
+		AND #{endTime}
+		GROUP BY
+		user_id
+		) u
+		GROUP BY userId
+		ORDER BY SUM(total)DESC)t,
+		(SELECT @rank := 0) AS it
+		where total > 0
+		LIMIT 0,#{rankcount}
+
+
+	</select>
+	<select id="queryGeRenSingleResult" resultType="com.hbi.model.TFreeGameSingleresult">
+		SELECT
+		*
+		FROM
+		(SELECT
+		*,
+		(@rank :=@rank + 1) AS rank
+		FROM
+		(SELECT
+		*
+		FROM
+		(
+		SELECT
+
+		f.user_id AS userId,
+		SUM(win) AS win,
+		SUM(lose) AS lose,
+		SUM(draw) AS draw,
+		SUM(total) AS total,
+		u.nick_name AS nickName,
+		u.small_icon AS samllIcon,f.date
+		FROM
+		t_free_game_singleresult f
+		JOIN
+		t_user u ON f.user_id = u.userid
+		WHERE
+		date BETWEEN #{startTime}
+		AND
+		#{endTime}
+		GROUP BY
+		user_id
+		) u
+		GROUP BY userId
+		ORDER BY SUM(total)DESC)t,
+		(SELECT @rank := 0) AS it) a WHERE
+		userId=#{userId}
+
+	</select>
+	<select id="queryGeRenSingleResult2" resultType="com.hbi.model.TFreeGameSingleresult">
+		SELECT
+		*
+		FROM
+		(SELECT
+		*,
+		(@rank :=@rank ) AS rank
+		FROM
+		(SELECT
+		*
+		FROM
+		(
+		SELECT
+
+		f.user_id AS userId,
+		SUM(win) AS win,
+		SUM(lose) AS lose,
+		SUM(draw) AS draw,
+		SUM(total) AS total,
+		u.nick_name AS nickName,
+		u.small_icon AS samllIcon,f.date
+		FROM
+		t_free_game_singleresult f
+		JOIN
+		t_user u ON f.user_id = u.userid
+		WHERE
+		date BETWEEN #{startTime}
+		AND
+		#{endTime}
+		GROUP BY
+		user_id
+		) u
+		GROUP BY userId
+		ORDER BY SUM(total)DESC)t,
+		(SELECT @rank := 0) AS it) a WHERE
+		userId=#{userId}
+
+	</select>
+	<select id="queryTotalByUserId" resultType="Long">
+		SELECT
+		SUM(f.total)
+		FROM
+		t_free_game_total f
+		JOIN t_user u ON f.user_id = u.userid
+		WHERE
+		user_id = #{userId}
+		GROUP BY
+		user_id
+		ORDER BY
+		SUM(total) DESC
+	</select>
+</mapper>

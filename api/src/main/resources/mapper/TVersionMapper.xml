@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TVersionMapper">
+	<resultMap id="BaseResultMap" type="com.hbi.model.TVersion">
+		<!-- WARNING - @mbggenerated -->
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="CHAR" />
+		<result column="application_type" property="applicationType"
+			jdbcType="CHAR" />
+		<result column="game_id" property="gameId" jdbcType="BIGINT" />
+		<result column="version" property="version" jdbcType="VARCHAR" />
+		<result column="change_content" property="changeContent"
+			jdbcType="VARCHAR" />
+		<result column="update_url" property="updateUrl" jdbcType="VARCHAR" />
+		<result column="is_manual" property="isManual" jdbcType="INTEGER" />
+		<result column="status" property="status" jdbcType="CHAR" />
+	</resultMap>
+
+	<select id="queryNewestApplicationVersions" resultType="com.hbi.model.TVersion">
+		SELECT
+		application_type AS applicationType,
+		version AS version,
+		update_url AS updateUrl,
+		change_content AS changeContent,
+		is_manual AS isManual,
+		mani_url AS maniUrl
+		FROM
+		t_version
+		WHERE
+		type = "1"
+		AND status = "2"
+	</select>
+	<select id="queryVersionByGameIds" resultType="com.hbi.model.TVersion">
+		SELECT
+		v.version AS version,
+		v.update_url AS update_url,
+		g.code AS code
+		FROM
+		t_version v,
+		t_game g
+		WHERE
+		v.game_id = g.game_id
+		AND g.game_id = #{gameId}
+	</select>
+
+	<select id="queryNewestGameHallVersions" resultType="com.hbi.model.TVersion">
+		SELECT
+		version AS version,
+		update_url AS updateUrl,
+		change_content AS changeContent,
+		mani_url AS maniUrl,
+		is_manual AS isManual
+		FROM
+		t_version
+		WHERE
+		type = "2"
+		AND status = "2"
+	</select>
+
+	<select id="queryNewestGameVersionByGameIds" resultType="com.hbi.model.TVersion">
+		SELECT
+		game_id as gameId,
+		version AS version,
+		update_url AS updateUrl,
+		change_content AS changeContent,
+		mani_url AS maniUrl,
+		is_manual AS isManual
+		FROM
+		t_version
+		WHERE
+		type = "3"
+		AND status = "2"
+		AND game_id = #{gameId}
+	</select>
+</mapper>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TFreeGameActivityMapper">
+	<resultMap id="BaseResultMap" type="com.hbi.model.TFreeGameActivity">
+		<!-- WARNING - @mbggenerated -->
+		<id column="activity_id" property="activityId" jdbcType="BIGINT" />
+		<result column="game_id" property="gameId" jdbcType="BIGINT" />
+		<result column="coins" property="coins" jdbcType="INTEGER" />
+		<result column="minutes" property="minutes" jdbcType="INTEGER" />
+		<result column="count" property="count" jdbcType="INTEGER" />
+		<result column="invite_code" property="inviteCode" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="queryFreeGameRecord" resultType="com.hbi.model.FreeGameActivityInfo">
+		select
+		u.userid as userId,
+		u.small_icon as creatorPhotoUrl,
+		u.nick_name as creatorNickname,
+		a.activity_id as activityId,
+		a.activity_name as name,
+		a.status as status,
+		a.create_date as startDate,
+		a.owner_id as creatorId,
+		g.game_id as gameId,
+		g.name as gameName,
+		g.code as gameCode,
+		g.is_gold as isGold,
+		fg.coins as coins,
+		fg.count as rounds,
+		fg.invite_code as inviteCode,
+		fg.level as level,
+		au.status as isJoin
+		from T_USER u, T_ACTIVITY a, T_FREE_GAME_ACTIVITY fg, T_ACTIVITY_USER au,
+		T_GAME g
+		where au.userid=#{userId} and au.activity_id=a.activity_id and
+		a.activity_id=fg.activity_id
+		and u.userid=a.owner_id and g.game_id=fg.game_id
+		and a.status = 0 and au.status = 1 order by a.create_date desc
+	</select>
+
+	<select id="queryOwnFreeGameRecord" resultType="com.hbi.model.FreeGameActivityInfo">
+		select
+		u.small_icon as creatorPhotoUrl,
+		u.nick_name as creatorNickname,
+		a.activity_id as activityId,
+		a.activity_name as name,
+		a.status as status,
+		a.create_date as startDate,
+		a.owner_id as creatorId,
+		g.game_id as gameId,
+		g.name as gameName,
+		g.code as gameCode,
+		fg.coins as coins,
+		fg.count as rounds,
+		fg.invite_code as inviteCode,
+		fg.level as level
+		from T_USER u, T_ACTIVITY a, T_FREE_GAME_ACTIVITY fg, T_GAME g
+		where au.userid=#{userId} and a.activity_id=fg.activity_id
+		and u.userid=a.owner_id and a.owner_id = #{userId} and
+		g.game_id=fg.game_id
+		and a.status = 0 order by a.create_date desc
+	</select>
+
+	<select id="queryFreeGameByInviteCode" resultType="com.hbi.cache.model.CacheGameActivity">
+		select
+		fg.activity_id as gameActivityId,
+		a.activity_name as activityName,
+		fg.invite_code as inviteCode,
+		fg.coins as coins,
+		fg.minutes as minutes,
+		fg.level as level,
+		a.status as status,
+		a.start_date as startDate,
+		fg.game_id as gameId,
+		g.name as gameName,
+		g.photo as gamePhoto,
+		g.code as gameCode,
+		a.owner_id as creatorId,
+		u.nick_name as creatorNickname,
+		u.small_icon as creatorPhotoUrl,
+		fg.chatroom_id as chatRoomId,
+		fg.table_id as tableId
+		from t_free_game_activity fg, t_activity a, t_game g, t_user u where
+		fg.invite_code=#{inviteCode} and
+		fg.activity_id=a.activity_id and a.status!=2 and fg.game_id=g.game_id and a.owner_id=u.userid
+	</select>
+
+	<select id="queryGameIdByInviteCode" resultType="java.lang.Long">
+		SELECT
+		fg.game_id
+		FROM
+		t_free_game_activity fg,
+		t_activity a
+		WHERE
+		fg.activity_id = a.activity_id
+		AND a.`status` = 0
+		AND invite_code = #{inviteCode}
+	</select>
+
+	<select id="queryNonCloseFreeGameByLevel" resultType="com.hbi.cache.model.CacheGameActivity">
+		select
+		fg.activity_id as gameActivityId,
+		a.activity_name as activityName,
+		fg.invite_code as inviteCode,
+		fg.coins as coins,
+		fg.minutes as minutes,
+		fg.level as level,
+		a.status as status,
+		a.start_date as startDate,
+		fg.game_id as gameId,
+		a.owner_id as creatorId,
+		fg.chatroom_id as chatRoomId,
+		fg.table_id as tableId
+		from t_free_game_activity fg, t_activity a where a.level=#{level} and
+		fg.activity_id=a.activity_id and a.status!=2
+	</select>
+
+	<select id="queryAllNonCloseFreeGame" resultType="com.hbi.cache.model.CacheGameActivity">
+		select
+		fg.activity_id as gameActivityId,
+		a.activity_name as activityName,
+		fg.invite_code as inviteCode,
+		fg.coins as coins,
+		fg.minutes as minutes,
+		fg.level as level,
+		a.status as status,
+		a.start_date as startDate,
+		fg.game_id as gameId,
+		a.owner_id as creatorId,
+		fg.chatroom_id as chatRoomId,
+		fg.table_id as tableId
+		from t_free_game_activity fg, t_activity a where
+		fg.activity_id=a.activity_id and a.status!=2
+	</select>
+
+	<select id="queryFreeGameByOwner" resultType="com.hbi.model.FreeGameActivityInfoForPlayer">
+		select v.*,u.userid as userId,
+		u.small_icon as photo,
+		u.nick_name as nickname from
+		(select
+		a.cards as cards,
+		a.discription as discription,
+		a.activity_id as activityId,
+		a.activity_name as name,
+		a.status as status,
+		a.create_date as startDate,
+		a.owner_id as creatorId,
+		g.game_id as gameId,
+		g.name as gameName,
+		g.code as gameCode,
+		fg.coins as coins,
+		fg.count as rounds,
+		fg.invite_code as inviteCode,
+		fg.level as level
+
+		from T_ACTIVITY a, T_FREE_GAME_ACTIVITY fg, T_GAME g
+		where a.owner_id=#{userId} and a.activity_id=fg.activity_id
+		and g.game_id=fg.game_id and g.is_gold != 1 and room_type=#{roomType}
+		and a.status = 0 order by a.create_date desc) v LEFT JOIN
+		`t_activity_user` au on v.activityId = au.`activity_id` LEFT JOIN
+		`t_user` u on u.`userid` = au.`userid`
+	</select>
+	<select id="selectActivityIds2Gold" resultType="com.hbi.vo.request.common.MapVo">
+		SELECT
+		activity_id as mapKey,
+		round_index as mapValue
+		FROM
+		player_round_activityid${l}
+		where
+		player_id=#{userId} and type=1
+		order by create_time desc , round_index desc
+		limit #{beginRowIndex},#{pageSize}
+	</select>
+	<select id="queryGoldActivitiesByUserIdAndLevel" resultType="com.hbi.model.TFreeGameRound">
+		SELECT
+		tfgr.id as id,
+		tfgr.activity_id as activityId,
+		tfgr.content as content,
+		tfgr.level as level,
+		tfgr.round_index as roundIndex ,
+		tfgr.end_time as endTime,
+		tfgr.replay_url as replayUrl
+		from player_round_activityid${l} pra4 ,t_free_game_round  tfgr
+		WHERE pra4.activity_id=tfgr.activity_id and pra4.round_index=tfgr.round_index and tfgr.level=#{level} and pra4.player_id=#{userId}
+		order by pra4.create_time DESC
+		limit #{beginRowIndex},#{pageSize}
+	</select>
+	<select id="selectActivityIds2Card" resultType="com.hbi.vo.request.common.MapVo">
+		SELECT
+		activity_id as mapKey,
+		round_index as mapValue
+		FROM
+		player_result_activityid${l}
+		where
+		player_id=#{userId} and type=2
+		order by create_time desc
+		limit #{beginRowIndex},#{pageSize}
+	</select>
+	<select id="selectFreeActivityRound" resultType="com.hbi.model.TFreeGameRound">
+		SELECT
+		content as content,
+		round_index as roundIndex,
+		end_time as endTime,
+		replay_url as replayUrl
+		FROM
+		t_free_game_round
+		where
+		activity_id=#{mapKey} and round_index=#{mapValue}
+	</select>
+	<select id="selectFreeActivityResult" resultType="com.hbi.model.TFreeGameResult">
+		SELECT
+		activity_id as activityId,
+		content as content,
+		end_Date as endDate
+		FROM
+		t_free_game_result
+		where
+		activity_id=#{mapKey} limit 1
+	</select>
+	<select id="queryCardActivities2RoundByUserI" resultType="com.hbi.model.TFreeGameRound">
+		SELECT
+		content as content,
+		round_index as roundIndex,
+		end_time as endTime,
+		replay_url as replayUrl,
+		level as level
+		FROM
+		t_free_game_round
+		where
+		activity_id=#{activityId}
+		order by round_index
+	</select>
+	<select id="selectFreeActivityResultAll" resultType="TFreeGameRound">
+		SELECT tfgr.content as content,
+				tfgr.round_index as roundIndex,
+				tfgr.end_time as endTime,
+				tfgr.replay_url as replayUrl
+			FROM player_round_activityid${l} pra
+			  LEFT JOIN  t_free_game_round tfgr ON pra.activity_id=tfgr.activity_id and pra.round_index=tfgr.round_index
+			WHERE pra.player_id =#{userId} and pra.type=1
+			 order by pra.create_time desc , pra.round_index desc
+			 LIMIT #{beginRowIndex},#{pageSize}
+	</select>
+	<select id="queryActivityIdByInviteCode" resultType="java.lang.Long">
+		select activity_id from t_free_game_activity
+		where invite_code = #{inviteCode}
+		order by activity_id desc limit 1
+	</select>
+
+</mapper>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TActivityMapper">
+	<resultMap id="BaseResultMap" type="com.hbi.model.TActivity">
+		<!-- WARNING - @mbggenerated -->
+		<id column="activity_id" property="activityId" jdbcType="BIGINT" />
+		<result column="activity_name" property="activityName"
+			jdbcType="VARCHAR" />
+		<result column="parent_id" property="parentId" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="CHAR" />
+		<result column="owner_id" property="ownerId" jdbcType="BIGINT" />
+		<result column="status" property="status" jdbcType="SMALLINT" />
+		<result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+		<result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<insert id="insertActivity" parameterType="com.hbi.model.TActivity"
+		useGeneratedKeys="true" keyProperty="activityId">
+		INSERT INTO t_activity (
+		activity_name,
+		parent_id,
+		owner_id,
+		game_id,
+		level,
+		start_date,
+		end_date,
+		create_date,
+		status,
+		cards,
+		is_deduct,
+		discription,
+		room_type,
+		group_id,
+		game_json,
+		extend_activity_id,
+		invite_code
+		)
+		VALUES
+		(
+		#{activityName},
+		#{parentId},
+		#{ownerId},
+		#{gameId},
+		#{level},
+		#{startDate},
+		#{endDate},
+		#{createDate},
+		#{status},
+		#{cards},
+		#{isDeduct},
+		#{discription},
+		#{roomType},
+		#{groupId},
+		#{gameJson},
+		#{extendActivityId},
+		#{inviteCode}
+		);
+	</insert>
+
+	<update id="updateIsdeduct">
+		UPDATE t_activity
+		SET is_deduct = 1
+		WHERE
+		activity_id =
+		#{activityId}
+	</update>
+    <update id="updateStatus22">
+		UPDATE t_activity
+		SET status=2,end_date = now()
+		WHERE
+		activity_id=#{activityId}
+	</update>
+
+    <select id="selectcardSumByuserId" resultType="int">
+		SELECT
+		SUM(cards)
+		FROM
+		t_activity
+		WHERE
+		status = 0
+		AND is_deduct = 0
+		AND owner_id = #{userId}
+	</select>
+	<select id="selectActivityIdByuserId" resultType="Long">
+		SELECT
+		activity_id
+		FROM
+		t_activity
+		WHERE
+		`status` = 0
+		AND owner_id = #{userId}
+	</select>
+	
+	<select id="selectByGroupIdAndPlayerId" parameterType="hashMap" resultType="com.hbi.model.TActivity">
+		SELECT
+			a.*,
+			z.player_id playerId,
+			COUNT(z.id) round,
+			SUM(z.play_point_count) score
+		FROM
+			t_activity a
+		INNER JOIN
+			t_group_zhanji z ON a.activity_id=z.activity_id
+		WHERE
+			a.activity_id IN
+			(
+			SELECT
+				activity_id
+			FROM
+				t_group_zhanji
+			WHERE
+				group_id=#{groupId}
+			<if test="playerId != null">
+			AND
+				player_id=#{playerId}
+			</if>
+			)
+		<if test="dateStr != null">
+		AND
+			DATE_FORMAT(a.create_date,'%Y-%m-%d')=#{dateStr}
+        </if>
+		<if test="playerId != null">
+		AND
+		z.player_id=#{playerId}
+		</if>
+		GROUP BY
+			z.id
+		LIMIT
+			#{pageIndex}, #{pageSize}
+	</select>
+    <select id="selectClubTables" resultType="java.lang.Integer">
+		select ifnull(count(1),0) from t_activity where group_id = #{clubId} and status = 0
+		<if test="gameLevel != null">
+			and game_id = #{gameLevel}
+		</if>
+	</select>
+</mapper>

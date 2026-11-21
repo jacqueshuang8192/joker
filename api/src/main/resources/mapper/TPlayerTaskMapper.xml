@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TPlayerTaskMapper">
+    <insert id="insertOne">
+        insert INTO t_player_task${l}(player_id,term_now,status,is_enough,task_id) values(#{playerId},#{count},0,0,1)
+    </insert>
+    <update id="updateTaskStatus">
+        UPDATE t_player_task${l}
+        set status=#{status}
+        where player_id=#{playerId} and task_id=#{taskId} and squence=#{squence}
+    </update>
+    <update id="updateSquence">
+        UPDATE t_player_task${l}
+        set squence=#{squence}
+        where player_id=#{playerId} and task_id=#{taskId}
+    </update>
+    <select id="selectTermIsOk" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_player_task${l} tpt0 LEFT JOIN t_task tt ON tpt0.task_id=tt.id
+    WHERE tpt0.player_id=#{playerId} AND tpt0.term_now >= tt.task_term
+    </select>
+    <select id="selectTask" resultType="com.hbi.model.TTask">
+        select
+        task_id as taskId,
+        task_name as taskName
+        FROM
+        t_task
+        WHERE parent_id=0 and status=1
+    </select>
+    <select id="selectByparentId" resultType="com.hbi.model.TTask">
+        select
+        task_id as taskId,
+        task_name as taskName,
+        squence as squence,
+        status as status,
+        task_term as taskTerm,
+        task_describe as taskDescribe,
+        gift as gift,
+        parent_id as parentId
+        FROM
+        t_task
+        WHERE parent_id=#{taskId} and squence=0
+    </select>
+    <select id="selectByTaskId" resultType="com.hbi.model.TTask">
+        SELECT
+        task_id as taskId,
+        task_name as taskName,
+        parent_id as parentId,
+        squence as squence,
+        status as status,
+        task_term as taskTerm,
+        task_describe as taskDescribe,
+        gift as gift
+        from
+        t_task
+        WHERE
+        task_id=#{i} and squence=#{i1}
+
+    </select>
+    <select id="selectByTaskIdNotSquence" resultType="com.hbi.model.TTask">
+        SELECT
+        task_id as taskId,
+        task_name as taskName,
+        parent_id as parentId,
+        squence as squence,
+        status as status,
+        task_term as taskTerm,
+        task_describe as taskDescribe,
+        gift as gift
+        from
+        t_task
+        WHERE
+        task_id=#{i}
+
+    </select>
+    <select id="selectByTask_id" resultType="com.hbi.model.TPlayerTask">
+        SELECT
+        *
+        FROM
+        t_player_task${l}
+        where
+        player_id=#{playerId} and task_id=#{i}
+    </select>
+    <select id="selectPlayerTaskByTask" resultType="com.hbi.model.TPlayerTask">
+        SELECT
+        *
+        FROM
+        t_player_task${l}
+        where
+        player_id=#{playerId} and task_id=#{i}
+        <if test="i1!=null || i1=''">
+            and squence =#{i1}
+        </if>
+    </select>
+    <select id="selectPlayerTaskByTaskId" resultType="com.hbi.model.TPlayerTask">
+        SELECT
+        *
+        FROM
+        t_player_task${l}
+        where
+        player_id=#{playerId}
+    </select>
+</mapper>

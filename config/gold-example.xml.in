@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SYSTEM>
+  <GAME GameID="0" ServerType="0" MemServerIP="127.0.0.1" MemServerPort="6379" UpdateInteval="60" password="">
+    <Log level="1"/>
+    <DBList>
+      <DB ip="127.0.0.1" port="3306" user="shenshou_game" pwd="@DB_PASSWORD@" tableName="bullfight_gameinfo" dbName="shenshou_game" dbNum="1" tableNum="10"/>
+    </DBList>
+  </GAME>
+</SYSTEM>

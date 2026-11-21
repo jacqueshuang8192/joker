@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbi.mapper.TRecordMapper">
+
+	<resultMap id="BaseResultMap" type="com.hbi.model.TRecord" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="sequences" property="sequences" jdbcType="BIGINT" />
+  </resultMap>
+  
+	<select id="getCurrentId" resultType="Long">
+		SELECT
+		T .sequences
+		FROM
+		t_record T
+		WHERE
+		1 = 1
+		<if test="objectClassName != null">
+			ANd T .id = #{objectClassName}
+		</if>
+	</select>
+	<insert id="insertRecord">
+		INSERT INTO t_record(id, sequences)
+		VALUES
+		(#{objectClassName}, #{sequences})
+	</insert>
+	<update id="updateRecord">
+		UPDATE t_record
+		SET sequences = sequences + #{sequences}
+		WHERE
+		id = #{objectClassName}
+	</update>
+</mapper>

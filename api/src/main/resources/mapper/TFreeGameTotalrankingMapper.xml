@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TFreeGameTotalrankingMapper">
+	<resultMap id="BaseResultMap" type="com.hbi.model.TFreeGameTotalranking">
+
+		<!-- WARNING - @mbggenerated -->
+
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="game_id" property="gameId" jdbcType="BIGINT" />
+		<result column="score" property="score" jdbcType="BIGINT" />
+		<result column="total" property="total" jdbcType="BIGINT" />
+		<result column="win" property="win" jdbcType="BIGINT" />
+		<result column="draw" property="draw" jdbcType="BIGINT" />
+		<result column="lose" property="lose" jdbcType="BIGINT" />
+		<result column="level" property="level" jdbcType="INTEGER" />
+
+	</resultMap>
+	<select id="querytotalranking" resultType="com.hbi.model.TFreeGameTotalranking">
+		SELECT
+		*
+		FROM
+		t_free_game_totalranking
+		WHERE
+		game_id = #{gameId}
+		AND user_id = #{userId}
+
+	</select>
+	<update id="updateTotalranking">
+		UPDATE
+		t_free_game_totalranking t
+		SET
+		t.win = t.win + #{win},
+		t.score = t.score+#{score},
+		t.draw = t.draw + #{draw},
+		t.lose = t.lose +#{lose},
+		t.total = t.total + #{total}
+		WHERE
+		t.user_id = #{user_id}
+		and t.game_id =#{game_id}
+	</update>
+
+</mapper>

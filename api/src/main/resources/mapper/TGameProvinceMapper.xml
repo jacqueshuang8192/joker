@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TGameProvinceMapper">
+	<select id="selectAgentByProvinceId" resultType="Long">
+		SELECT
+		default_agent
+		FROM
+		t_game_province
+		WHERE
+		province_id = #{provinceId}
+	</select>
+	<select id="selectAgentByGongbanId" resultType="Long">
+		SELECT
+		default_agent
+		FROM
+		t_game_province
+		WHERE
+		province_id = 100000
+	</select>
+
+	<select id="selectByProvinceId" resultType="com.hbi.model.TGameProvince">
+		SELECT
+		*
+		FROM
+		t_game_province
+		WHERE
+		province_id = #{provinceId}
+	</select>
+
+
+	<select id="queryGameProvince" resultType="com.hbi.model.TGameProvince">
+		SELECT
+		province_id AS provinceId,
+		province_name AS provinceName,
+		is_hot AS isHot,
+		is_new AS isNew,
+		is_show AS isShow
+		FROM
+		t_game_province
+
+	</select>
+    <select id="getAllProvince" resultType="com.hbi.model.TGameProvince">
+		SELECT
+		*
+		FROM
+		t_game_province
+		WHERE
+		is_show=1;
+	</select>
+</mapper>

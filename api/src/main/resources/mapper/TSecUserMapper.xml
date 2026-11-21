@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TSecUserMapper" >
+  <resultMap id="BaseResultMap" type="com.hbi.model.TSecUser" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="userId" property="userid" jdbcType="BIGINT" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="userType" property="usertype" jdbcType="CHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="fullname" property="fullname" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="DATE" />
+    <result column="status" property="status" jdbcType="SMALLINT" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="sell_count" property="sellCount" jdbcType="BIGINT" />
+    <result column="extract_income" property="extractIncome" jdbcType="BIGINT" />
+  </resultMap>
+	<insert id="insertIntoImsTpUser">
+		INSERT INTO ims_tpuser (id, username, password, loginnum, last_login_ip, last_login_time, phone, status, typeid, parentid, cardcount, userid, openid, unionid, type, nickname, headimgurl, addtime, leftrebate, withdrawrebate, real_name, commission_goldA, commission_goldB, commission_goldC,commission_cardA, commission_cardB, commission_cardC)
+		VALUES (#{userId},#{loginName},#{password},0,null,null,#{phone},1,0,#{agentId},0,#{userId},#{wechat},0,0,#{nickName},#{smallIcon},now(),0,0,null,0,0,0,0,0,0)
+	</insert>
+
+	<update id="updateJewelAmount">
+	UPDATE
+	  t_sec_user
+	SET
+	  income = income+#{jewelAmount}
+	WHERE
+	  userId = #{userId}
+  </update>
+  
+  <update id="reduceJewelAmount">
+  	UPDATE
+	  t_sec_user t
+	SET
+	  t.income = t.income-#{jewelAmount}
+	WHERE
+	  t.userId = #{userId}
+  </update>
+  
+  <update id="updateCompereCount">
+  	UPDATE
+	  t_sec_operator t
+	SET
+	  t.compere_num = t.compere_num + #{count}
+	WHERE
+	  t.operator_id = #{userId}
+  </update>
+  
+  <update id="updatePlayerCount">
+  	UPDATE
+	  t_sec_operator t
+	SET
+	  t.customer_num = t.customer_num + #{count}
+	WHERE
+	  t.operator_id = #{userId}
+  </update>
+  
+  <update id="updateExtractJewelAmount">
+	UPDATE
+	  t_sec_user
+	SET
+	  income = income+#{jewelAmount},
+	  extract_income = extract_income + #{jewelAmount}
+	WHERE
+	  userId = #{userId}
+  </update>
+  
+  <select id="selectProvinceIdByAgentId" resultType="Long">
+		SELECT
+		province_id
+		FROM
+		t_sec_user
+		WHERE
+		userId = #{userId}
+		
+	</select>
+
+	<update id="updateCardNum">
+		UPDATE
+		t_sec_user
+		SET
+		room_card_num = room_card_num+#{cardNum}
+		WHERE
+		userid = #{userId}
+	</update>
+	<update id="updateSellCount">
+		UPDATE
+		t_sec_user
+		SET
+		sell_count = #{sellCount}
+		WHERE
+		userid = #{userId}
+	</update>
+	<update id="changeSellCount">
+		UPDATE
+		t_sec_user
+		SET
+		sell_count = sell_count+#{sellCount}
+		WHERE
+		userid = #{userId}
+	</update>
+
+	<update id="increaseSecondLayerSellCount">
+		UPDATE
+		t_sec_user
+		SET
+		second_layer_sell_count = second_layer_sell_count+#{secondLayerSellCount}
+		WHERE
+		userid = #{userId}
+	</update>
+
+	<select id="queryAgentLevelByAgentId" resultType="INTEGER">
+		SELECT
+		agent_level AS agentLevel
+		FROM
+		t_sec_user
+		WHERE
+		userId = #{userId}
+	</select>
+
+	<select id="queryParentIdByUserId" resultType="Long">
+		SELECT
+		parent_id AS parentId
+		FROM
+		t_sec_user
+		WHERE
+		userId = #{userId}
+	</select>
+    <select id="isOverByCeshiManager" resultType="java.lang.Integer">
+		SELECT count(0) FROM t_sec_user t WHERE t.userId=88888888 AND now() > t.birthday;
+	</select>
+    <select id="selectByLoginName" resultType="string">
+		SELECT username
+		FROM ims_tpuser WHERE username=#{loginName};
+	</select>
+</mapper>

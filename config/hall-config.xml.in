@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<SYSTEM LogDir="../log/" LogLevel="0" AccessLog="0" MaxFdCount="10000" WebTimeout="60" HelperTimeout="5" MaxListenCount="1000" HARedisServer="127.0.0.1" HARedisPort="6379" KEY="@MT_KEY@">
+    <ServerInfo>
+        <ip>@ADVERTISE_IP@</ip>
+        <port>4700</port>
+        <MaxClient>1000</MaxClient>
+    </ServerInfo>
+    <DBInfo>
+        <ip>127.0.0.1</ip>
+        <port>3306</port>
+        <user>shenshou_game</user>
+        <password>@DB_PASSWORD@</password>
+        <database>shenshou_game</database>
+    </DBInfo>
+    <LogServer>
+        <ip>127.0.0.1</ip>
+        <port>6101</port>
+    </LogServer>
+</SYSTEM>

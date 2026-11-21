@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TFreeGameResultMapper" >
+  <resultMap id="BaseResultMap" type="com.hbi.model.TFreeGameResult" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <result column="activity_id" property="activityId" jdbcType="BIGINT" />
+  </resultMap>
+
+    <insert id="insertPlayerRound">
+        insert into player_round_activityid${l}(player_id,activity_id,round_index,type,create_time,group_id) values(${uid},${activityId},${index},${is_gold},now(),#{groupId})
+    </insert>
+    <insert id="insertFreeGameRound">
+        insert into t_free_game_round(activity_id,content,replay_url,level,round_index,end_time, group_id) values(#{activityId},#{toJSONString},#{replayUrl},#{level},#{index},#{time},#{groupId})
+    </insert>
+    <insert id="insertPlayerResult">
+        insert into player_result_activityid${l} (player_id,activity_id,round_index,type,create_time,group_id) values(#{uid},#{activityId},#{index},#{is_gold},#{groupGameTime},#{groupId})
+    </insert>
+    <insert id="insertFreeGameResult">
+        insert into t_free_game_result(activity_id,content,level,end_date,round_index,group_id) values(#{activityId},#{toJSONString},#{level},#{groupGameTime},#{index},#{groupId})
+    </insert>
+    <update id="updatePlayerResult">
+        update player_result_activityid${l} set round_index=${index} where player_id=#{uid} and activity_id=#{activityId}
+    </update>
+    <update id="updateFreeGameResult">
+        update t_free_game_result set content=#{toJSONString},round_index=#{index} where activity_id=#{activityId}
+    </update>
+
+    <select id="queryActivitiesByUserId" resultType="com.hbi.model.TFreeGameResult">
+    SELECT
+        id AS id,
+        activity_id AS activityId,
+        content AS content,
+        level AS level,
+        end_date AS endDate,
+        name as name
+    FROM
+        t_free_game_result
+    WHERE
+	activity_id IN (
+        SELECT
+            activity_id
+        FROM
+            t_activity_user u
+        WHERE
+            u.userid = #{userId}
+    )
+    ORDER BY end_date
+    DESC
+    limit 0,10
+  </select>
+
+  <select id="queryActivitiesByOwner" resultType="com.hbi.model.TFreeGameResult">
+    SELECT
+        fgr.id AS id,
+        fgr.activity_id AS activityId,
+        fgr.content AS content,
+        fgr.level AS level,
+        fgr.end_date AS endDate,
+        fgr.name as name
+    FROM
+        t_free_game_result fgr, t_activity a 
+    WHERE
+	a.owner_id = #{userId} and a.status = 2 and a.activity_id = fgr.activity_id 
+    ORDER BY fgr.end_date
+    DESC
+    limit 0,10
+  </select>
+    <select id="selectPlayerResult" resultType="java.lang.Integer">
+        select ifnull(round_index,0) from player_result_activityid${l} where player_id=#{uid} and activity_id=#{activityId}
+    </select>
+
+    <select id="selectFreeGameResult" resultType="java.lang.Integer">
+        select ifnull(round_index,0) from t_free_game_result where activity_id=#{activityId}
+    </select>
+    <select id="queryActivitiesResult" resultType="com.hbi.model.TFreeGameResult">
+        SELECT * from player_result_activityid${l} pra RIGHT JOIN t_free_game_result tfr on pra.activity_id = tfr.activity_id
+            WHERE pra.player_id=#{userId}
+            <if test="groupId != null">
+                and pra.group_id = #{groupId}
+            </if>
+            <if test="level != null">
+                and tfr.`level` = #{level}
+            </if>
+            <if test="type != null">
+                and pra.type = #{type}
+            </if>
+            order by tfr.end_date desc
+            limit ${startPage},${pageSize}
+    </select>
+    <select id="queryActivitiesResultCount" resultType="java.lang.Integer">
+        SELECT count(1) from player_result_activityid${l} pra RIGHT JOIN t_free_game_result tfr on pra.activity_id = tfr.activity_id
+        WHERE pra.player_id=#{userId}
+        <if test="groupId != null">
+            and pra.group_id = #{groupId}
+        </if>
+        <if test="level != null">
+            and tfr.`level` = #{level}
+        </if>
+        <if test="type != null">
+            and pra.type = #{type}
+        </if>
+    </select>
+</mapper>

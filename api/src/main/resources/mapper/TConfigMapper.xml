@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TConfigMapper">
+	<resultMap id="BaseResultMap" type="com.hbi.model.TConfig">
+		<!-- WARNING - @mbggenerated -->
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<id column="K" property="k" jdbcType="VARCHAR" />
+		<result column="V" property="v" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<update id="updateConfig">
+		UPDATE
+			t_config
+		SET
+			V=#{value}
+		WHERE
+			K=#{key}
+	</update>
+	<select id="getVValues" resultType="java.lang.String">
+		  select
+		  V
+		  from t_config
+		  WHERE K=#{V}
+	</select>
+</mapper>

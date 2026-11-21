@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TAccountChargeMapper" >
+  <resultMap id="BaseResultMap" type="com.hbi.model.TAccountCharge" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="charge_id" property="chargeId" jdbcType="BIGINT" />
+    <result column="account_id" property="accountId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="coin_amount" property="coinAmount" jdbcType="INTEGER" />
+    <result column="rmb_amount" property="rmbAmount" jdbcType="INTEGER" />
+    <result column="charge_date" property="chargeDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="channel" property="channel" jdbcType="CHAR" />
+    <result column="pay_type" property="payType" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="charge_order" property="charge_order" jdbcType="VARCHAR" />
+    <result column="channel_order_id" property="channel_order_id" jdbcType="VARCHAR" />
+    <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+  </resultMap>
+    <select id="selectRecCount" resultType="java.lang.Long">
+      SELECT count(rmb_amount)
+      FROM t_account_charge WHERE user_id=#{playerId} and status=2;
+    </select>
+
+</mapper>

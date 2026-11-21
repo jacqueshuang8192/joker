@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TMsgPlayerGroupMapper">
+    <update id="updateStatus">
+        UPDATE t_msg_playergroup
+        SET
+        status = #{status}
+        where player_id=#{playerId} and ower_id=#{owerId} and group_id =#{groupId}
+    </update>
+    <update id="updateStatusById">
+        update t_msg_playergroup
+        SET
+        status = #{status}
+        where id = #{msgId}
+    </update>
+    <select id="getMsg" resultType="com.hbi.model.TMsgPlayerGroup">
+        SELECT
+        *
+        FROM
+        t_msg_playergroup
+        WHERE ower_id=#{playerId} and status = #{status}
+        <if test="groupId != null">
+            and group_id = #{groupId}
+        </if>
+    </select>
+    <select id="selectMsg" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        t_msg_playergroup
+        WHERE player_id=#{playerId} and ower_id=#{owerId} and group_id=#{groupId} and status=#{i}
+    </select>
+</mapper>

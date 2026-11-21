@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TGroupPlayerMapper">
+
+    <insert id="insertGroup" useGeneratedKeys="true" keyProperty="groupId" parameterType="com.hbi.model.TGroupPlayer">
+          insert into t_group_player(ower_id,group_name,config) VALUES (#{owerId},#{groupName},#{config})
+    </insert>
+    <update id="updateComConfig">
+        UPDATE
+            t_group_player
+        set
+            cost_pattern = #{cost_pattern},
+            commission = #{commission},
+            cost_user_type=#{cost_user_type},
+            cost_limit=#{costLimit},
+            strength_limit=#{strengthLimit},
+            update_cost_count=update_cost_count+1
+        WHERE
+            group_id = #{groupId};
+    </update>
+    <update id="updatePlayCoins">
+        UPDATE  t_group_player set play_coins = #{coins} WHERE group_id = #{groupId};
+    </update>
+    <update id="updatCostUserType">
+         UPDATE  t_group_player set cost_user_type = #{costUserType} WHERE group_id = #{groupId};
+    </update>
+    <select id="queryGroupOwerId" resultType="_long">
+        select ower_id from t_group_player WHERE group_id = #{groupId}
+    </select>
+    <select id="selectGameResultVos" resultType="com.hbi.vo.request.common.GameResultVo">
+        select pra.player_id,pra.activity_id,pra.create_time,pra.round_index,pra.group_id,tfgr.content,tfgr.`level`
+        from player_result_activityid${l} pra RIGHT JOIN t_free_game_result tfgr on  pra.activity_id = tfgr.activity_id
+	    WHERE 1 = 1
+	    <if test="playerId != null">
+            and player_id = #{playerId}
+        </if>
+	    <if test="groupId != null">
+            and group_id = #{groupId}
+        </if>
+        <if test=" groupId == null">
+            and group_id is null
+        </if>
+        <if test="dateStr != null">
+            and DATE_FORMAT(create_time,'%Y-%m-%d') = #{dateStr}
+        </if>
+	     order by create_time desc LIMIT ${pageIndex},${pageSize}
+    </select>
+    <select id="selectByInviteCode" resultType="com.hbi.model.TPlayerGroup">
+        select * from t_player_group where invite_code = #{inviteCode}
+    </select>
+    <select id="selectAllClub" resultType="com.hbi.model.TGroupPlayer">
+        select * from t_group_player where 1 = 1
+    </select>
+
+    <!-- 设置抽水-->
+    <update id="setCost" parameterType="hashMap">
+        UPDATE
+            t_group_player
+        SET
+            cost_pattern=#{costPattern},
+            commission=#{commission},
+            cost_user_type=#{costUserType}
+        WHERE
+            group_id=#{groupId}
+        AND
+            player_id=#{ower_id}
+    </update>
+    <update id="updateChoushuiCount">
+        update
+            t_group_player
+        SET
+            choushui_count = choushui_count + ${choushuiCount},
+            profit_count = profit_count + ${choushuiCount},
+            profit_club_count = profit_club_count + ${shengyuCount},
+            point_pool = point_pool - ${choushuiCount}
+        where
+            group_id = #{groupId}
+    </update>
+    <update id="updateCluPointPool">
+        update t_group_player
+        set point_pool = point_pool + ${coins}
+        where group_id = #{groupId}
+    </update>
+    <update id="updateCluProfitCount">
+        update t_group_player
+        set
+            profit_count = profit_count +${profitCount},
+            profit_club_count = profit_club_count + ${profitClubCount},
+            point_pool = point_pool + ${pointPool}
+        where group_id = #{groupId}
+    </update>
+    <update id="updateClubOwnerId">
+        update t_group_player set
+            ower_id = #{assignor}
+        where group_id = #{groupId}
+    </update>
+
+    <!--<insert id="insertGroup" parameterType="com.hbi.model.TGroupPlayer">-->
+        <!--<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="group_id">-->
+            <!--SELECT LAST_INSERT_ID()-->
+        <!--</selectKey>-->
+        <!--insert into t_group_player(ower_id,players,group_name) VALUES (#{playerId},#{playerId},#{groupName})-->
+    <!--</insert>-->
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TGroupXiaohaoDayHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.hbi.model.TGroupXiaohaoDayHistory" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="group_id" property="groupId" jdbcType="INTEGER" />
+    <result column="hehuoren_id" property="hehuorenId" jdbcType="INTEGER" />
+    <result column="profit" property="profit" jdbcType="INTEGER" />
+    <result column="day_time" property="dayTime" jdbcType="TIMESTAMP" />
+    <result column="dayingjia_count" property="dayingjiaCount" jdbcType="INTEGER" />
+    <result column="player_count" property="playerCount" jdbcType="INTEGER" />
+  </resultMap>
+    <update id="updateInfo">
+
+      UPDATE t_group_xiaohao_day_history
+      SET profit = profit + ${agentIncome},dayingjia_count = dayingjia_count + ${dayingjiaCount}
+      where group_id = #{groupId} and hehuoren_id = #{hehuorenId} and DATE_FORMAT(day_time,'%Y-%m-%d') = #{now_data}
+
+    </update>
+    <select id="selectXiaoHaoInfo" resultType="com.hbi.vo.request.common.XiaoHaoInfoVO">
+        SELECT ifnull(sum(profit),0) as xiaohaoCount ,ifnull(sum(dayingjia_count),0) as dayingjiaCount ,ifnull(sum(player_count),0) as playerCount  from t_group_xiaohao_day_history
+        where group_id = ${groupId} and hehuoren_id = ${playerId}
+        <if test="startTime != null">
+          and DATE_FORMAT(day_time,'%Y-%m-%d') >= #{startTime}
+        </if>
+        <if test="endTime != null">
+          and DATE_FORMAT(day_time,'%Y-%m-%d') &lt;= #{endTime}
+        </if>
+    </select>
+</mapper>

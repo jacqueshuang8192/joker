@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TGroupXiaohaoHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.hbi.model.TGroupXiaohaoHistory" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="group_id" property="groupId" jdbcType="INTEGER" />
+    <result column="hehuoren_id" property="hehuorenId" jdbcType="INTEGER" />
+    <result column="player_id" property="playerId" jdbcType="INTEGER" />
+    <result column="profit" property="profit" jdbcType="INTEGER" />
+    <result column="profit_time" property="profitTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+    <select id="getXiaohaoList" resultType="com.hbi.model.TGroupXiaohaoHistory">
+      select * from t_group_xiaohao_history
+      where group_id = #{groupId} and hehuoren_id = #{hehuorenId}
+      <if test="startTime != null">
+        and profit_time >= #{startTime}
+      </if>
+      <if test="endTime != null">
+        and profit_time &lt;= #{endTime}
+      </if>
+      <if test="searchUid != null">
+        and player_id = #{searchUid}
+      </if>
+      ORDER BY profit_time desc
+      LIMIT #{startIndex},#{pageSize}
+    </select>
+  <select id="getXiaohaoListLen" resultType="java.lang.Integer">
+    select count(1) from t_group_xiaohao_history
+    where group_id = #{groupId} and hehuoren_id = #{hehuorenId}
+    <if test="startTime != null">
+      and profit_time >= #{startTime}
+    </if>
+    <if test="endTime != null">
+      and profit_time &lt;= #{endTime}
+    </if>
+    <if test="searchUid != null">
+      and player_id = #{searchUid}
+    </if>
+  </select>
+  <select id="getXiaoHaoCount" resultType="java.lang.Integer">
+    select ifnull(SUM(profit),0) from t_group_xiaohao_history
+    where group_id = #{groupId} and hehuoren_id = #{hehuorenId}
+    <if test="startTime != null">
+      and profit_time >= #{startTime}
+    </if>
+    <if test="endTime != null">
+      and profit_time &lt;= #{endTime}
+    </if>
+    <if test="searchUid != null">
+      and player_id = #{searchUid}
+    </if>
+  </select>
+</mapper>

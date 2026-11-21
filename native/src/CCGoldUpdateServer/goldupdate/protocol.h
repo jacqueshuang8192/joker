@@ -1,0 +1,5 @@
+#pragma once
+
+const int SYS_COMMAND_UPDATE_MID = 0x3004;
+
+const int SYS_COMMAND_UPDATE_T_ACTIVITY_USER = 0x3005;

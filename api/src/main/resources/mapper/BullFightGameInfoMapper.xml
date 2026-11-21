@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.BullFightGameInfoMapper">
+	<resultMap id="BaseResultMap" type="com.hbi.model.BullfightGameinfo">
+	</resultMap>
+	<select id = "selectById" resultType="com.hbi.model.BullfightGameinfo">
+		select 
+		    *
+		from
+		    bullfight_gameinfo
+		where
+		    mid = #{bullfight_gameinfo.mid}
+	</select>
+	<select id="selectByMoney" resultType="java.lang.String">
+		SELECT
+		money
+		FROM
+		bullfight_gameinfo${l}
+		where
+		mid = #{playerId}
+	</select>
+
+	<insert id="createUser">
+		INSERT INTO bullfight_gameinfo (mid, sid, money, bycoins, freezemoney, exp, score, wintimes, losetimes, chip)
+		VALUES (#{bullfight_gameinfo.mid}, 1, #{bullfight_gameinfo.money}, 0, 0, 0, 0, 0, 0, 0)
+	</insert>
+</mapper>

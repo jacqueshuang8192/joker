@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TRongcloudServerMapper" >
+  <resultMap id="BaseResultMap" type="TRongcloudServer" >
+    <id column="rongcloud_id" property="rongcloudId" jdbcType="BIGINT" />
+    <result column="province" property="provinceId" jdbcType="VARCHAR" />
+    <result column="room_id" property="roomId" jdbcType="VARCHAR" />
+    <result column="room_name" property="roomName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="token" property="token" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insertRoom">
+    INSERT INTO
+    t_rongcloud_server(province, room_id, room_name)
+    VALUES (#{provinceId},#{roomId},#{roomName})
+  </insert>
+  <delete id="deleteOrderDate">
+    DELETE FROM
+    t_rongcloud_server
+    WHERE LENGTH(province)=10;
+  </delete>
+    <delete id="deleteByRoom_id">
+      DELETE FROM
+      t_rongcloud_server
+      WHERE room_id=#{room_id};
+    </delete>
+    <select id="getAllProvinceIds" resultType="com.hbi.model.TRongcloudServer">
+    SELECT
+    province AS provinceId,
+    room_id,
+    room_name
+    FROM
+    t_rongcloud_server
+    WHERE SUBSTRING(province,1,6)=#{provinceId} AND length(province)=10;
+  </select>
+  <select id="getAllRoom" resultType="com.hbi.model.TRongcloudServer">
+    SELECT
+    *
+    FROM
+    t_rongcloud_server
+    WHERE 1=1
+    <if test="provinceId != null">
+    AND SUBSTRING(province,1,6)=#{provinceId}
+    </if>
+  </select>
+    <select id="getRoomList" resultType="java.lang.String">
+      select
+      room_id
+      FROM t_rongcloud_server
+      WHERE length(province)="10";
+    </select>
+
+</mapper>

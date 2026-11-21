@@ -1,0 +1,14 @@
+.env
+.env.*
+runtime/
+**/target/
+**/.DS_Store
+**/__pycache__/
+*.log
+*.pem
+*.p12
+*.key
+*.war
+*.sql
+!database/001-schema.sql
+!tools/check-schema.sql

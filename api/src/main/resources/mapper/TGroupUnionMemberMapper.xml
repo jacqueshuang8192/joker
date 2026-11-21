@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.groupunion.GroupUnionMemberMapper">
+
+    <!-- 添加联盟联盟成员-->
+    <insert id="add" parameterType="com.hbi.model.TGroupUnionMember">
+        INSERT INTO
+            t_group_union_member (`union_id`, `player_id`, inviter_id, `player_type`, `from_group_id`, `bonus`, `create_time`)
+        VALUES
+            (#{vo.unionId}, #{vo.playerId}, #{vo.inviterId}, #{vo.playerType}, #{vo.fromGroupId}, #{vo.bonus}, #{vo.createTime})
+    </insert>
+
+    <!-- 设置成员类型-->
+    <update id="setPlayerType" parameterType="hashMap">
+        UPDATE
+            t_group_union_member
+        SET
+            player_type=#{playerType}
+        WHERE
+            union_id=#{unionId}
+        AND
+            player_id=#{playerId}
+    </update>
+
+    <!-- 根据玩家ID、联盟ID查询玩家类型（0=>盟主 1=>管理员 2=>普通成员）-->
+    <select id="getPlayerTypeByPlayerIdAndUnionId" parameterType="hashMap" resultType="java.lang.Integer">
+        SELECT
+            player_type
+        FROM
+            t_group_union_member
+        WHERE
+            player_id=#{playerId}
+        AND
+            union_id=#{unionId}
+    </select>
+
+    <!-- 添加群组成员都联盟-->
+    <insert id="addUnoinMember4Group" parameterType="hashMap">
+        INSERT INTO
+            t_group_union_member(`union_id`, `player_id`, `inviter_id`, `player_type`, `from_group_id`, `create_time`, `bonus`)
+        SELECT
+            #{unionId}, player_id, #{playerId},
+            (CASE WHEN player_type=0 THEN 4 WHEN player_type=1 THEN 5 ELSE player_type END),
+            #{groupId}, #{now},
+            (case when player_type=0 then #{bonus} else bonus end)
+        FROM
+            t_player_group
+        WHERE
+            group_id=#{groupId}
+    </insert>
+
+    <!-- 设置联盟联盟成员分红-->
+    <update id="setBonus" parameterType="hashMap">
+        UPDATE
+            t_group_union_member
+        SET
+            bonus=#{bonus}
+        WHERE
+            union_id=#{unionId}
+        AND
+            from_group_id=#{groupId}
+        AND
+            player_type=#{playerType}
+    </update>
+
+</mapper>

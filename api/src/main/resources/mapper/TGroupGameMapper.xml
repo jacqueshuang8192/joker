@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hbi.mapper.TGroupGameMapper">
+
+	<select id="queryValidGroupGamesByGameId" resultType="com.hbi.model.TGroupGame">
+		SELECT
+			qg.id AS id,
+			qg.name AS name,
+			qg.LEVEL AS level,
+			qg.game_id AS gameId,
+			qg.remark AS remark,
+			qg.coins AS coins,
+			qg.extract AS extract,
+			qg.status AS status,
+			qg.ip AS ip,
+			qg.port AS port,
+			qg.ori_coins AS oriCoins,
+			qg.player_count AS playerCount
+		FROM
+			t_group_game qg,
+			t_game g
+		WHERE
+			qg.game_id = g.game_id
+		AND qg.game_id = #{gameId}
+		AND qg.status = "1"
+		AND qg.level IS NOT NULL
+		AND g.status = "2"
+	</select>
+
+	<select id="queryAllValidGroupGames" resultType="com.hbi.model.TGroupGame">
+		SELECT
+			qg.id AS id,
+			qg.level AS level,
+			qg.game_id AS gameId,
+			qg.extract AS extract,
+			qg.ip AS ip,
+			qg.port AS port,
+			qg.ori_coins AS oriCoins,
+			qg.player_count AS playerCount
+		FROM
+			(
+				t_group_game qg
+				LEFT JOIN t_game g ON qg.game_id = g.game_id
+			)
+		WHERE
+			qg.game_id IS NOT NULL
+			AND qg.status = "1"
+			AND qg.level IS NOT NULL
+			AND g.status = "2"
+	</select>
+</mapper>
