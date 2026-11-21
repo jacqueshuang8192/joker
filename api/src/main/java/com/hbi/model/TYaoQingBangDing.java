@@ -1,26 +1,28 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_yaoqing_bangding")
+@Table("t_yaoqing_bangding")
 public class TYaoQingBangDing {
     @Id
     private Long id;
 
-    @Column(name = "user_id")
+    @Column("user_id")
     private Long userId;
-    @Column(name = "promoter_id")
+    @Column("promoter_id")
     private Long promoterId;
-    @Column(name = "promoter_name")
+    @Column("promoter_name")
     private String promoterName;
-    @Column(name = "user_name")
+    @Column("user_name")
     private String userName;
-    @Column(name = "date")
+    @Column("date")
     private Date date;
-    @Column(name = "is_getRoomcard")
+    @Column("is_getRoomcard")
     private Integer isGetRoomcards;
-    @Column(name = "yaoqing_roomcards")
+    @Column("yaoqing_roomcards")
     private Integer yaoqingRoomcards;
     
 	

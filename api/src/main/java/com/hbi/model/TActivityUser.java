@@ -1,51 +1,53 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_activity_user")
+@Table("t_activity_user")
 public class TActivityUser {
     @Id
     private Long userid;
-    @Transient
+    @Column(ignore = true)
     private String nickname;
-    @Transient
+    @Column(ignore = true)
     private String photo;
 
     @Id
-    @Column(name = "activity_id")
+    @Column("activity_id")
     private Long activityId;
 
     private Short status;
 
-    @Column(name = "is_doll")
+    @Column("is_doll")
     private Short isDoll;
 
-    @Column(name = "is_winner")
+    @Column("is_winner")
     private Short isWinner;
 
-    @Column(name = "is_player")
+    @Column("is_player")
     private Short isPlayer;
 
-    @Column(name = "invite_date")
+    @Column("invite_date")
     private Date inviteDate;
 
-    @Column(name = "start_date")
+    @Column("start_date")
     private Date startDate;
 
-    @Column(name = "end_date")
+    @Column("end_date")
     private Date endDate;
     
     /**
      * 带入筹码
      */
-    @Column(name = "bring_chip")
+    @Column("bring_chip")
     private Integer bringChip;
     
     /**
      * 系统筹码
      */
-    @Column(name = "present_chip")
+    @Column("present_chip")
     private Integer presentChip;
 
     /**

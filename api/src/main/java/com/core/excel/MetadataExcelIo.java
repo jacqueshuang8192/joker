@@ -199,17 +199,17 @@ public class MetadataExcelIo {
 	private static String getStringCellValue(XSSFCell cell) {// 获取单元格数据内容为字符串类型的数据
 		String strCell = "";
 		switch (cell.getCellType()) {
-		case XSSFCell.CELL_TYPE_STRING:
+		case STRING:
 			strCell = cell.getStringCellValue();
 			break;
-		case XSSFCell.CELL_TYPE_NUMERIC:
+		case NUMERIC:
 			DecimalFormat df = new DecimalFormat("#");
 			strCell = String.valueOf(df.format(cell.getNumericCellValue()));
 			break;
-		case XSSFCell.CELL_TYPE_BOOLEAN:
+		case BOOLEAN:
 			strCell = String.valueOf(cell.getBooleanCellValue());
 			break;
-		case XSSFCell.CELL_TYPE_BLANK:
+		case BLANK:
 			strCell = "";
 			break;
 		default:

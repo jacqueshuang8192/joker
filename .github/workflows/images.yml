@@ -17,7 +17,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           # The client artwork is not part of either backend image.
           sparse-checkout: |
@@ -26,7 +26,7 @@ jobs:
             config
             database
             tools
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6.3.0
         with:
           distribution: temurin
           java-version: '23'
@@ -49,7 +49,7 @@ jobs:
         run: bash tools/smoke.sh
       - name: Log in to GitHub Container Registry
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4.8.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -70,7 +70,7 @@ jobs:
       - name: Package files for 1Panel
         if: github.event_name != 'pull_request'
         run: tar czf 1panel-deploy.tar.gz docker-compose.yml game-services.yml panel.ini.example config database tools/configure.py tools/check-schema.sql README.md AUDIT.md
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         if: github.event_name != 'pull_request'
         with:
           name: 1panel-deploy

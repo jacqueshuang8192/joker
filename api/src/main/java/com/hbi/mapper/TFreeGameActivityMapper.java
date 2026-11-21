@@ -4,11 +4,11 @@ import com.hbi.cache.model.CacheGameActivity;
 import com.hbi.model.*;
 import com.hbi.vo.request.common.MapVo;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 
-public interface TFreeGameActivityMapper extends Mapper<TFreeGameActivity> {
+public interface TFreeGameActivityMapper extends EntityMapper<TFreeGameActivity> {
 	
 	public List<FreeGameActivityInfo> queryFreeGameRecord(
 			@Param("userId") Long userId);

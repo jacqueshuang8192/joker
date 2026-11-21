@@ -53,11 +53,14 @@ public class PanelMongoCheck {
     }
 }
 JAVA
-unzip -p "$repo/api/target/joker-api.jar" 'BOOT-INF/lib/mongo-java-driver-*.jar' > mongo-driver.jar
-javac --release 23 -cp "$repo/api/target/classes:mongo-driver.jar" PanelMongoCheck.java
+unzip -q "$repo/api/target/joker-api.jar" 'BOOT-INF/lib/mongodb-driver-*.jar' 'BOOT-INF/lib/bson-*.jar'
+javac --release 23 -cp "$repo/api/target/classes:BOOT-INF/lib/*" PanelMongoCheck.java
 "${dc[@]}" exec -T api mkdir -p /tmp/panel-probe
 "${dc[@]}" cp PanelMongoCheck.class api:/tmp/panel-probe/
 "${dc[@]}" exec -T api java -Dloader.path=/tmp/panel-probe -Dloader.main=PanelMongoCheck \
+  -cp /srv/joker/joker-api.jar org.springframework.boot.loader.launch.PropertiesLauncher
+"${dc[@]}" cp "$repo/api/target/test-classes/com" api:/tmp/panel-probe/
+"${dc[@]}" exec -T api java -Dloader.path=/tmp/panel-probe -Dloader.main=com.joker.FlexDatabaseCheck \
   -cp /srv/joker/joker-api.jar org.springframework.boot.loader.launch.PropertiesLauncher
 "${dc[@]}" exec -T user python3 - <<'PYMC'
 import configparser, socket

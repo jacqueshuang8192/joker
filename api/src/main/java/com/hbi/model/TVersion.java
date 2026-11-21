@@ -1,36 +1,35 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_version")
+@Table("t_version")
 public class TVersion {
     @Id
     private Long id;
-    @Column(name = "type")
+    @Column("type")
     private String type;
-    @Column(name = "application_type")
+    @Column("application_type")
     private String applicationType;
-    @Column(name = "game_id")
+    @Column("game_id")
     private Long gameId;
-    @Column(name = "version")
+    @Column("version")
     private String version;
-    @Column(name = "change_content")
+    @Column("change_content")
     private String changeContent;
-    @Column(name = "update_url")
+    @Column("update_url")
     private String updateUrl;
-    @Column(name = "is_manual")
+    @Column("is_manual")
     private Integer isManual;
-    @Column(name = "status")
+    @Column("status")
     private String status;
-    @Column(name = "mani_url")
+    @Column("mani_url")
     private String maniUrl;
-    @Transient
+    @Column(ignore = true)
     private String code;
 
-    @Transient
+    @Column(ignore = true)
     private boolean isTreasureEnabled;
 
     public String getCode() {

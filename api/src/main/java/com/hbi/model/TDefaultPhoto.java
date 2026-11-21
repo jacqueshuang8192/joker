@@ -1,12 +1,12 @@
 package com.hbi.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
 /**
  * Created by ceeuoo on 6/28/2016.
  */
-@Table(name = "t_default_photo")
+@Table("t_default_photo")
 public class TDefaultPhoto {
     @Id
     private Long id;

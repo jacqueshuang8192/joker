@@ -1,27 +1,29 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_goods_category")
+@Table("t_goods_category")
 public class TGoodsCategory {
     @Id
-    @Column(name = "category_id")
+    @Column("category_id")
     private Long categoryId;
-    @Column(name = "code")
+    @Column("code")
     private String code;
-    @Column(name = "type")
+    @Column("type")
     private String type;
-    @Column(name = "category_photo")
+    @Column("category_photo")
     private String categoryPhoto;
-    @Column(name = "parent_id")
+    @Column("parent_id")
     private Long parentId;
-    @Column(name = "name")
+    @Column("name")
     private String name;
-    @Column(name = "remark")
+    @Column("remark")
     private String remark;
-    @Column(name = "sort")
+    @Column("sort")
     private Integer sort;
-    @Column(name = "status")
+    @Column("status")
     private String status;
 
     /**

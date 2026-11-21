@@ -2,11 +2,11 @@ package com.hbi.mapper;
 
 import com.hbi.model.TGroupZhanji;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 
-public interface TGroupZhanjiMapper extends Mapper<TGroupZhanji> {
+public interface TGroupZhanjiMapper extends EntityMapper<TGroupZhanji> {
 
     List<TGroupZhanji> selectByTime(@Param("groupId") Integer groupId,
                                     @Param("startTime") String startTime,

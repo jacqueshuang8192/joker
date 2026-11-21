@@ -7,12 +7,12 @@ import com.hbi.model.TUser;
 import com.hbi.vo.request.common.CommissionVo;
 import com.hbi.vo.request.common.MapVo;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 import java.util.Map;
 
-public interface TUserMapper extends Mapper<TUser> {
+public interface TUserMapper extends EntityMapper<TUser> {
     int updateDatingActivityInfo(@Param("userId") Long userId, @Param("onTimeGrade") Float onTimeGrade,
             @Param("satisfaction") Float satisfaction);
 

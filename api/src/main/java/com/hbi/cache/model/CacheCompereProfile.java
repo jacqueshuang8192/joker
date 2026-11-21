@@ -3,7 +3,7 @@ package com.hbi.cache.model;
 import java.util.Date;
 import java.util.Map;
 
-import jakarta.persistence.Column;
+import com.mybatisflex.annotation.Column;
 
 public class CacheCompereProfile extends CacheUserProfile {
 
@@ -82,7 +82,7 @@ public class CacheCompereProfile extends CacheUserProfile {
 	/**
 	 * 当俘虏预计被释放时间
 	 */
-	@Column(name = "release_time")
+	@Column("release_time")
 	private Date releaseTime;
 
 	private Date protectTime;

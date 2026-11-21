@@ -22,7 +22,6 @@ import com.hbi.utils.InfServerException;
 import com.hbi.vo.response.Response;
 import com.pingplusplus.Pingpp;
 import com.pingplusplus.model.Charge;
-import com.pingplusplus.model.Event;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -114,7 +113,7 @@ public class PingPPService extends BaseChargeService{
             //    accountCharge.setChargeOrder(charge.getId());
             //    accountCharge.setGoodsId(goodsId);
             //    accountCharge.setNumber(amount);
-            //    TUser tUser = userMapper.selectByPrimaryKey(userId);
+            //    TUser tUser = userMapper.findById(userId);
             //    if (tUser.getAgentId() != null) {
             //        accountCharge.setAgentId(tUser.getAgentId());
             //    }
@@ -138,7 +137,7 @@ public class PingPPService extends BaseChargeService{
                 imsTpOrders.setOrderNo(charge.getId());
                 imsTpOrders.setGoodsId(Integer.parseInt(goodsId.toString()));
                 imsTpOrders.setCount(amount);
-                TUser tUser = userMapper.selectByPrimaryKey(userId);
+                TUser tUser = userMapper.findById(userId);
                 if (tUser.getAgentId() != null) {
                     imsTpOrders.setParentId(Integer.parseInt(tUser.getAgentId().toString()));
                 }
@@ -153,10 +152,10 @@ public class PingPPService extends BaseChargeService{
 
     public void payOrderCallback(HttpServletRequest request) throws Exception {
         String req = InputStreamTOString(request.getInputStream());
-        Event event = JSON.toJavaObject(JSON.parseObject(req), Event.class);
+        JSONObject event = JSON.parseObject(req);
         rechargeLog.info(req);
         if (event != null) {
-            Map<String, Object> chargeMaps = event.getData();
+            JSONObject chargeMaps = event.getJSONObject("data");
             if (chargeMaps == null) {
                 rechargeLog.info("chargeMaps is null");
             }

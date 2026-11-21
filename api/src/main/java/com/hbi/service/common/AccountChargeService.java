@@ -18,8 +18,8 @@ import com.hbi.cache.model.CachePlayerProfile;
 import com.hbi.constants.Constants;
 import com.hbi.utils.GameServerUtil;
 import com.hbi.utils.InfServerException;
-import tk.mybatis.mapper.entity.Example;
-import tk.mybatis.mapper.entity.Example.Criteria;
+import com.mybatisflex.core.query.QueryWrapper;
+import static com.mybatisflex.core.query.QueryMethods.column;
 
 @Service
 public class AccountChargeService extends BaseService<TAccountCharge> {
@@ -38,20 +38,19 @@ public class AccountChargeService extends BaseService<TAccountCharge> {
 	 * @throws Exception 
 	 */
 	public List<TAccountCharge> findAccountChargeHistoryByConditions(Map<String, Object> params) throws Exception {
-		Example example = new Example(TAccountCharge.class);
-		Criteria criteria = example.createCriteria();
+		QueryWrapper query = QueryWrapper.create();
 		if (params.get("userId") != null) {
-			criteria.andEqualTo("userId", params.get("userId"));
+			query.and(column(TAccountCharge::getUserId).eq(params.get("userId")));
 		}
 		if (params.get("startDate") != null) {
-			criteria.andGreaterThanOrEqualTo("chargeDate", params.get("startDate"));
+			query.and(column(TAccountCharge::getChargeDate).ge(params.get("startDate")));
 		}
 		if (params.get("endDate") != null) {
-			criteria.andLessThanOrEqualTo("chargeDate", params.get("endDate"));
+			query.and(column(TAccountCharge::getChargeDate).le(params.get("endDate")));
 		}
-		criteria.andEqualTo("status", Constants.PAY_SUCCESS);
-		criteria.andNotEqualTo("coinAmount", -1);
-		return accountChargeMapper.selectByExample(example);
+		query.and(column(TAccountCharge::getStatus).eq(Constants.PAY_SUCCESS));
+		query.and(column(TAccountCharge::getCoinAmount).ne(-1));
+		return accountChargeMapper.selectListByQuery(query);
 	}
 	
 	/**
@@ -87,7 +86,7 @@ public class AccountChargeService extends BaseService<TAccountCharge> {
 				accountCharge.setChannelOrderId(channelOrderId);
 				accountCharge.setBeforeChargeCoin(coinAmountBefore + "");
 				accountCharge.setAfterChargeCoin(String.valueOf(coinAmountBefore + accountCharge.getCoinAmount()));
-				accountChargeMapper.updateByPrimaryKeySelective(accountCharge);
+				accountChargeMapper.updateSelective(accountCharge);
 				
 				//更新任务进度
 				cache = CacheManager.getCache();
@@ -109,7 +108,7 @@ public class AccountChargeService extends BaseService<TAccountCharge> {
 				    player.setPlayerId(userId);
 				    player.setChargeSum(chargeSum);
 				    
-				    playerMapper.updateByPrimaryKeySelective(player);
+				    playerMapper.updateSelective(player);
 				    primaryPlayer.setChargeSum(chargeSum);
 				    playerCacheController.updatePlayerVipLevelAndChargeSum(primaryPlayer, cache);
 

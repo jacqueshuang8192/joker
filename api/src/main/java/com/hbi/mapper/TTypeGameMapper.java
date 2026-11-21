@@ -7,8 +7,8 @@ import com.hbi.model.TTypeGame;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TTypeGameMapper extends Mapper<TTypeGame> {
+public interface TTypeGameMapper extends EntityMapper<TTypeGame> {
     
 }

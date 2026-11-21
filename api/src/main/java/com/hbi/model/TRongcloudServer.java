@@ -1,28 +1,28 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
-@Table(name = "t_rongcloud_server")
+@Table("t_rongcloud_server")
 public class TRongcloudServer {
     @Id
-    @Column(name = "rongcloud_id")
+    @Column("rongcloud_id")
     private Long rongcloudId;
 
-    @Column(name = "province")
+    @Column("province")
     private String provinceId;
 
-    @Column(name = "room_id")
+    @Column("room_id")
     private String roomId;
 
-    @Column(name = "room_name")
+    @Column("room_name")
     private String roomName;
 
-    @Column(name = "createTime")
+    @Column("createTime")
     private Date createtime;
-    @Column(name = "token")
+    @Column("token")
     private String token;
 
     public Long getRongcloudId() {

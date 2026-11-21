@@ -1,38 +1,40 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_sec_resource")
+@Table("t_sec_resource")
 public class TSecResource {
     @Id
-    @Column(name = "resourceId")
+    @Column("resourceId")
     private Long resourceid;
 
     /**
      * 资源名
      */
-    @Column(name = "resourceName")
+    @Column("resourceName")
     private String resourcename;
 
     /**
      * 资源标题
      */
-    @Column(name = "resourceTitle")
+    @Column("resourceTitle")
     private String resourcetitle;
 
     /**
      * 资源URL
      */
-    @Column(name = "resourceUrl")
+    @Column("resourceUrl")
     private String resourceurl;
 
     /**
      * 资源描述
      */
-    @Column(name = "resourceDesc")
+    @Column("resourceDesc")
     private String resourcedesc;
 
-    @Column(name = "parentId")
+    @Column("parentId")
     private Long parentid;
 
     private String path;

@@ -180,7 +180,7 @@ public class PlayerCacheController {
         }
         if (playerDetail != null) {
             if(needAccount) {
-                TUser user = tUserMapper.selectByPrimaryKey(playerId);
+                TUser user = tUserMapper.findById(playerId);
                 if (user != null && user.getPoint() != null) {
                     playerDetail.setCoinAmount(Long.valueOf(user.getPoint()));
                 } else {

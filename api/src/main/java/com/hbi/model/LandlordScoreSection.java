@@ -1,14 +1,14 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Table;
 
 /**
  * Created by ceeuoo on 8/13/2016.
  */
-@Table(name = "landlord_score_section")
+@Table("landlord_score_section")
 public class LandlordScoreSection {
-    @Column(name = "section_info")
+    @Column("section_info")
     private String sectionInfo;
 
     public String getSectionInfo() {

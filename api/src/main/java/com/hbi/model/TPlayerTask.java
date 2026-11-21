@@ -1,32 +1,32 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
 /**
  * Created by muzi on 23/11/2017.
  */
-@Table(name="t_player_task")
+@Table("t_player_task")
 public class TPlayerTask {
 
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Integer id;
 
-    @Column(name = "player_id")
+    @Column("player_id")
     private Integer playerId;
 
-    @Column(name = "task_id")
+    @Column("task_id")
     private Integer taskid;
 
-    @Column(name = "squence")
+    @Column("squence")
     private Integer squence;
 
-    @Column(name = "term_now")
+    @Column("term_now")
     private Integer termNow;
 
-    @Column(name = "status")
+    @Column("status")
     private Integer status;
 
 

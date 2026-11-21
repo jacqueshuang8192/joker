@@ -2,11 +2,11 @@ package com.hbi.mapper;
 
 import com.hbi.model.TFreeGameResult;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 
-public interface TFreeGameResultMapper extends Mapper<TFreeGameResult> {
+public interface TFreeGameResultMapper extends EntityMapper<TFreeGameResult> {
     List<TFreeGameResult> queryActivitiesByUserId(@Param(value = "userId") Long userId);
     
     List<TFreeGameResult> queryActivitiesByOwner(@Param(value = "userId") Long userId);

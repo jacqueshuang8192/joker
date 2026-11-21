@@ -3,14 +3,14 @@ package com.hbi.mapper;
 import com.hbi.model.TPlayerGroup;
 import com.hbi.vo.response.hehuoren.PlayerGroupHhrListVo;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 
 /**
  * Created by muzi on 2017/12/7.
  */
-public interface TPlayerGroupMapper extends Mapper<TPlayerGroup> {
+public interface TPlayerGroupMapper extends EntityMapper<TPlayerGroup> {
     TPlayerGroup selectByPlayerIdAndGroupId(@Param("playerId") Integer playerId, @Param("groupId") Integer groupId);
 
     List<TPlayerGroup> selectByPlayerId(@Param("playerId") Integer playerId);

@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TDefaultPhoto;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TDefaultPhotoMapper extends Mapper<TDefaultPhoto> {
+public interface TDefaultPhotoMapper extends EntityMapper<TDefaultPhoto> {
 }

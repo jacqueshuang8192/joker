@@ -1,29 +1,31 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_group_xiaohao_day_history")
+@Table("t_group_xiaohao_day_history")
 public class TGroupXiaohaoDayHistory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id(keyType = KeyType.Auto)
     private Integer id;
 
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
-    @Column(name = "hehuoren_id")
+    @Column("hehuoren_id")
     private Integer hehuorenId;
 
     private Integer profit;
 
-    @Column(name = "day_time")
+    @Column("day_time")
     private Date dayTime;
 
-    @Column(name = "dayingjia_count")
+    @Column("dayingjia_count")
     private Integer dayingjiaCount;
 
-    @Column(name = "player_count")
+    @Column("player_count")
     private Integer playerCount;
 
     /**

@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TSecResource;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TSecResourceMapper extends Mapper<TSecResource> {
+public interface TSecResourceMapper extends EntityMapper<TSecResource> {
 }

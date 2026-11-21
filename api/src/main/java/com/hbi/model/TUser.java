@@ -1,12 +1,12 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-@Table(name = "t_user")
+@Table("t_user")
 public class TUser implements Serializable {
     @Id
     private Long userid;
@@ -16,25 +16,25 @@ public class TUser implements Serializable {
     private String phone;
     private String identity;
 
-    @Column(name = "last_login")
+    @Column("last_login")
     private Date lastLogin;
 
     private String password;
 
     private String state;
 
-    @Column(name = "online_status")
+    @Column("online_status")
     private String onlineStatus;
 
-    @Column(name = "agent_id")
+    @Column("agent_id")
     private Long agentId;
 
-    @Column(name = "small_icon")
+    @Column("small_icon")
     private String smallIcon;
 
     private String account;
 
-    @Column(name = "nick_name")
+    @Column("nick_name")
     private String nickName;
 
     private String gender;
@@ -43,59 +43,59 @@ public class TUser implements Serializable {
 
     private String sign;
 
-    @Column(name = "create_date")
+    @Column("create_date")
     private Date createDate;
 
-    @Column(name = "QQ")
+    @Column("QQ")
     private String qq;
     
-    @Column(name = "wechat")
+    @Column("wechat")
     private String wechat;
     
-    @Column(name = "weibo")
+    @Column("weibo")
     private String weibo;
 
     private String name;
 
-    @Column(name = "grade")
+    @Column("grade")
     private Float grade;
 
-    @Column(name = "is_yaoqing")
+    @Column("is_yaoqing")
 	private Integer isYaoqing;
 	
-	@Column(name = "yaoqing_roomcards")
+	@Column("yaoqing_roomcards")
 	private Integer yaoqingRoomcards;
     /**
      * 账号是否废弃：0未废弃；1废弃
      */
     private Integer deprecated;
 
-    @Column(name = "first_charge")
+    @Column("first_charge")
     private Integer firstCharge;
 
-    @Column(name = "first_login")
+    @Column("first_login")
     private Integer firstLogin;
 
-    @Column(name = "card_count")
+    @Column("card_count")
     private Integer cardCount;
 
     private Integer point;
-	@Column(name = "rongCloud_token")
+	@Column("rongCloud_token")
     private String rongCloudToken;
 
-	@Column(name = "gift_gold")
+	@Column("gift_gold")
 	private Integer giftGold;
 
-	@Column(name = "gift_gold_count")
+	@Column("gift_gold_count")
 	private Integer giftGoldCount;
 
 	/**
 	 * 分享赠送的次数
 	 */
-	@Column(name = "gift_times")
+	@Column("gift_times")
 	private Integer giftTimes;
 
-	@Column(name = "club_limit")
+	@Column("club_limit")
 	private Integer clubLimit;
 
 	public Integer getClubLimit() {

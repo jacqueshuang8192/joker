@@ -2,15 +2,17 @@ package com.hbi.model;
 
 import java.util.List;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_province_agent")
+@Table("t_province_agent")
 public class TProvinceAgent {
     @Id
-    @Column(name = "province_id")
+    @Column("province_id")
     private Long provinceId;
 
-    @Column(name = "agent_id")
+    @Column("agent_id")
     private Long agentId;
 
 	public Long getProvinceId() {

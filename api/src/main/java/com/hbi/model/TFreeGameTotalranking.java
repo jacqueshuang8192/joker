@@ -1,31 +1,36 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_free_game_totalranking")
+@Table("t_free_game_totalranking")
 	public class TFreeGameTotalranking {
 		@Id
-	    @Column(name = "id")
+	    @Column("id")
 	    private Long Id;
 
-	    @Column(name = "user_id")
+	    @Column("user_id")
 	    private Long userId;
-	    @Column(name = "game_id")
+	    @Column("game_id")
 	    private Long gameId;
+	    // Populated by the ranking XML queries. Exclude primitive defaults from entity filters.
+	    @Column(ignore = true)
 	    private int score;
+	    @Column(ignore = true)
 	    private int total;
-	    private int  win;
-	    private int  draw;
-	    private int  lose;	    
-	    @Transient
+	    @Column(ignore = true)
+	    private int win;
+	    @Column(ignore = true)
+	    private int draw;
+	    @Column(ignore = true)
+	    private int lose;
+	    @Column(ignore = true)
 	    private String nickName;
 	    
-	    @Transient
+	    @Column(ignore = true)
 	    private String smallIcon;
-	    @Transient
+	    @Column(ignore = true)
 	    private Integer rank;
 		public Long getId() {
 			return Id;

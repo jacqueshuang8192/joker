@@ -1,15 +1,17 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_group_gameconfig")
+@Table("t_group_gameconfig")
 public class TGroupGameconfig {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id(keyType = KeyType.Auto)
     private Integer id;
 
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
     private Integer level;
@@ -18,12 +20,12 @@ public class TGroupGameconfig {
 
     private String config;
 
-    @Column(name = "game_type")
+    @Column("game_type")
     private Integer gameType;
 
     private Integer status;
 
-    @Column(name = "crate_time")
+    @Column("crate_time")
     private Date crateTime;
 
     /**

@@ -185,7 +185,7 @@ public class UserService extends BaseService<TUser> {
                 if (StringUtils.isNotBlank(photo)) {
                     user.setSmallIcon(photo);
                 }
-                userMapper.updateByPrimaryKeySelective(user);
+                userMapper.updateSelective(user);
 
                 String token = loginCacheController.updateToken(user.getUserid()+"", cache);
                 vo.setToken(token);
@@ -244,7 +244,7 @@ public class UserService extends BaseService<TUser> {
 //                TUser tUser = new TUser();
 //                tUser.setUserid(userId);
 //                tUser.setFirstLogin(1);
-//                userMapper.updateByPrimaryKey(tUser);
+//                userMapper.update(tUser, false);
                 userMapper.updateUserFirstLoginStatus(userId);
                 userMapper.insertTplayerShareGiftRecord(userId,card,gold,Constants.giftTypeFirstLogin);
                 response.setReturnCode(Constants.RETURN_CODE_SUCCESS);
@@ -295,7 +295,7 @@ public class UserService extends BaseService<TUser> {
      * @return
      */
     public TUser findUserById(Long userid) {
-        return userMapper.selectByPrimaryKey(userid);
+        return userMapper.findById(userid);
     }
 
     public String getRandomCode(String phone) throws Exception {
@@ -338,7 +338,7 @@ public class UserService extends BaseService<TUser> {
             throw new InfServerException(Constants.RETURN_CODE_FAIL, "用户不存在！");
         }
         user.setPassword(password);
-//        int affectedRow = updateByPrimaryKeyMapper.updateByPrimaryKey(user);
+//        int affectedRow = updateByPrimaryKeyMapper.update(user, false);
         int affectedRow = 0;
         if (affectedRow > 0) {
             return false;
@@ -489,7 +489,7 @@ public class UserService extends BaseService<TUser> {
                 ga.setActivityId(Long.parseLong(gameActivityId));
                 ga.setCount(Integer.parseInt(rounds));
 
-                freeGameActivityMapper.updateByPrimaryKeySelective(ga);
+                freeGameActivityMapper.updateSelective(ga);
             }
 
             CacheGameActivity activity = commonCacheController.queryGameActivity(inviteCode, cache);
@@ -510,7 +510,7 @@ public class UserService extends BaseService<TUser> {
             t.setActivityId(activityId);
             t.setStatus((short) 2);
             t.setEndDate(new Date());
-            activityMapper.updateByPrimaryKeySelective(t);
+            activityMapper.updateSelective(t);
 
             commonCacheController.closeFreeGame(inviteCode, cache);
             freeGameCacheController.delGroupGameStatus(Long.parseLong(activity.getCreatorId()), activityId, cache);
@@ -537,7 +537,7 @@ public class UserService extends BaseService<TUser> {
             t.setActivityId(Long.parseLong(activityId));
             t.setStatus((short) 1);
 
-            activityMapper.updateByPrimaryKeySelective(t);
+            activityMapper.updateSelective(t);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -585,7 +585,7 @@ public class UserService extends BaseService<TUser> {
 
             //积分不足,不能加入桌子
             if (StringUtil.isNotEmpty(groupId)) {
-                TActivity tActivity = activityMapper.selectByPrimaryKey(Long.parseLong(activity.getGameActivityId()));
+                TActivity tActivity = activityMapper.findById(Long.parseLong(activity.getGameActivityId()));
 
                 if (!StringUtil.isEmpty(tActivity) && "1".equals(isWatch+"")) {
                     TGame g = baseCacheController.queryGameById(Long.parseLong(tActivity.getLevel()+""), cache);
@@ -673,7 +673,7 @@ public class UserService extends BaseService<TUser> {
             u.setActivityId(Long.parseLong(activity.getGameActivityId()));
             u.setUserid(Long.parseLong(userId));
             u.setStatus((short) 0);
-            activityUserMapper.updateByPrimaryKeySelective(u);
+            activityUserMapper.updateSelective(u);
 
         } catch (Exception e) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL, "退出异常");
@@ -708,7 +708,7 @@ public class UserService extends BaseService<TUser> {
             u.setActivityId(Long.parseLong(activityId));
             u.setUserid(Long.parseLong(userId));
             u.setStatus((short) 0);
-            activityUserMapper.updateByPrimaryKeySelective(u);
+            activityUserMapper.updateSelective(u);
 
 
 
@@ -913,14 +913,14 @@ public class UserService extends BaseService<TUser> {
                 map.put("tid",sp[1]);
                 //如果有第三个才添加
                 if(sp.length == 3) {
-                    TActivity activity = activityMapper.selectByPrimaryKey(Long.parseLong(sp[2]));
+                    TActivity activity = activityMapper.findById(Long.parseLong(sp[2]));
                     if (!StringUtil.isEmpty(activity)) {
                         Integer groupId = activity.getGroupId();
                         map.put("groupId",groupId+"");
                         map.put("activityId",activity.getActivityId()+"");
 
                         if (!StringUtil.isEmpty(groupId)) {
-                            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+                            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
                             if (!StringUtil.isEmpty(tGroupPlayer)) {
                                 JSONObject jsonObject = JSONObject.parseObject(tGroupPlayer.getConfig());
                                 map.put(ClubConstant.is_chat,jsonObject.getString(ClubConstant.is_chat));
@@ -1025,7 +1025,7 @@ public class UserService extends BaseService<TUser> {
             cache = CacheManager.getCache();
             while (agent.getParentId() != null && !agent.getUserid().equals(agent.getParentId())) {
                 Long parentId = agent.getParentId();
-                agent = secUserMapper.selectByPrimaryKey(parentId);
+                agent = secUserMapper.findById(parentId);
             }
             return agent;
         } catch (Exception e) {
@@ -1054,7 +1054,7 @@ public class UserService extends BaseService<TUser> {
 //        TUser user = new TUser();
 //        user.setUserid(userId);
 //        user.setPayPassword(payPassword);
-//        if (userMapper.updateByPrimaryKeySelective(user) > 0) {
+//        if (userMapper.updateSelective(user) > 0) {
 //            if (userType.equalsIgnoreCase(Constants.USER_TYPE_P)) {
 //                ICache cache = null;
 //                try {
@@ -1094,7 +1094,7 @@ public class UserService extends BaseService<TUser> {
 //     * @throws Exception
 //     */
 //    public void modifyPayPassword(Long userId, String oldPayPassword) throws Exception {
-//        TUser user = userMapper.selectByPrimaryKey(userId);
+//        TUser user = userMapper.findById(userId);
 //        if (user == null) {
 //            throw new InfServerException(Constants.RETURN_CODE_FAIL, "用户不存在！");
 //        }
@@ -1203,14 +1203,14 @@ public class UserService extends BaseService<TUser> {
      * @param point
      */
     public void isHavingPoint(Long userId, Integer point) {
-        TUser user = userMapper.selectByPrimaryKey(userId);
+        TUser user = userMapper.findById(userId);
         if (user.getPoint() < point) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL,"您的积分不够哦");
         }
     }
 
     public void isHavingRoomCard(Long userId, Integer roomCard) {
-        TUser user = userMapper.selectByPrimaryKey(userId);
+        TUser user = userMapper.findById(userId);
         if (user.getCardCount() < roomCard) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL,"您的房卡不够哦");
         }
@@ -1224,8 +1224,8 @@ public class UserService extends BaseService<TUser> {
      * @return 是否积分赠送成功
      */
     public Integer changePoints(Long userId, Long toUserId, Integer point) throws Exception {
-        TUser user1 = userMapper.selectByPrimaryKey(userId);
-        TUser user2 = userMapper.selectByPrimaryKey(toUserId);
+        TUser user1 = userMapper.findById(userId);
+        TUser user2 = userMapper.findById(toUserId);
         if (user1 == null || user2 == null) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL,"您输入的用户不存在");
         }
@@ -1238,8 +1238,8 @@ public class UserService extends BaseService<TUser> {
         user1.setPoint(currentPoint);
         int currentPonint2 = user2.getPoint() + point;
         user2.setPoint(currentPonint2);
-        userMapper.updateByPrimaryKey(user1);
-        userMapper.updateByPrimaryKey(user2);
+        userMapper.update(user1, false);
+        userMapper.update(user2, false);
 
         //保存到赠送数据到数据库
         TGiftPoint tGiftPoint = new TGiftPoint();
@@ -1261,8 +1261,8 @@ public class UserService extends BaseService<TUser> {
      */
 
     public Integer changeRoomcard(Long userId, Long toUserId, Integer roomCard) {
-        TUser user1 = userMapper.selectByPrimaryKey(userId);
-        TUser user2 = userMapper.selectByPrimaryKey(toUserId);
+        TUser user1 = userMapper.findById(userId);
+        TUser user2 = userMapper.findById(toUserId);
         if (user1 == null || user2 == null) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL,"您输入的用户不存在");
         }
@@ -1275,8 +1275,8 @@ public class UserService extends BaseService<TUser> {
         baseCacheController.updateRoomCard(userId, -roomCard);
         baseCacheController.updateRoomCard(toUserId,roomCard);
 
-//        userMapper.updateByPrimaryKey(user1);
-//        userMapper.updateByPrimaryKey(user2);
+//        userMapper.update(user1, false);
+//        userMapper.update(user2, false);
 
         //保存到赠送数据到数据库
         TGiftRoomCard tGiftPoint = new TGiftRoomCard();
@@ -1296,7 +1296,7 @@ public class UserService extends BaseService<TUser> {
         try {
             String status = cache.hget(Constants.PLAYER_ + userId, "status");
             if (StringUtil.isEmpty(status)) {
-                status = userMapper.selectByPrimaryKey(Long.parseLong(userId)).getState();
+                status = userMapper.findById(Long.parseLong(userId)).getState();
             }
             return status;
         }catch(Exception e) {

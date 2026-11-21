@@ -143,7 +143,7 @@ public class GroupPlayerCacheController {
         String photoUrl = cache.hget(Constants.PLAYER_ + playerId, "photoUrl");
 
         if (StringUtil.isEmpty(userId)) {
-            TUser tUser = userMapper.selectByPrimaryKey(Long.parseLong(playerId + ""));
+            TUser tUser = userMapper.findById(Long.parseLong(playerId + ""));
             if (StringUtil.isEmpty(tUser)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL,"用户不存在");
             }
@@ -193,7 +193,7 @@ public class GroupPlayerCacheController {
 //            如果没有直接查询数据库直接插入redis中
             JSONObject groupPlayerJson = new JSONObject();
 
-            TGroupPlayer groupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer groupPlayer = groupPlayerMapper.findById(groupId);
             groupPlayerJson.put("config",groupPlayer.getConfig());
             groupPlayerJson.put("owerId",groupPlayer.getOwerId());
             groupPlayerJson.put("groupName",groupPlayer.getGroupName());
@@ -201,7 +201,7 @@ public class GroupPlayerCacheController {
             JSONArray objects = new JSONArray();
             for (TPlayerGroup pg : tPlayerGroups) {
                 JSONObject ljson = new JSONObject();
-                TUser tUser = userMapper.selectByPrimaryKey(Long.parseLong(pg.getPlayerId()+""));
+                TUser tUser = userMapper.findById(Long.parseLong(pg.getPlayerId()+""));
                 ljson.put("nickName",tUser.getNickName());
                 ljson.put("photoUrl",tUser.getSmallIcon());
                 ljson.put("userId",tUser.getUserid());
@@ -224,7 +224,7 @@ public class GroupPlayerCacheController {
             String min = cache.hget(Constants.Min_Join_FreeGame_Coins, groupId);
             if (StringUtil.isEmpty(min)) {
 
-                TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(Integer.parseInt(groupId));
+                TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(Integer.parseInt(groupId));
                 cache.hset(Constants.Min_Join_FreeGame_Coins, groupId,tGroupPlayer.getStrengthLimit()+"");
                 return tGroupPlayer.getStrengthLimit();
             }
@@ -473,7 +473,7 @@ public class GroupPlayerCacheController {
                 cache.hdel(Constants.Group_Uid_Shangji_Id + groupId,son.getPlayerId() + "");
             }
             //将下级玩家全部都归到群主身上
-            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
             if (!StringUtil.isEmpty(tGroupPlayer)) {
                 playerGroupMapper.updateUpPlayerId(groupId,playerId,tGroupPlayer.getOwerId());
             }

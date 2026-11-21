@@ -9,9 +9,9 @@ import com.hbi.model.TFreeGameResult;
 import com.hbi.model.TFreeGameTotal;
 import com.hbi.model.TFreeGameTotalranking;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TFreeGameTotalMapper extends Mapper<TFreeGameTotal>{
+public interface TFreeGameTotalMapper extends EntityMapper<TFreeGameTotal>{
 	TFreeGameTotal queryTotalGroupGeRenRank(@Param(value = "userId") Long userId);
 	TFreeGameTotal queryTotalGroupGeRenRank2(@Param(value = "userId") Long userId);
 	Long queryTotalByUserId(@Param(value = "userId") Long userId);

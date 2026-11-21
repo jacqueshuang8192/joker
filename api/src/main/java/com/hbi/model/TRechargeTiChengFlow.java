@@ -2,25 +2,27 @@ package com.hbi.model;
 
 import java.util.Date;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_rechargeticheng_flow")
+@Table("t_rechargeticheng_flow")
 public class TRechargeTiChengFlow {
     @Id
     private Integer id;
-    @Column(name = "player_id")
+    @Column("player_id")
     private Long playerId;
-    @Column(name = "agent_id")
+    @Column("agent_id")
     private Long agentId;
-    @Column(name = "ticheng")
+    @Column("ticheng")
     private Double ticheng;
-    @Column(name = "nick_name")
+    @Column("nick_name")
     private String nickName;
-    @Column(name = "date")
+    @Column("date")
     private Date date;
-	@Column(name = "isbinding")
+	@Column("isbinding")
 	private Integer isBinding;
-	@Column(name = "rechargenumber")
+	@Column("rechargenumber")
 	private Integer rechargeNumber;
 
 	public Integer getId() {

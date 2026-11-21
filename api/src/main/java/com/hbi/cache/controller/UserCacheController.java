@@ -289,7 +289,7 @@ public class UserCacheController {
         String key = IS_FIRST_LOGIN_KEY;
         String isFirst = cache.hget(key, userId.toString());
         if (StringUtil.isEmpty(isFirst)) {
-            TUser tUser = userMapper.selectByPrimaryKey(userId);
+            TUser tUser = userMapper.findById(userId);
             if (null ==tUser) {
                 return 0;
             }else {

@@ -1,42 +1,44 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_group_zhanji")
+@Table("t_group_zhanji")
 public class TGroupZhanji {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id(keyType = KeyType.Auto)
     private Integer id;
 
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
-    @Column(name = "player_id")
+    @Column("player_id")
     private Integer playerId;
 
-    @Column(name = "activity_id")
+    @Column("activity_id")
     private Integer activityId;
 
-    @Column(name = "invite_code")
+    @Column("invite_code")
     private Integer inviteCode;
 
-    @Column(name = "create_time")
+    @Column("create_time")
     private Date createTime;
 
-    @Column(name = "is_dayingjia")
+    @Column("is_dayingjia")
     private Integer isDayingjia;
 
-    @Column(name = "dayingjia_points")
+    @Column("dayingjia_points")
     private Integer dayingjiaPoints;
 
-    @Column(name = "play_point_count")
+    @Column("play_point_count")
     private Integer playPointCount;
 
-    @Column(name = "round")
+    @Column("round")
     private Integer round;
 
-    @Column(name = "level")
+    @Column("level")
     private Integer level;
 
     public Integer getLevel() {

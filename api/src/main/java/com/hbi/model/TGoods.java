@@ -1,15 +1,17 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_goods")
+@Table("t_goods")
 public class TGoods {
     @Id
-    @Column(name = "goods_id")
+    @Column("goods_id")
     private Long goodsId;
 
-    @Column(name = "category_code")
+    @Column("category_code")
     private String code;
 
     private String name;
@@ -24,11 +26,11 @@ public class TGoods {
 
     private Integer vip;
 
-    @Column(name = "create_date")
+    @Column("create_date")
     private Date createDate;
-    @Column(name = "status")
+    @Column("status")
     private String status;
-    @Column(name = "category_type")
+    @Column("category_type")
     private String categoryType;
 
     /**

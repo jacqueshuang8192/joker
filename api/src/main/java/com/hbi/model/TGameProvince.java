@@ -1,27 +1,27 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_game_province")
+@Table("t_game_province")
 public class TGameProvince {
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Long id;
-    @Column(name = "province_id")
+    @Column("province_id")
     private Long provinceId;
-    @Column(name = "province_name")
+    @Column("province_name")
     private String provinceName;
-    @Column(name = "agent_number")
+    @Column("agent_number")
     private Long agentNumber;
-    @Column(name = "is_show")
+    @Column("is_show")
     private Long isShow;
-    @Column(name = "is_hot")
+    @Column("is_hot")
     private Long isHot;
-    @Column(name = "is_new")
+    @Column("is_new")
     private Long isNew;
-    @Column(name = "default_agent")
+    @Column("default_agent")
     private Long defaultAgent;
     
     

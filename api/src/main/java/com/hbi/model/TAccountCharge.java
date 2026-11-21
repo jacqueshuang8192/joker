@@ -1,60 +1,62 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_account_charge")
+@Table("t_account_charge")
 public class TAccountCharge {
     @Id
-    @Column(name = "charge_id")
+    @Column("charge_id")
     private Long chargeId;
 
-    @Column(name = "account_id")
+    @Column("account_id")
     private Long accountId;
 
-    @Column(name = "user_id")
+    @Column("user_id")
     private Long userId;
 
-    @Column(name = "coin_amount")
+    @Column("coin_amount")
     private Integer coinAmount;
 
-    @Column(name = "rmb_amount")
+    @Column("rmb_amount")
     private Integer rmbAmount;
 
-    @Column(name = "discounted_rmb_amount")
+    @Column("discounted_rmb_amount")
     private Integer discountedRmbAmount;
 
-    @Column(name = "charge_date")
+    @Column("charge_date")
     private Date chargeDate;
 
-    @Column(name = "create_date")
+    @Column("create_date")
     private Date createDate;
 
-    @Column(name="channel")
+    @Column("channel")
     private String channel;
 
-    @Column(name = "pay_type")
+    @Column("pay_type")
     private String payType;
 
-    @Column(name="status")
+    @Column("status")
     private String status;
     
-    @Column(name="charge_order")
+    @Column("charge_order")
     private String chargeOrder;
     
-    @Column(name="channel_order_id")
+    @Column("channel_order_id")
     private String channelOrderId;
     
-    @Column(name = "before_charge_coin")
+    @Column("before_charge_coin")
     private String beforeChargeCoin;
     
-    @Column(name = "after_charge_coin")
+    @Column("after_charge_coin")
     private String afterChargeCoin;
     
-    @Column(name = "goods_id")
+    @Column("goods_id")
     private Long goodsId;
 
-    @Column(name = "agent_id")
+    @Column("agent_id")
     private Long agentId;
     
     private Integer number;

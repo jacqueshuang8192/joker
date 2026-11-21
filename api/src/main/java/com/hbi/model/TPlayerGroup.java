@@ -1,104 +1,103 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
 /**
  * Created by muzi on 2017/12/7.
  */
-@Table(name = "t_player_group")
+@Table("t_player_group")
 public class TPlayerGroup {
 
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Integer id;
 
-    @Column(name = "player_id")
+    @Column("player_id")
     private Integer playerId;
 
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
-    @Column(name = "changci_count")
+    @Column("changci_count")
     private Integer changciCount;
 
-    @Column(name = "point_count")
+    @Column("point_count")
     private Double pointCount;
 
-    @Column(name = "dayingjia_count")
+    @Column("dayingjia_count")
     private Integer dayingjiaCount;
 
-    @Column(name = "dayingjia_point_count")
+    @Column("dayingjia_point_count")
     private Integer dayingjiaPointCount;
 
     // 上级合伙人ID
-    @Column(name = "up_player_id")
+    @Column("up_player_id")
     private Integer upPlayerId;
 
     // 用户类型
-    @Column(name = "player_type")
+    @Column("player_type")
     private Integer playerType;
 
     // 分红比例
-    @Column(name = "bonus")
+    @Column("bonus")
     private Double bonus;
 
     // 加入时间
-    @Column(name = "create_time")
+    @Column("create_time")
     private Date createTime;
 
-    @Column(name = "xiaohao_count")
+    @Column("xiaohao_count")
     private Integer xiaohaoCount;
 
-    @Column(name =  "tixian_count")
+    @Column("tixian_count")
     private Integer tixianCount;
 
-    @Column(name = "invite_code")
+    @Column("invite_code")
     private String inviteCode;
 
-    @Column(name = "repository_point")
+    @Column("repository_point")
     private Integer repositoryPoint;
 
-    @Column(name = "xiaohao_today")
+    @Column("xiaohao_today")
     private Integer xiaohaoToday;
 
-    @Column(name = "xiaohao_yesterday")
+    @Column("xiaohao_yesterday")
     private Integer xiaohaoYesterday;
 
-    @Column(name = "team_play_count_yesterday")
+    @Column("team_play_count_yesterday")
     private Integer teamPlayCountYesterday;
 
-    @Column(name = "wxchat")
+    @Column("wxchat")
     private String wxchat;
 
-    @Column(name = "qq")
+    @Column("qq")
     private String qq;
 
-    @Column(name =  "xianliao")
+    @Column("xianliao")
     private String xianliao;
 
-    @Column(name = "invite_icon")
+    @Column("invite_icon")
     private String inviteIcon;
 
-    @Column(name =  "is_robot")
+    @Column("is_robot")
     private Integer isRobot;
 
-    @Transient
+    @Column(ignore = true)
     private Long sonPool;
 
-    @Transient
+    @Column(ignore = true)
     private Integer gongxianYesterday;
 
-    @Transient
+    @Column(ignore = true)
     private Integer gongxianToday;
 
-    @Transient
+    @Column(ignore = true)
     private Integer thresholdValue;
 
-    @Transient
+    @Column(ignore = true)
     private Integer teamPlayCountToday;
 
     public Long getSonPool() {
@@ -157,22 +156,22 @@ public class TPlayerGroup {
         this.teamPlayCountYesterday = teamPlayCountYesterday;
     }
 
-    @Transient
+    @Column(ignore = true)
     private String nickName;
 
-    @Transient
+    @Column(ignore = true)
     private String photo;
 
-    @Column(name = "dayingjia_count_today")
+    @Column("dayingjia_count_today")
     private Integer dayingjiaCountToday;
 
-    @Column(name = "dayingjia_count_yesterday")
+    @Column("dayingjia_count_yesterday")
     private Integer dayingjiaCountYesterday;
 
-    @Column(name = "play_count_today")
+    @Column("play_count_today")
     private Integer playCountToday;
 
-    @Column(name = "play_count_yesterday")
+    @Column("play_count_yesterday")
     private Integer playCountYesterday;
 
     public Integer getDayingjiaCountToday() {

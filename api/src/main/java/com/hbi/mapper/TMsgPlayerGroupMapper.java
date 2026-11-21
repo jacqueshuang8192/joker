@@ -2,14 +2,14 @@ package com.hbi.mapper;
 
 import com.hbi.model.TMsgPlayerGroup;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 
 /**
  * Created by muzi on 2017/12/9.
  */
-public interface TMsgPlayerGroupMapper extends Mapper<TMsgPlayerGroup> {
+public interface TMsgPlayerGroupMapper extends EntityMapper<TMsgPlayerGroup> {
 
     List<TMsgPlayerGroup> getMsg(@Param("playerId") Integer playerId,
                                  @Param("status")String status,

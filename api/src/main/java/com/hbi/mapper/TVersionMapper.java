@@ -6,9 +6,9 @@ import org.apache.ibatis.annotations.Param;
 
 import com.hbi.model.TVersion;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TVersionMapper extends Mapper<TVersion> {
+public interface TVersionMapper extends EntityMapper<TVersion> {
 
     List<TVersion> queryNewestApplicationVersions();
 

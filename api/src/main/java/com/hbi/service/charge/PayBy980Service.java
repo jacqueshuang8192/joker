@@ -106,7 +106,7 @@ public class PayBy980Service extends BaseChargeService{
             imsTpOrders.setCount(amount);
             imsTpOrders.setOrderNo(pay_orderid);
 
-            TUser tUser = userMapper.selectByPrimaryKey(userId);
+            TUser tUser = userMapper.findById(userId);
             if (tUser.getAgentId() != null) {
                 imsTpOrders.setParentId(Integer.parseInt(tUser.getAgentId().toString()));
             }
@@ -209,7 +209,7 @@ public class PayBy980Service extends BaseChargeService{
         imsTpOrders.setWxOrderNum(orderJson.getString("orderId"));
         imsTpOrders.setThirdpartyOrderNum(sign);
 
-        TUser tUser = userMapper.selectByPrimaryKey(userId);
+        TUser tUser = userMapper.findById(userId);
         if (tUser.getAgentId() != null) {
             imsTpOrders.setParentId(Integer.parseInt(tUser.getAgentId().toString()));
         }
@@ -351,7 +351,7 @@ public class PayBy980Service extends BaseChargeService{
         imsTpOrders.setCount(amount);
         imsTpOrders.setOrderNo(orderid);
 
-        TUser tUser = userMapper.selectByPrimaryKey(userId);
+        TUser tUser = userMapper.findById(userId);
         if (tUser.getAgentId() != null) {
             imsTpOrders.setParentId(Integer.parseInt(tUser.getAgentId().toString()));
         }
@@ -430,7 +430,7 @@ public class PayBy980Service extends BaseChargeService{
         imsTpOrders.setCount(amount);
         imsTpOrders.setOrderNo(orderid);
 
-        TUser tUser = userMapper.selectByPrimaryKey(userId);
+        TUser tUser = userMapper.findById(userId);
         if (tUser.getAgentId() != null) {
             imsTpOrders.setParentId(Integer.parseInt(tUser.getAgentId().toString()));
         }
@@ -503,7 +503,7 @@ public class PayBy980Service extends BaseChargeService{
         imsTpOrders.setCount(amount);
         imsTpOrders.setOrderNo(orderid);
 
-        TUser tUser = userMapper.selectByPrimaryKey(userId);
+        TUser tUser = userMapper.findById(userId);
         if (tUser.getAgentId() != null) {
             imsTpOrders.setParentId(Integer.parseInt(tUser.getAgentId().toString()));
         }
@@ -604,7 +604,7 @@ public class PayBy980Service extends BaseChargeService{
         imsTpOrders.setOrderNo(orderid);
         imsTpOrders.setThirdpartyOrderNum(p8_sign);
 
-        TUser tUser = userMapper.selectByPrimaryKey(userId);
+        TUser tUser = userMapper.findById(userId);
         if (tUser.getAgentId() != null) {
             imsTpOrders.setParentId(Integer.parseInt(tUser.getAgentId().toString()));
         }
@@ -691,7 +691,7 @@ public class PayBy980Service extends BaseChargeService{
         imsTpOrders.setOrderNo(orderid);
         imsTpOrders.setThirdpartyOrderNum(paramMap.get("sign"));
 
-        TUser tUser = userMapper.selectByPrimaryKey(userId);
+        TUser tUser = userMapper.findById(userId);
         if (tUser.getAgentId() != null) {
             imsTpOrders.setParentId(Integer.parseInt(tUser.getAgentId().toString()));
         }

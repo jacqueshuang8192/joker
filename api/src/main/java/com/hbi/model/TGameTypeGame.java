@@ -1,23 +1,23 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_game_type_game")
+@Table("t_game_type_game")
 public class TGameTypeGame {
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Long id;
-    @Column(name = "game_type_id")
+    @Column("game_type_id")
     private Long gameTypeId;
     
-    @Column(name = "game_id")
+    @Column("game_id")
     private Long gameId;
     
-    @Column(name = "province_id")
+    @Column("province_id")
     private Long provinceId;
-    @Column(name = "game_level")
+    @Column("game_level")
     private Long Level;
 
 

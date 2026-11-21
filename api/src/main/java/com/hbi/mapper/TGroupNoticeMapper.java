@@ -3,12 +3,12 @@ package com.hbi.mapper;
 import com.hbi.model.TGroupNotice;
 import com.hbi.model.TMsgPlayerGroup;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 /**
  * Create by Mars on 2019/6/12 17:45
  */
-public interface TGroupNoticeMapper extends Mapper<TMsgPlayerGroup> {
+public interface TGroupNoticeMapper extends EntityMapper<TMsgPlayerGroup> {
 
     /**
      * 根据群组ID查询公告

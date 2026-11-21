@@ -1,15 +1,17 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_role_res")
+@Table("t_role_res")
 public class TRoleRes {
     @Id
-    @Column(name = "roleId")
+    @Column("roleId")
     private Long roleid;
 
     @Id
-    @Column(name = "resourceId")
+    @Column("resourceId")
     private Long resourceid;
 
     /**

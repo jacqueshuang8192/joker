@@ -1,38 +1,40 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
-@Table(name = "t_free_game_round")
+@Table("t_free_game_round")
 public class TFreeGameRound {
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Id(keyType = KeyType.Auto)
+    @Column("id")
     private Long id;
 
-    @Column(name = "activity_id")
+    @Column("activity_id")
     private Long activityId;
 
     private String content;
 
     private Integer level;
 
-    @Column(name = "round_index")
+    @Column("round_index")
     private Integer roundIndex;
 
-    @Column(name = "start_time")
+    @Column("start_time")
     private Date startTime;
 
-    @Column(name = "end_time")
+    @Column("end_time")
     private Date endTime;
     
-    @Column(name = "replay_url")
+    @Column("replay_url")
     private String replayUrl;
 
-    @Column(name =  "group_id")
+    @Column("group_id")
     private Integer groupId;
 
-    @Transient
+    @Column(ignore = true)
     private String gameName;
 
     public Integer getGroupId() {

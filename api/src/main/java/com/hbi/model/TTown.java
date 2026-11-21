@@ -1,17 +1,19 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_town")
+@Table("t_town")
 public class TTown {
     @Id
-    @Column(name = "TOWN_ID")
+    @Column("TOWN_ID")
     private Long townId;
 
-    @Column(name = "CITY_ID")
+    @Column("CITY_ID")
     private Long cityId;
 
-    @Column(name = "NAME")
+    @Column("NAME")
     private String name;
 
     /**

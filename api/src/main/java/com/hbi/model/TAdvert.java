@@ -1,32 +1,32 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
-@Table(name = "t_advert")
+@Table("t_advert")
 public class TAdvert {
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Long id;
 
-    @Column(name = "phone_url")
+    @Column("phone_url")
     private String phoneUrl;
 
-    @Column(name = "describe")
+    @Column("describe")
     private String describe;
 
-    @Column(name = "is_show")
+    @Column("is_show")
     private Integer isShow;
 
-    @Column(name = "create_time")
+    @Column("create_time")
     private Date createTime;
 
-    @Column(name = "phone_name")
+    @Column("phone_name")
     private String phoneName;
 
-    @Column(name = "visit_url")
+    @Column("visit_url")
     private String visitUrl;
 
     public String getVisitUrl() {

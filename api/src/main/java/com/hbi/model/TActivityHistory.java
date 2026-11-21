@@ -1,37 +1,39 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_activity_history")
+@Table("t_activity_history")
 public class TActivityHistory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id(keyType = KeyType.Auto)
     private Long id;
 
-    @Column(name = "activity_id")
+    @Column("activity_id")
     private Long activityId;
 
-    @Column(name = "user_id")
+    @Column("user_id")
     private Long userId;
 
-    @Column(name = "game_id")
+    @Column("game_id")
     private Long gameId;
 
     private Integer level;
 
     private Integer round;
 
-    @Column(name = "card_count")
+    @Column("card_count")
     private Integer cardCount;
 
-    @Column(name = "user_names")
+    @Column("user_names")
     private String userNames;
 
-    @Column(name = "start_date")
+    @Column("start_date")
     private Date startDate;
 
-    @Column(name = "remaining_time")
+    @Column("remaining_time")
     private Integer remainingTime;
 
     /**

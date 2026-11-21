@@ -1,18 +1,20 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_config")
+@Table("t_config")
 public class TConfig {
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Long id;
 
     @Id
-    @Column(name = "K")
+    @Column("K")
     private String k;
 
-    @Column(name = "V")
+    @Column("V")
     private String v;
 
     private String remark;

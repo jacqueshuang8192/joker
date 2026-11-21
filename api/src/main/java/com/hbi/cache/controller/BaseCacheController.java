@@ -924,7 +924,7 @@ public class BaseCacheController {
             if (StringUtil.isNotEmpty(hget)) {
                 return Integer.parseInt(hget);
             }else {
-                TUser tUser = userMapper.selectByPrimaryKey(userId);
+                TUser tUser = userMapper.findById(userId);
                 System.out.println(tUser.getCardCount());
                 if (null == tUser) {
                     return 0;
@@ -966,7 +966,7 @@ public class BaseCacheController {
             cache = CacheManager.getCache();
             String agentId = cache.hget(Constants.PLAYER_ + userId, "agentId");
             if (StringUtil.isEmpty(agentId)) {
-                Long agentId1 = userMapper.selectByPrimaryKey(Long.parseLong(userId + "")).getAgentId();
+                Long agentId1 = userMapper.findById(Long.parseLong(userId + "")).getAgentId();
                 if (StringUtil.isEmpty(agentId1)) {
                     return null;
                 }else {
@@ -1005,7 +1005,7 @@ public class BaseCacheController {
 
         String nickName =  cache.hget(Constants.PLAYER_ + playerId ,"nickName");
         if (StringUtil.isEmpty(nickName)) {
-            TUser user = userMapper.selectByPrimaryKey(Long.parseLong(playerId+""));
+            TUser user = userMapper.findById(Long.parseLong(playerId+""));
             if (StringUtil.isEmpty(user)) {
                 return "";
             }
@@ -1019,7 +1019,7 @@ public class BaseCacheController {
 
         String nickName =  cache.hget(Constants.PLAYER_ + playerId ,"photoUrl");
         if (StringUtil.isEmpty(nickName)) {
-            TUser user = userMapper.selectByPrimaryKey(Long.parseLong(playerId+""));
+            TUser user = userMapper.findById(Long.parseLong(playerId+""));
             if (StringUtil.isEmpty(user)) {
                 return "";
             }

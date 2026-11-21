@@ -1,13 +1,13 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_game_config")
+@Table("t_game_config")
 public class TGameConfig {
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Long id;
 
     private Integer level;

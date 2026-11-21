@@ -1,25 +1,27 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_clu_repository_handle_history")
+@Table("t_clu_repository_handle_history")
 public class TCluRepositoryHandleHistory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id(keyType = KeyType.Auto)
     private Integer id;
 
-    @Column(name = "player_id")
+    @Column("player_id")
     private Integer playerId;
 
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
     private Integer type;
 
     private Integer point;
 
-    @Column(name = "create_time")
+    @Column("create_time")
     private Date createTime;
 
     /**

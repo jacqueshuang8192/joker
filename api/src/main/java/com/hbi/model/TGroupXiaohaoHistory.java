@@ -1,35 +1,37 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_group_xiaohao_history")
+@Table("t_group_xiaohao_history")
 public class TGroupXiaohaoHistory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id(keyType = KeyType.Auto)
     private Integer id;
 
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
-    @Column(name = "hehuoren_id")
+    @Column("hehuoren_id")
     private Integer hehuorenId;
 
-    @Column(name = "player_id")
+    @Column("player_id")
     private Integer playerId;
 
     private Integer profit;
 
-    @Column(name = "profit_time")
+    @Column("profit_time")
     private Date profitTime;
 
-    @Column(name = "profit_count")
+    @Column("profit_count")
     private Integer profitCount;
 
-    @Column(name = "game_level")
+    @Column("game_level")
     private Integer gameLevel;
 
-    @Column(name = "activity_id")
+    @Column("activity_id")
     private Long activityId;
 
     public void setGameLevel(Integer gameLevel) {
@@ -48,10 +50,10 @@ public class TGroupXiaohaoHistory {
         this.activityId = activityId;
     }
 
-    @Transient
+    @Column(ignore = true)
     private String smallPhoto;
 
-    @Transient
+    @Column(ignore = true)
     private String nickName;
 
     public String getNickName() {

@@ -1,67 +1,69 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_activity")
+@Table("t_activity")
 public class TActivity {
     @Id
-    @Column(name = "activity_id")
+    @Column("activity_id")
     private Long activityId;
     
-    @Column(name = "activity_name")
+    @Column("activity_name")
     private String activityName;
 
-    @Column(name = "parent_id")
+    @Column("parent_id")
     private Long parentId;
-    @Column(name = "cards")
+    @Column("cards")
     private Integer cards;
-    @Column(name = "is_deduct")
+    @Column("is_deduct")
     private Integer isDeduct;
 
     private String type;
-    @Column(name = "discription")
+    @Column("discription")
     private String discription;
 
-    @Column(name = "owner_id")
+    @Column("owner_id")
     private Long ownerId;
 
-    @Column(name = "game_id")
+    @Column("game_id")
     private Long gameId;
 
     private Integer level;
 
     private Short status;
 
-    @Column(name = "start_date")
+    @Column("start_date")
     private Date startDate;
 
-    @Column(name = "end_date")
+    @Column("end_date")
     private Date endDate;
 
-    @Column(name = "create_date")
+    @Column("create_date")
     private Date createDate;
 
-    @Column(name = "room_type")
+    @Column("room_type")
     private Integer roomType;
 
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
-    @Column(name = "game_json")
+    @Column("game_json")
     private String  gameJson;
 
-    @Column(name = "extend_activity_id")
+    @Column("extend_activity_id")
     private Long extendActivityId;
 
-    @Column(name = "invite_code")
+    @Column("invite_code")
     private String inviteCode;
 
-    @Transient
+    @Column(ignore = true)
     private Integer round;
-    @Transient
+    @Column(ignore = true)
     private Integer score;
-    @Transient
+    @Column(ignore = true)
     private Integer playerId;
 
     public String getInviteCode() {

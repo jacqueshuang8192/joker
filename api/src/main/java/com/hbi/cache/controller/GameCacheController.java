@@ -104,7 +104,7 @@ public class GameCacheController {
 //            TUserGame game = new TUserGame();
 //            game.setGameId(gameId);
 //            game.setUserid(userId);
-//            game = userGameMapper.selectByPrimaryKey(game);
+//            game = userGameMapper.findById(game);
 //            if (game != null) {
 //                cache.hset(key, userId.toString(), JSONObject.toJSONString(game));
 //            }

@@ -124,7 +124,7 @@ public class GoodsService {
         ICache cache = null;
         try {
         	
-        	TUser user = userMapper.selectByPrimaryKey(userId);
+            TUser user = userMapper.findById(userId);
             if (user!=null) {
 				Long agentId = user.getAgentId();
 				if (agentId !=null) {
@@ -149,7 +149,7 @@ public class GoodsService {
         ICache cache = null;
         try {
         	
-        	TUser user = userMapper.selectByPrimaryKey(userId);
+            TUser user = userMapper.findById(userId);
         	TConfig config = new TConfig();
 			config.setK("bindAgentSendCard");
 			config=configMapper.selectOne(config);
@@ -215,7 +215,7 @@ public class GoodsService {
 	 * @return
 	 */
 	public TGoods findGoodsById(Long goodsId) {
-		return goodsMapper.selectByPrimaryKey(goodsId);
+		return goodsMapper.findById(goodsId);
 	}
 	public ImsGoods findImsGoodsById(Long goodsId) {
 		return goodsMapper.findImsGoodsById(goodsId);
@@ -235,7 +235,7 @@ public class GoodsService {
 		if (g == null || !g.getCategoryType().equalsIgnoreCase(Constants.GOODS_TYPE_EXCHANGE)) {
 			throw new InfServerException(Constants.RETURN_CODE_FAIL, "商品不存在");
 		}
-		TUser user = userMapper.selectByPrimaryKey(userId);
+		TUser user = userMapper.findById(userId);
 		if (user == null) {
 			throw new InfServerException(Constants.RETURN_CODE_FAIL, "玩家不存在");
 		}

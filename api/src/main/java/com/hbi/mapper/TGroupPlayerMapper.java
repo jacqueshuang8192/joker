@@ -4,14 +4,14 @@ import com.hbi.model.TGroupPlayer;
 import com.hbi.model.TPlayerGroup;
 import com.hbi.vo.request.common.GameResultVo;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 
 /**
  * Created by muzi on 2017/12/7.
  */
-public interface TGroupPlayerMapper extends Mapper<TGroupPlayer> {
+public interface TGroupPlayerMapper extends EntityMapper<TGroupPlayer> {
     public int insertGroup(TGroupPlayer tgp);
 
     Long queryGroupOwerId(@Param("groupId")Integer groupId);

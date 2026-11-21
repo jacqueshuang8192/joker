@@ -3,7 +3,7 @@ include:
 
 services:
   flyway:
-    image: flyway/flyway:11.15.0-alpine
+    image: flyway/flyway:13.13.0-alpine
     platform: linux/amd64
     networks: [panel]
     volumes:

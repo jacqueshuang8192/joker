@@ -1,28 +1,28 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_robot_info")
+@Table("t_robot_info")
 public class TRobotInfo {
 
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Integer id;
-    @Column(name = "nick_name")
+    @Column("nick_name")
     private String nickName;
-    @Column(name = "photo")
+    @Column("photo")
     private String photo;
-    @Column(name = "sex")
+    @Column("sex")
     private Integer sex;
-    @Column(name = "latitude")
+    @Column("latitude")
     private String latitude;
-    @Column(name = "longitude")
+    @Column("longitude")
     private String longitude;
-    @Column(name = "ip")
+    @Column("ip")
     private String ip;
-    @Column(name = "status")
+    @Column("status")
     private int status;
 
     public Integer getId() {

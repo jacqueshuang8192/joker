@@ -29,9 +29,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tk.mybatis.mapper.common.Mapper;
-
-import com.github.pagehelper.PageHelper;
+import com.core.mapper.EntityMapper;
+import com.mybatisflex.core.query.QueryWrapper;
 
 /**
  * Created by liuzh on 2014/12/11.
@@ -40,26 +39,26 @@ import com.github.pagehelper.PageHelper;
 public abstract class BaseService<T> {
 
     @Autowired
-    protected Mapper<T> mapper;
+    protected EntityMapper<T> mapper;
 
     public int save(T entity){
         return mapper.insert(entity);
     }
 
     public int delete(T entity){
-        return mapper.deleteByPrimaryKey(entity);
+        return mapper.delete(entity);
     }
     
     public int updateBySelective(T entity) {
-    	return mapper.updateByPrimaryKeySelective(entity);
+        return mapper.updateSelective(entity);
     }
     
     public List<T> selectByExample(T entity) {
-    	return mapper.selectByExample(entity);
+        return mapper.select(entity);
     }
     
     public List<T> select(T entity) {
-    	return mapper.select(entity);
+        return mapper.select(entity);
     }
 
     /**
@@ -70,8 +69,6 @@ public abstract class BaseService<T> {
      * @return
      */
     public List<T> selectPage(int pageNum,int pageSize){
-        PageHelper.startPage(pageNum, pageSize);
-        //Spring4支持泛型注入
-        return mapper.select(null);
+        return mapper.paginate(pageNum, pageSize, QueryWrapper.create()).getRecords();
     }
 }

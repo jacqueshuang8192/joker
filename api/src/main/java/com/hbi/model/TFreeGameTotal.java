@@ -1,27 +1,31 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
 
-@Table(name = "t_free_game_total")
+@Table("t_free_game_total")
 public class TFreeGameTotal {
 	@Id
-    @Column(name = "id")
+    @Column("id")
     private Long Id;
 
     
     
-    @Column(name = "user_id")
+    @Column("user_id")
     private Long userId;
 
     
+    // Populated by the ranking XML queries. Exclude primitive defaults from entity filters.
+    @Column(ignore = true)
     private int total;
-    private int  win;
-    private int  draw;
-    private int  lose;
+    @Column(ignore = true)
+    private int win;
+    @Column(ignore = true)
+    private int draw;
+    @Column(ignore = true)
+    private int lose;
     public long getScore() {
 		return score;
 	}
@@ -30,13 +34,14 @@ public class TFreeGameTotal {
 		this.score = score;
 	}
 
+	@Column(ignore = true)
 	private long score;
-    @Transient
+    @Column(ignore = true)
     private String nickName;
     
-    @Transient
+    @Column(ignore = true)
     private String smallIcon;
-    @Transient
+    @Column(ignore = true)
     private Integer rank;
     
 

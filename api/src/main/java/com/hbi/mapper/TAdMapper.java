@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TAd;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TAdMapper extends Mapper<TAd> {
+public interface TAdMapper extends EntityMapper<TAd> {
 }

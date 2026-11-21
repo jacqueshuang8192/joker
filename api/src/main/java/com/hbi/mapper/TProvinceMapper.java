@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TProvince;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TProvinceMapper extends Mapper<TProvince> {
+public interface TProvinceMapper extends EntityMapper<TProvince> {
 }

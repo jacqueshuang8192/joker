@@ -3,9 +3,9 @@ package com.hbi.mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.hbi.model.TConfig;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TConfigMapper extends Mapper<TConfig> {
+public interface TConfigMapper extends EntityMapper<TConfig> {
 
     int updateConfig(@Param("key") String key, @Param("value") String value);
 

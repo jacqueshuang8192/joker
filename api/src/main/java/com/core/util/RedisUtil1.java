@@ -1,11 +1,12 @@
 package com.core.util;
 
 import org.apache.commons.lang.StringUtils;
-import redis.clients.jedis.BinaryClient;
+import redis.clients.jedis.args.ListPosition;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -732,7 +733,7 @@ public class RedisUtil1 {
      * @param value 添加的value
      * @return
      */
-    public Long linsert(String key, BinaryClient.LIST_POSITION where,
+    public Long linsert(String key, ListPosition where,
                         String pivot, String value){
         Jedis jedis = null;
         Long res = null;
@@ -1356,7 +1357,7 @@ public class RedisUtil1 {
         Set<String> res = null;
         try {
             jedis = pool.getResource();
-            res = jedis.zrevrange(key, start, end);
+            res = new LinkedHashSet<>(jedis.zrevrange(key, start, end));
         } catch (Exception e) {
 
             LOGGER.error(e.getMessage());
@@ -1378,7 +1379,7 @@ public class RedisUtil1 {
         Set<String> res = null;
         try {
             jedis = pool.getResource();
-            res = jedis.zrevrangeByScore(key, max, min);
+            res = new LinkedHashSet<>(jedis.zrevrangeByScore(key, max, min));
         } catch (Exception e) {
 
             LOGGER.error(e.getMessage());
@@ -1400,7 +1401,7 @@ public class RedisUtil1 {
         Set<String> res = null;
         try {
             jedis = pool.getResource();
-            res = jedis.zrevrangeByScore(key,max,min);
+            res = new LinkedHashSet<>(jedis.zrevrangeByScore(key,max,min));
         } catch (Exception e) {
 
             LOGGER.error(e.getMessage());
@@ -1566,7 +1567,7 @@ public class RedisUtil1 {
      */
     public static void returnResource(JedisPool pool, Jedis jedis) {
         if (jedis != null) {
-            pool.returnResource(jedis);
+            jedis.close();
         }
     }
 

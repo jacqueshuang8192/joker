@@ -1,35 +1,37 @@
 package com.hbi.model;
 
 import java.util.Date;
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_user_goods_buy_record")
+@Table("t_user_goods_buy_record")
 public class TUserGoodsBuyRecord {
 	
 	@Id
-    @Column(name = "id")
+    @Column("id")
     private Long id;
 
-	@Column(name="user_id")
+	@Column("user_id")
     private Long userId;
 
     private String type;
 
-    @Column(name = "goods_id")
+    @Column("goods_id")
     private Long goodsId;
 
-    @Column(name = "goods_photo")
+    @Column("goods_photo")
     private String goodsPhoto;
 
-    @Column(name = "goods_name")
+    @Column("goods_name")
     private String goodsName;
 
-    @Column(name = "total_price")
+    @Column("total_price")
     private Integer totalPrice;
 
     private Integer amount;
 
-    @Column(name = "buy_date")
+    @Column("buy_date")
     private Date buyDate;
 
     public Long getId() {

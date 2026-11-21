@@ -150,7 +150,7 @@ public class RoomCardService {
 			String[] winerListArray = winerList.split(",");
 			for (int i = 0; i < winerListArray.length; i++) {
 				Long userId = Long.valueOf(winerListArray[i]);
-				TUser user = userMapper.selectByPrimaryKey(userId);
+				TUser user = userMapper.findById(userId);
 				// 获取房卡信息
 				if (user.getCardCount() == null || user.getCardCount().equals(0)) {
 					throw new InfServerException(Constants.RETURN_CODE_FAIL, "房卡不足");
@@ -218,7 +218,7 @@ public class RoomCardService {
 			TUser user = new TUser();
 			user.setUserid(userId);
 			user.setLastLogin(now);
-			userMapper.updateByPrimaryKeySelective(user);
+			userMapper.updateSelective(user);
 			return sendCardCount;
 		}
 
@@ -230,7 +230,7 @@ public class RoomCardService {
 
 //				TGameLevelCard card = roomCardCacheController.queryConfigByLevelAndRound(level, round, cache);
 				// 获取房卡信息
-//				TUser user = userMapper.selectByPrimaryKey(userId);
+//				TUser user = userMapper.findById(userId);
 				Integer roomCard = baseCacheController.queryPlayerRoomCard(userId);
 
 				if (roomCard == null || roomCard.equals(0)) {
@@ -261,7 +261,7 @@ public class RoomCardService {
 			TUser user = new TUser();
 			user.setCardCount(num);
 			user.setUserid(userId);
-			userMapper.updateByPrimaryKeySelective(user);
+			userMapper.updateSelective(user);
 		}
 
 		public Integer queryRoomCardCount(Long userId) {
@@ -306,7 +306,7 @@ public class RoomCardService {
 				cache = CacheManager.getCache();
 
 
-				TUser user = userMapper.selectByPrimaryKey(userId);
+				TUser user = userMapper.findById(userId);
 				//标志位,标志位是否有代理控制
 				int i = 2;
 				MapVo map = null;

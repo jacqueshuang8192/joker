@@ -14,7 +14,7 @@ public class CityService extends BaseService<TCity> {
 	private TCityMapper cityMapper;
 	
 	public TCity findCityById(Long id) {
-    	TCity city = cityMapper.selectByPrimaryKey(id);
+        TCity city = cityMapper.findById(id);
     	return city;
 	}
 }

@@ -282,7 +282,7 @@ public class GoldService {
 
     public Integer queryRoomOwnerIncome(Long userId) {
 
-        TUser user = userMapper.selectByPrimaryKey(userId);
+        TUser user = userMapper.findById(userId);
 
         //Long gold = goldMapper.queryRoomOwnerIncome(userId);
         //if (gold == null || "".equals(gold)) {
@@ -297,7 +297,7 @@ public class GoldService {
             Response response = new Response();
             cache = CacheManager.getCache();
             //如果是存的话 检测玩家的房卡是否足够
-            TUser user = userMapper.selectByPrimaryKey(playerId);
+            TUser user = userMapper.findById(playerId);
 
             if ( count < 0 || count > user.getGiftGold()) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL,"您好,您提取的金币大于您持有的金币,请重新输入!!");

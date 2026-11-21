@@ -12,15 +12,15 @@ import com.hbi.cache.ICache;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import redis.clients.jedis.BinaryClient.LIST_POSITION;
-import redis.clients.jedis.ShardedJedis;
-import redis.clients.jedis.ShardedJedisPool;
+import redis.clients.jedis.args.ListPosition;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 public class CacheRedisImp implements ICache {
 
-	private static ShardedJedisPool pool;
+	private static JedisPool pool;
 	private static final Log log = LogFactory.getLog(CacheRedisImp.class);
-	private ShardedJedis jedis;
+	private Jedis jedis;
 
 	private static final String RESULT_OK = "OK";
 
@@ -33,10 +33,10 @@ public class CacheRedisImp implements ICache {
 	static {
 //		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 //
-//		pool = (ShardedJedisPool)context.getBean("jedis");
+//		pool = (JedisPool)context.getBean("jedis");
 		try {
 //			System.out.println("redis--->start");
-			pool = (ShardedJedisPool)ApplicationContextHelper.getBean("jedis");
+			pool = (JedisPool)ApplicationContextHelper.getBean("jedis");
 		} catch (Exception e) {
 			new CacheRedisImp();//防止静态代码块抛异常导致没有被类加载器加载
 		}
@@ -44,7 +44,7 @@ public class CacheRedisImp implements ICache {
 
 	public static CacheRedisImp getInstance() {
 		if (pool == null) {
-			pool = (ShardedJedisPool)ApplicationContextHelper.getBean("jedis");
+			pool = (JedisPool)ApplicationContextHelper.getBean("jedis");
 		}
 		CacheRedisImp instance = new CacheRedisImp();
 
@@ -239,13 +239,13 @@ public class CacheRedisImp implements ICache {
 	@Override
 	public Long linsertAfter(String key, String pivot, String value) {
 		// TODO Auto-generated method stub
-		return jedis.linsert(key, LIST_POSITION.AFTER, pivot, value);
+		return jedis.linsert(key, ListPosition.AFTER, pivot, value);
 	}
 
 	@Override
 	public Long linsertBefore(String key, String pivot, String value) {
 		// TODO Auto-generated method stub
-		return jedis.linsert(key, LIST_POSITION.BEFORE, pivot, value);
+		return jedis.linsert(key, ListPosition.BEFORE, pivot, value);
 	}
 
 	@Override
@@ -263,7 +263,7 @@ public class CacheRedisImp implements ICache {
     @Override
     public Set<String> keys(String key) {
         // TODO Auto-generated method stub
-        return jedis.getShard("").keys(key);
+        return jedis.keys(key);
     }
 
     @Override

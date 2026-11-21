@@ -1,53 +1,53 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
 
-@Table(name = "t_group_game")
+@Table("t_group_game")
 public class TGroupGame {
     @Id
-    @Column(name="id")
+    @Column("id")
     private Long id;
 
-    @Column(name="name")
+    @Column("name")
     private String name;
 
     private Integer level;
 
-    @Column(name="game_id")
+    @Column("game_id")
     private Long gameId;
 
     private String remark;
 
     private Integer coins;
 
-    @Column(name = "ori_coins")
+    @Column("ori_coins")
     private Integer oriCoins;
 
     private Float extract;
 
-    @Column(name="creator_id")
+    @Column("creator_id")
     private Long creatorId;
 
-    @Column(name="create_date")
+    @Column("create_date")
     private Date createDate;
 
     private String status;
 
-    @Column(name="last_modifier_id")
+    @Column("last_modifier_id")
     private Long lastModifierId;
 
-    @Column(name="last_modify_date")
+    @Column("last_modify_date")
     private Date lastModifierDate;
 
     private String ip;
 
     private Integer port;
 
-    @Column(name="player_count")
+    @Column("player_count")
     private Integer playerCount;
 
     public Long getId() {

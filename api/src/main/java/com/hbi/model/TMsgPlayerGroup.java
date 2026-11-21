@@ -1,54 +1,53 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
 /**
  * Created by muzi on 2017/12/9.
  */
-@Table(name = "t_msg_playergroup")
+@Table("t_msg_playergroup")
 public class TMsgPlayerGroup {
 
 
 
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Integer id;
 
-    @Column(name = "player_id")
+    @Column("player_id")
     private Integer playerId;
 
-    @Column(name = "ower_id")
+    @Column("ower_id")
     private Integer owerId;
 
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
-    @Column(name = "status")
+    @Column("status")
     private Integer status;
 
-    @Column(name = "create_time")
+    @Column("create_time")
     private Date createTime;
 
-    @Column(name = "inviter_uid")
+    @Column("inviter_uid")
     private Integer inviterUid;
 
-    @Transient
+    @Column(ignore = true)
     private String nickName;
 
-    @Transient
+    @Column(ignore = true)
     private String photoUrl;
 
-    @Transient
+    @Column(ignore = true)
     private String inviterNickName;
 
-    @Transient
+    @Column(ignore = true)
     private String inviterPhotoUrl;
 
-    @Transient
+    @Column(ignore = true)
     private String groupName;
 
     public String getInviterNickName() {

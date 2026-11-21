@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TGoodsCategory;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TGoodsCategoryMapper extends Mapper<TGoodsCategory> {
+public interface TGoodsCategoryMapper extends EntityMapper<TGoodsCategory> {
 }

@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TRoleRes;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TRoleResMapper extends Mapper<TRoleRes> {
+public interface TRoleResMapper extends EntityMapper<TRoleRes> {
 }

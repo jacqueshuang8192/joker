@@ -2,8 +2,8 @@ package com.hbi.mapper;
 
 import com.hbi.model.TAccountCharge;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TAccountChargeMapper extends Mapper<TAccountCharge> {
+public interface TAccountChargeMapper extends EntityMapper<TAccountCharge> {
     Long selectRecCount(@Param("playerId") Long playerId);
 }

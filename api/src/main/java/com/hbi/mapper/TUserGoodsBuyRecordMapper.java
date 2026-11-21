@@ -2,6 +2,6 @@ package com.hbi.mapper;
 
 import com.hbi.model.TUserGoodsBuyRecord;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TUserGoodsBuyRecordMapper extends Mapper<TUserGoodsBuyRecord> {}
+public interface TUserGoodsBuyRecordMapper extends EntityMapper<TUserGoodsBuyRecord> {}

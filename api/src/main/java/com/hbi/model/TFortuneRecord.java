@@ -1,13 +1,13 @@
 package com.hbi.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
 /**
  * Created by dzesla on 2017/2/17.
  */
-@Table
+@Table("t_fortune_record")
 public class TFortuneRecord {
     @Id
     private Long id;

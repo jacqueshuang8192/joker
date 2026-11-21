@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TCity;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TCityMapper extends Mapper<TCity> {
+public interface TCityMapper extends EntityMapper<TCity> {
 }

@@ -143,7 +143,7 @@ public class RoomCardController {
             //Long points = userMapper.selectPiontByUSerId(userId);
 //            Long gold = goldService.queryGoldCount(userId);
 
-//            TUser user = userMapper.selectByPrimaryKey(userId);
+//            TUser user = userMapper.findById(userId);
 
 //            Long repositoryMony = goldService.queryRepositoryMney(userId);
 //            Integer ownerIncome = goldService.queryRoomOwnerIncome(userId);

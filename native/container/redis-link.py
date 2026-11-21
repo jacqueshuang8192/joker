@@ -36,8 +36,8 @@ async def serve(client, reply, settings):
             if await asyncio.wait_for(server.readline(), 5) != b"+OK\r\n":
                 print("Upstream Redis authentication failed", file=sys.stderr, flush=True)
                 return
-        pending = [asyncio.ensure_future(copy_stream(client, upstream)),
-                   asyncio.ensure_future(copy_stream(server, reply))]
+        pending = [asyncio.create_task(copy_stream(client, upstream)),
+                   asyncio.create_task(copy_stream(server, reply))]
         done, _ = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
         for task in done:
             task.result()
@@ -56,6 +56,13 @@ async def serve(client, reply, settings):
         reply.close()
 
 
+async def listen(settings):
+    server = await asyncio.start_server(
+        lambda reader, writer: serve(reader, writer, settings), *LOCAL)
+    async with server:
+        await server.serve_forever()
+
+
 def main():
     if sys.argv[1:] == ["check"]:
         with socket.create_connection(LOCAL, 3) as conn:
@@ -63,10 +70,7 @@ def main():
             return 0 if conn.makefile("rb").readline() == b"+PONG\r\n" else 1
     with open("/srv/redis.json", encoding="utf-8") as stream:
         settings = json.load(stream)
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(asyncio.start_server(
-        lambda reader, writer: serve(reader, writer, settings), *LOCAL))
-    loop.run_forever()
+    asyncio.run(listen(settings))
 
 
 if __name__ == "__main__":

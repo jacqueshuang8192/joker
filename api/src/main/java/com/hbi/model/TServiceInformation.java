@@ -1,15 +1,17 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_service_information")
+@Table("t_service_information")
 public class TServiceInformation {
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Long id;
 
     @Id
-    @Column(name = "content")
+    @Column("content")
     private String content;
 
 	public Long getId() {

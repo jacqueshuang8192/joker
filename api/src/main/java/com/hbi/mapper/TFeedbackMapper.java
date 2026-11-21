@@ -1,10 +1,10 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TFeedback;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 /**
  * Created by dzesla on 2017/2/16.
  */
-public interface TFeedbackMapper extends Mapper<TFeedback> {
+public interface TFeedbackMapper extends EntityMapper<TFeedback> {
 }

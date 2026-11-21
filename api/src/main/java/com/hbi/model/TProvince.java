@@ -2,18 +2,20 @@ package com.hbi.model;
 
 import java.util.List;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_province")
+@Table("t_province")
 public class TProvince {
     @Id
-    @Column(name = "PROVINCE_ID")
+    @Column("PROVINCE_ID")
     private Long provinceId;
 
-    @Column(name = "NAME")
+    @Column("NAME")
     private String name;
 
-    @Transient
+    @Column(ignore = true)
     private List<TCity> cities;
     /**
      * @return PROVINCE_ID

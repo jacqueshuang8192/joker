@@ -2,27 +2,29 @@ package com.hbi.model;
 
 import java.util.Date;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_player")
+@Table("t_player")
 public class TPlayer {
     @Id
-    @Column(name = "player_id")
+    @Column("player_id")
     private Long playerId;
 
-    @Column(name = "compere_id")
+    @Column("compere_id")
     private Long compereId;
 
-    @Column(name = "province_id")
+    @Column("province_id")
     private Long provinceId;
 
-    @Column(name = "city_id")
+    @Column("city_id")
     private Long cityId;
 
-    @Column(name = "town_id")
+    @Column("town_id")
     private Long townId;
 
-    @Transient
+    @Column(ignore = true)
     private TUser user;
 
     private String tel;
@@ -31,28 +33,28 @@ public class TPlayer {
 
     private Integer level;
 
-    @Column(name = "MasterOrder")
+    @Column("MasterOrder")
     private Integer masterorder;
 
-    @Column(name = "expiric_value")
+    @Column("expiric_value")
     private Integer expiricValue;
 
-    @Column(name = "MemberOverDate")
+    @Column("MemberOverDate")
     private Date memberoverdate;
 
-    @Column(name = "RegisterDate")
+    @Column("RegisterDate")
     private Date registerdate;
 
-    @Column(name = "LastLogonDate")
+    @Column("LastLogonDate")
     private Date lastlogondate;
 
-    @Column(name = "RegisterIP")
+    @Column("RegisterIP")
     private String registerip;
 
-    @Column(name = "LastLogonIP")
+    @Column("LastLogonIP")
     private String lastlogonip;
     
-    @Column(name = "charge_sum")
+    @Column("charge_sum")
     private Long chargeSum;
 
     private Long attack;
@@ -61,19 +63,19 @@ public class TPlayer {
 
     private Long life;
 
-    @Column(name = "capture_attack")
+    @Column("capture_attack")
     private Long captureAttack;
 
-    @Column(name = "capture_defense")
+    @Column("capture_defense")
     private Long captureDefense;
 
-    @Column(name = "capture_life")
+    @Column("capture_life")
     private Long captureLife;
 
-    @Column(name = "promoter_id")
+    @Column("promoter_id")
     private Long promoterId;
 
-    @Column(name = "promo_code")
+    @Column("promo_code")
     private String promoCode;
 
     /**

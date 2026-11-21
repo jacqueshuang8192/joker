@@ -1,11 +1,11 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TAgentId;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 /**
  * Created by dzesla on 2017/2/16.
  */
-public interface TAgentIdMapper extends Mapper<TAgentId> {
+public interface TAgentIdMapper extends EntityMapper<TAgentId> {
     Long selectUnusedId();
 }

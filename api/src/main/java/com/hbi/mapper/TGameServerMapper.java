@@ -1,8 +1,8 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TGameServer;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TGameServerMapper extends Mapper<TGameServer> {
+public interface TGameServerMapper extends EntityMapper<TGameServer> {
 
 }

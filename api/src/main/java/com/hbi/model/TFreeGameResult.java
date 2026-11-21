@@ -1,14 +1,15 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
-@Table(name = "t_free_game_result")
+@Table("t_free_game_result")
 public class TFreeGameResult {
-    @Column(name = "id")
+    @Column("id")
     private Long id;
 
-    @Column(name = "activity_id")
+    @Column("activity_id")
     private Long activityId;
 
     private String content;
@@ -16,16 +17,16 @@ public class TFreeGameResult {
 
     private Integer level;
     
-    @Column(name = "ori_coins")
+    @Column("ori_coins")
     private Integer oriCoins;
 
-    @Column(name = "end_date")
+    @Column("end_date")
     private Date endDate;
 
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
-    @Transient
+    @Column(ignore = true)
     private String json;
 
     public Integer getGroupId() {

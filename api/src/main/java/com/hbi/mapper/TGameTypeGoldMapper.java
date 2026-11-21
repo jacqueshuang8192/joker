@@ -10,9 +10,9 @@ import com.hbi.model.TGameType;
 import com.hbi.model.TGameTypeGold;
 import com.hbi.model.TServiceInformation;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TGameTypeGoldMapper extends Mapper<TGameTypeGold> {
+public interface TGameTypeGoldMapper extends EntityMapper<TGameTypeGold> {
 	List<TGameTypeGold> queryGameType();
     
 }

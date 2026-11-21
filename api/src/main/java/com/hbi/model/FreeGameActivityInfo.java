@@ -1,6 +1,6 @@
 package com.hbi.model;
 
-import jakarta.persistence.Transient;
+import com.mybatisflex.annotation.Column;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +54,7 @@ public class FreeGameActivityInfo implements Serializable {
 	//房卡场的tid
 	private Long tid;
 
-	@Transient
+	@Column(ignore = true)
 	private String json;
 
 	public String getJson() {

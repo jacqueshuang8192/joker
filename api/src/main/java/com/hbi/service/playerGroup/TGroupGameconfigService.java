@@ -5,7 +5,8 @@ import com.hbi.mapper.TGroupGameconfigMapper;
 import com.hbi.model.TGroupGameconfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.entity.Example;
+import com.mybatisflex.core.query.QueryWrapper;
+import static com.mybatisflex.core.query.QueryMethods.column;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class TGroupGameconfigService {
 
     public Integer delOne(Integer configId ) {
 
-        int i = gameconfigMapper.deleteByPrimaryKey(configId);
+        int i = gameconfigMapper.removeById(configId);
 
         return i;
 
@@ -54,7 +55,7 @@ public class TGroupGameconfigService {
                 gameConfig.setStatus(status);
             }
 
-            return gameconfigMapper.updateByPrimaryKeySelective(gameConfig);
+            return gameconfigMapper.updateSelective(gameConfig);
 
         }
 
@@ -64,19 +65,18 @@ public class TGroupGameconfigService {
 
     public List<TGroupGameconfig> selectAll(Integer groupId,Integer level,Integer gameType ) {
 
-        Example example = new Example(TGroupGameconfig.class);
-        Example.Criteria criteria = example.createCriteria();
+        QueryWrapper query = QueryWrapper.create();
         if (!StringUtil.isEmpty(groupId)) {
-            criteria.andEqualTo("groupId",groupId);
+            query.and(column(TGroupGameconfig::getGroupId).eq(groupId));
         }
         if (!StringUtil.isEmpty(level)) {
-            criteria.andEqualTo("level",level);
+            query.and(column(TGroupGameconfig::getLevel).eq(level));
         }
         if (!StringUtil.isEmpty(gameType) ) {
-            criteria.andEqualTo("gameType",gameType);
+            query.and(column(TGroupGameconfig::getGameType).eq(gameType));
         }
 
-        List<TGroupGameconfig> tGroupGameconfigs = gameconfigMapper.selectByExample(example);
+        List<TGroupGameconfig> tGroupGameconfigs = gameconfigMapper.selectListByQuery(query);
 
         return tGroupGameconfigs;
 
@@ -84,7 +84,7 @@ public class TGroupGameconfigService {
 
     public TGroupGameconfig selectOne(Integer configId) {
 
-       return  gameconfigMapper.selectByPrimaryKey(configId);
+       return  gameconfigMapper.findById(configId);
 
     }
 

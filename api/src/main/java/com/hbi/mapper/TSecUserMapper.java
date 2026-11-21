@@ -8,9 +8,9 @@ import org.apache.ibatis.annotations.Param;
 import com.hbi.model.TGameConfig;
 import com.hbi.model.TSecUser;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TSecUserMapper extends Mapper<TSecUser> {
+public interface TSecUserMapper extends EntityMapper<TSecUser> {
     int updateSellCount(
             @Param("userId")Long userId,
             @Param("sellCount")Integer sellCount);

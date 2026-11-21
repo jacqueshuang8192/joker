@@ -1,32 +1,32 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
 /**
  * Created by muzi on 18/11/2017.
  */
-@Table(name = "t_game_type")
+@Table("t_game_type")
 public class TGameTypeByGold {
         @Id
-        @Column(name = "id")
+        @Column("id")
         private Long id;
 
         @Id
-        @Column(name = "name")
+        @Column("name")
         private String name;
 
-        @Column(name = "game_type_parent_id")
+        @Column("game_type_parent_id")
         private Integer gameTypeParentId;
 
-        @Column(name = "room_type")
+        @Column("room_type")
         private String roomType;
 
-        @Column(name = "room_name")
+        @Column("room_name")
         private String roomName;
 
-        @Column(name = "is_show")
+        @Column("is_show")
         private Integer isShow;
 
 

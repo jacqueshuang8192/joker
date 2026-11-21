@@ -91,7 +91,7 @@ public class TGroupPlayerService {
                 }
             }
 
-            TUser tUser = userMapper.selectByPrimaryKey(Long.parseLong(String.valueOf (playerId)));
+            TUser tUser = userMapper.findById(Long.parseLong(String.valueOf (playerId)));
             if (StringUtil.isEmpty(tUser) || tUser.getClubLimit() != 1) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "您未获得创建联盟权限!");
             }
@@ -176,7 +176,7 @@ public class TGroupPlayerService {
             if (StringUtil.isEmpty(assignorTPG)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "被转让人不存在...");
             }
-            TUser sssignorInfo = userMapper.selectByPrimaryKey(Long.parseLong(String.valueOf (assignor)));
+            TUser sssignorInfo = userMapper.findById(Long.parseLong(String.valueOf (assignor)));
             if (StringUtil.isEmpty(sssignorInfo)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "被转让人不存在...");
             }
@@ -272,7 +272,7 @@ public class TGroupPlayerService {
             groupId = invitePlayer.getGroupId();
 
             //String group = cache.hget(Constants.GROUP_PLAYER, groupId.toString());
-            TGroupPlayer groupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer groupPlayer = groupPlayerMapper.findById(groupId);
             if (groupPlayer == null) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "抱歉,这个群不存在!!");
             }
@@ -424,12 +424,12 @@ public class TGroupPlayerService {
             //申请加入群
             cache = CacheManager.getCache();
 
-            TUser tUser = userMapper.selectByPrimaryKey(Long.parseLong(String.valueOf (playerId2)));
+            TUser tUser = userMapper.findById(Long.parseLong(String.valueOf (playerId2)));
             if (StringUtil.isEmpty(tUser)) {
                 throw new InfServerException(Constants.RETURN_CODE_PARAM_ERROR, "该玩家不存在！！");
             }
 
-            TGroupPlayer groupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer groupPlayer = groupPlayerMapper.findById(groupId);
             if (StringUtil.isEmpty(groupPlayer)) {
                 throw new InfServerException(Constants.RETURN_CODE_PARAM_ERROR, "联盟数据异常！！");
             }
@@ -565,7 +565,7 @@ public class TGroupPlayerService {
                             playerinfo.put("groupName", groupInfoByGroupId.getString("groupName"));
                             playerinfo.put("owerId", groupInfoByGroupId.getInteger("owerId"));
                             playerinfo.put("playerCount", groupInfoByGroupId.getInteger("playerCount"));
-                            TUser tUser = userMapper.selectByPrimaryKey((long) groupInfoByGroupId.getInteger("owerId"));
+                            TUser tUser = userMapper.findById((long) groupInfoByGroupId.getInteger("owerId"));
                             if (StringUtil.isNotEmpty(tUser)) {
                                 playerinfo.put("owerUrl", tUser.getSmallIcon());
                             }
@@ -648,7 +648,7 @@ public class TGroupPlayerService {
             TGroupPlayer tgp = null;
             //处理获取的数据,处理往前端功提供的格式
             if (list.size() > 0) {
-                tgp = groupPlayerMapper.selectByPrimaryKey(groupId);
+                tgp = groupPlayerMapper.findById(groupId);
                 //    if (tgp != null) {
                 //        JSONObject jsonObject = new JSONObject();
                 //        jsonObject.put("owerId",tgp.getOwerId());
@@ -866,7 +866,7 @@ public class TGroupPlayerService {
             RedisUtil3 ru3 = RedisUtil3.getRu();
             Map<String, Object> result = new HashMap<String, Object>();
             TPlayerGroup tpg = playerGroupMapper.selectByPlayerIdAndGroupId(playerId, groupId);
-            TGroupPlayer tgp = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tgp = groupPlayerMapper.findById(groupId);
 
             if (StringUtil.isEmpty(tpg)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "成员数据异常");
@@ -974,7 +974,7 @@ public class TGroupPlayerService {
 //            TGroupPlayer tgp = null;
 //            //处理获取的数据,处理往前端功提供的格式
 //            if (list != null && list.size() > 0 ) {
-//                tgp = groupPlayerMapper.selectByPrimaryKey(groupId);
+//                tgp = groupPlayerMapper.findById(groupId);
 //                //    if (tgp != null) {
 //                //        JSONObject jsonObject = new JSONObject();
 //                //        jsonObject.put("owerId",tgp.getOwerId());
@@ -1109,7 +1109,7 @@ public class TGroupPlayerService {
             TGroupPlayer tgp = null;
             //处理获取的数据,处理往前端功提供的格式
             if (list != null && list.size() > 0) {
-                tgp = groupPlayerMapper.selectByPrimaryKey(groupId);
+                tgp = groupPlayerMapper.findById(groupId);
                 if (tgp != null) {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("owerId", tgp.getOwerId());
@@ -1139,7 +1139,7 @@ public class TGroupPlayerService {
 
             //status=1 通过加入
             if (status == 1) {
-                TMsgPlayerGroup msg = msgPlayerGroupMapper.selectByPrimaryKey(msgId);
+                TMsgPlayerGroup msg = msgPlayerGroupMapper.findById(msgId);
 
                 if (StringUtil.isEmpty(msg)) {
                     return;
@@ -1153,7 +1153,7 @@ public class TGroupPlayerService {
                 Integer groupId = invitePlayer.getGroupId();
 
                 //String group = cache.hget(Constants.GROUP_PLAYER, groupId.toString());
-                TGroupPlayer groupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+                TGroupPlayer groupPlayer = groupPlayerMapper.findById(groupId);
                 if (groupPlayer == null) {
                     return;
                 }
@@ -1196,7 +1196,7 @@ public class TGroupPlayerService {
             msgPlayerGroupMapper.updateStatus(owerId, playerId, groupId, status);
             //status=1 通过加入
             if (status == Constants.INVITE_PLAYER_SURE) {
-                TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+                TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
                 if (null == tGroupPlayer) {
                     throw new InfServerException(Constants.RETURN_CODE_FAIL, "联盟不存在!!");
                 }
@@ -1458,7 +1458,7 @@ public class TGroupPlayerService {
             cache.hdel(Constants.GROUP_PLAYER, groupId.toString());
             //删除群 db
             playerGroupMapper.deleteByGroupId(groupId);
-            groupPlayerMapper.deleteByPrimaryKey(groupId);
+            groupPlayerMapper.removeById(groupId);
 
             GameServerUtil.notice2HallAboutClu(Constants.CLU_CLOSE, groupId, owerId);
 
@@ -1485,9 +1485,9 @@ public class TGroupPlayerService {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "您不是群主,不允更新名字!!");
             }
 
-            TGroupPlayer groupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer groupPlayer = groupPlayerMapper.findById(groupId);
             groupPlayer.setGroupName(groupName);
-            groupPlayerMapper.updateByPrimaryKey(groupPlayer);
+            groupPlayerMapper.update(groupPlayer, false);
 
 
             //更新玩家redis中的名字
@@ -1534,7 +1534,7 @@ public class TGroupPlayerService {
         try {
             cache = CacheManager.getCache();
 
-            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
 
             System.out.println(tGroupPlayer.getConfig());
             if (!tGroupPlayer.getOwerId().equals(playerId)) {
@@ -1597,7 +1597,7 @@ public class TGroupPlayerService {
                 }
             }
             tGroupPlayer.setConfig(jsonObject.toJSONString());
-            groupPlayerMapper.updateByPrimaryKey(tGroupPlayer);
+            groupPlayerMapper.update(tGroupPlayer, false);
 
             String hget = cache.hget(Constants.GROUP_PLAYER, groupId.toString());
             JSONObject jsonConfig = JSONObject.parseObject(hget);
@@ -1641,7 +1641,7 @@ public class TGroupPlayerService {
         try {
             cache = CacheManager.getCache();
 
-            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
 
             System.out.println(tGroupPlayer.getConfig());
             if (!tGroupPlayer.getOwerId().equals(playerId)) {
@@ -1659,7 +1659,7 @@ public class TGroupPlayerService {
             jsonObject.put("SelectGameConfig", jsonArray);
 
             tGroupPlayer.setConfig(jsonObject.toJSONString());
-            groupPlayerMapper.updateByPrimaryKey(tGroupPlayer);
+            groupPlayerMapper.update(tGroupPlayer, false);
 
             String hget = cache.hget(Constants.GROUP_PLAYER, groupId.toString());
             JSONObject jsonConfig = JSONObject.parseObject(hget);
@@ -1699,7 +1699,7 @@ public class TGroupPlayerService {
 //            if (!ownerId.equals(owerId1)) {
 //                return Constants.Limit_Err;
 //            }
-            TUser tUser = userMapper.selectByPrimaryKey(Long.parseLong(String.valueOf (playerId)));
+            TUser tUser = userMapper.findById(Long.parseLong(String.valueOf (playerId)));
             if (StringUtil.isEmpty(tUser)) {
                 return Constants.TUSER_Err;
             }
@@ -1718,7 +1718,7 @@ public class TGroupPlayerService {
 
             TPlayerGroup ownerInfo = playerGroupMapper.selectByPlayerIdAndGroupId(ownerId, groupId);
             TPlayerGroup playerInfo = playerGroupMapper.selectByPlayerIdAndGroupId(playerId, groupId);
-            TGroupPlayer clubInfo = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer clubInfo = groupPlayerMapper.findById(groupId);
 
             if (StringUtil.isEmpty(ownerInfo) || StringUtil.isEmpty(playerInfo)) {
                 return Constants.TUSER_No_Exist;
@@ -1883,7 +1883,7 @@ public class TGroupPlayerService {
 
         Integer beginRowIndex = (currentPage - 1) * pageSize;
 
-        TGroupPlayer tgp = groupPlayerMapper.selectByPrimaryKey(groupId);
+        TGroupPlayer tgp = groupPlayerMapper.findById(groupId);
         if (StringUtil.isEmpty(tgp)) {
             return null;
         }
@@ -1910,7 +1910,7 @@ public class TGroupPlayerService {
 
     public TGroupPlayer getGroupInfo(Integer groupId) {
 
-        return groupPlayerMapper.selectByPrimaryKey(groupId);
+        return groupPlayerMapper.findById(groupId);
 
     }
 
@@ -1919,7 +1919,7 @@ public class TGroupPlayerService {
 
         try {
             cache = CacheManager.getCache();
-            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
 
             if (!tGroupPlayer.getOwerId().equals(ownerId)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "您不是群主,无权更改配置!!");
@@ -1961,7 +1961,7 @@ public class TGroupPlayerService {
 
         try {
             cache = CacheManager.getCache();
-            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
 
             if (!tGroupPlayer.getOwerId().equals(ownerId)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "您不是群主,无权更改配置!!");
@@ -1987,7 +1987,7 @@ public class TGroupPlayerService {
 
         try {
             cache = CacheManager.getCache();
-            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
 
             if (!tGroupPlayer.getOwerId().equals(ownerId)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "您不是群主,无权更改配置!!");
@@ -2021,7 +2021,7 @@ public class TGroupPlayerService {
     }
 
     public JSONObject selectCluConfigCostPattern(Integer groupId) {
-        TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+        TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
         if (tGroupPlayer == null) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL, "没有找到这个群！");
         }
@@ -2101,7 +2101,7 @@ public class TGroupPlayerService {
 
             if (tpg.getPlayerType() == PlayerTypeEnum.MASTER) {
                 //群主的提现是直接扣减收益,变相增加奖池
-                TGroupPlayer groupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+                TGroupPlayer groupPlayer = groupPlayerMapper.findById(groupId);
                 if (!StringUtil.isEmpty(groupPlayer)) {
                     if (tixianCount > groupPlayer.getProfitClubCount()) {
                         throw new InfServerException(Constants.RETURN_CODE_FAIL, "积分不足以本次提取...");
@@ -2228,7 +2228,7 @@ public class TGroupPlayerService {
             result.put("repositoryPoint", tPlayerGroup.getRepositoryPoint());
             result.put("bonus", tPlayerGroup.getBonus());
             if (tPlayerGroup.getPlayerType() == PlayerTypeEnum.MASTER) {
-                TGroupPlayer groupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+                TGroupPlayer groupPlayer = groupPlayerMapper.findById(groupId);
                 if (StringUtil.isEmpty(groupPlayer)) {
                     throw new InfServerException(Constants.RETURN_CODE_FAIL, "联盟信息异常");
                 }
@@ -2299,7 +2299,7 @@ public class TGroupPlayerService {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "不可将自己设为管理员...");
             }
 
-            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
 
             if (StringUtil.isEmpty(tGroupPlayer) || !tGroupPlayer.getOwerId().equals(xyUid)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "您不是群主,无法设置管理员...");
@@ -2331,7 +2331,7 @@ public class TGroupPlayerService {
         try {
             cache = CacheManager.getCache();
 
-            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
 
             if (StringUtil.isEmpty(tGroupPlayer) || !tGroupPlayer.getOwerId().equals(xyUid)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "您不是群主,无法设置...");

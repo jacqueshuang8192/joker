@@ -83,14 +83,14 @@ public class WheelOfFortuneService {
     }
 
     public void bindAddress(Long userId, Long addressId, Long fortuneRecordId) {
-        TFortuneRecord record = fortuneRecordMapper.selectByPrimaryKey(fortuneRecordId);
+        TFortuneRecord record = fortuneRecordMapper.findById(fortuneRecordId);
         if (record == null) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL, "奖品记录不存在");
         }
         if (!record.getUserId().equals(userId)) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL, "非获奖玩家");
         }
-        TFortuneAddress address = fortuneAddressMapper.selectByPrimaryKey(addressId);
+        TFortuneAddress address = fortuneAddressMapper.findById(addressId);
         if (address == null) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL, "地址信息不存在");
         }
@@ -99,7 +99,7 @@ public class WheelOfFortuneService {
         }
         record.setAddress(address.getAddress());
         record.setPhone(address.getPhone());
-        fortuneRecordMapper.updateByPrimaryKey(record);
+        fortuneRecordMapper.update(record, false);
     }
 
     public void addAddress(Long userId, String userName, String phone, String address) {
@@ -118,7 +118,7 @@ public class WheelOfFortuneService {
         if (fortuneAddressMapper.selectCount(address) != 1) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL, "删除地址失败！");
         }
-        fortuneAddressMapper.deleteByPrimaryKey(addressId);
+        fortuneAddressMapper.removeById(addressId);
     }
 
     public List<TFortuneAddress> queryAddress(Long userId) {

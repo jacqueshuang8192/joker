@@ -1,37 +1,37 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
-@Table(name = "t_sec_user")
+@Table("t_sec_user")
 public class TSecUser {
     @Id
-    @Column(name = "userId")
+    @Column("userId")
     private Long userid;
 
     private String username;
 
-    @Column(name = "userType")
+    @Column("userType")
     private String usertype;
 
     private String password;
 
     private String fullname;
     
-    @Column(name = "sell_count")
+    @Column("sell_count")
     private Long sellCount;
 
     private Long secondLayerSellCount;
 
-    @Column(name = "invitation_code")
+    @Column("invitation_code")
     private String invitationCode;
     
     /**
      * 分成收入
      */
-    @Column(name = "extract_income")
+    @Column("extract_income")
     private Double extractIncome;
 
     /**
@@ -41,13 +41,13 @@ public class TSecUser {
 
     private Long grandfatherId;
 
-    @Column(name = "parent_id")
+    @Column("parent_id")
     private Long parentId;
     
-    @Column(name = "province_id")
+    @Column("province_id")
     private Long provinceId;
 
-    @Column(name = "room_card_num")
+    @Column("room_card_num")
     private Integer roomCardNum;
 
     private Date createDate;

@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.hbi.model.TFreeGameRound;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TFreeGameRoundMapper extends Mapper<TFreeGameRound> {
+public interface TFreeGameRoundMapper extends EntityMapper<TFreeGameRound> {
 	List<TFreeGameRound> queryUrlsByLevel(@Param(value = "level") int level);
 }

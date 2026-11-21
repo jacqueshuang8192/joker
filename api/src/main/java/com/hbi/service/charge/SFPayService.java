@@ -99,7 +99,7 @@ public class SFPayService extends BaseChargeService{
             //    accountCharge.setChargeOrder(curr);
             //    accountCharge.setGoodsId(goodsId);
             //    accountCharge.setNumber(amount);
-            //    TUser tUser = userMapper.selectByPrimaryKey(userId);
+            //    TUser tUser = userMapper.findById(userId);
             //    if (tUser.getAgentId() != null) {
             //        accountCharge.setAgentId(tUser.getAgentId());
             //    }
@@ -124,7 +124,7 @@ public class SFPayService extends BaseChargeService{
                 imsTpOrders.setOrderNo(curr);
                 imsTpOrders.setGoodsId(Integer.parseInt(goodsId.toString()));
                 imsTpOrders.setCount(amount);
-                TUser tUser = userMapper.selectByPrimaryKey(userId);
+                TUser tUser = userMapper.findById(userId);
                 if (tUser.getAgentId() != null) {
                     imsTpOrders.setParentId(Integer.parseInt(tUser.getAgentId().toString()));
                 }

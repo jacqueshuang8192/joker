@@ -1,21 +1,21 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
 /**
  * Created by dzesla on 2017/2/18.
  */
-@Table
+@Table("t_fortune_address")
 public class TFortuneAddress {
     @Id
     private Long id;
 
-    @Column(name = "user_id")
+    @Column("user_id")
     private Long userId;
 
-    @Column(name = "user_name")
+    @Column("user_name")
     private String userName;
 
     private String phone;

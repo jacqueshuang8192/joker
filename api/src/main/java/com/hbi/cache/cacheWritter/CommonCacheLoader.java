@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.core.util.DateUtils;
 import com.hbi.constants.Constants;
 import com.hbi.vo.response.user.AccountVo;
-import tk.mybatis.mapper.entity.Example;
 
 @Service
 public class CommonCacheLoader {

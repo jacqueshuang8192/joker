@@ -1,10 +1,13 @@
 package com.hbi.model;
 
+import com.mybatisflex.annotation.Table;
+
 import java.util.Date;
 
 /**
  * Created by Administrator on 2017/7/12.
  */
+@Table("t_gift_point")
 public class TGiftPoint {
     private Long id;
     private Long userId;

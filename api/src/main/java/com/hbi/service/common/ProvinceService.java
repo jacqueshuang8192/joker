@@ -14,7 +14,7 @@ public class ProvinceService extends BaseService<TProvince> {
 	private TProvinceMapper provinceMapper;
 	
 	public TProvince findProvinceById(Long id) {
-    	TProvince province = provinceMapper.selectByPrimaryKey(id);
+        TProvince province = provinceMapper.findById(id);
     	return province;
 	}
 	

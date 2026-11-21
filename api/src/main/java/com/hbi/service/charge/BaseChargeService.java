@@ -20,7 +20,8 @@ import com.hbi.vo.request.common.CommissionVo;
 import com.hbi.vo.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.entity.Example;
+import com.mybatisflex.core.query.QueryWrapper;
+import static com.mybatisflex.core.query.QueryMethods.column;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,20 +72,17 @@ public class BaseChargeService {
             TAccountCharge change = new TAccountCharge();
             change.setStatus(Constants.PAY_SUCCESS);
             change.setChargeDate(new Date());
-            Example example = new Example(TAccountCharge.class);
-            Example.Criteria criteria = example.createCriteria();
-            System.out.println("criteria"+criteria);
-            criteria.andEqualTo("chargeOrder", orderId);
+            QueryWrapper query = QueryWrapper.create();
+            query.and(column(TAccountCharge::getChargeOrder).eq(orderId));
             System.out.println("change"+change);
-            System.out.println("example"+example);
-            accountChargeMapper.updateByExampleSelective(change, example);
+            accountChargeMapper.updateSelectiveByQuery(change, query);
 
             //Double rate             = baseCacheController.getDoubleConfig("chargeSendPointRate", cache);
             ImsGoods goods            = goodsService.findImsGoodsById(accountCharge.getGoodsId());
             //Double point            = accountCharge.getRmbAmount() / 100 * rate;
             Integer count           = goods.getAmount();
             Long userId             = accountCharge.getUserId();
-            //TUser user              = userMapper.selectByPrimaryKey(userId);
+            //TUser user              = userMapper.findById(userId);
             //Long agentId            = user.getAgentId();
             //Integer chargeRmbAmount = accountCharge.getRmbAmount();
             //  充值的种类, 0:房卡  1:房卡
@@ -148,12 +146,10 @@ public class BaseChargeService {
                 imsTpOrders1.setCommission(Integer.parseInt(commissiom));
                 imsTpOrders1.setCommissionMoney((int) (imsTpOrders.getPrice()*Integer.parseInt(commissiom)));
             }
-            Example example = new Example(ImsTpOrders.class);
-            Example.Criteria criteria = example.createCriteria();
-            System.out.println("criteria"+criteria);
-            criteria.andEqualTo("orderNo", orderId);
+            QueryWrapper query = QueryWrapper.create();
+            query.and(column(ImsTpOrders::getOrderNo).eq(orderId));
 
-            imsTpOrdersMapper.updateByExampleSelective(imsTpOrders1, example);
+            imsTpOrdersMapper.updateSelectiveByQuery(imsTpOrders1, query);
 
             ImsGoods goods            = goodsService.findImsGoodsById(Long.parseLong(imsTpOrders.getGoodsId().toString()));
 
@@ -315,7 +311,7 @@ public class BaseChargeService {
             cache = CacheManager.getCache();
             String agents = cache.hget(Constants.SANJIFENXIAO, userId.toString());
             if(StringUtil.isEmpty(agents)) {
-                TUser tUser = userMapper.selectByPrimaryKey(userId);
+                TUser tUser = userMapper.findById(userId);
                 if (null == tUser || StringUtil.isEmpty(tUser.getAgentId())) {
                     return "1,1,1";
                 }else {

@@ -1,24 +1,26 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_free_game_activity")
+@Table("t_free_game_activity")
 public class TFreeGameActivity {
     @Id
-    @Column(name = "activity_id")
+    @Column("activity_id")
     private Long activityId;
 
-    @Column(name = "game_id")
+    @Column("game_id")
     private Long gameId;
 
     private Integer coins;
 
     private Integer minutes;
 
-    @Column(name = "chatroom_id")
+    @Column("chatroom_id")
     private String chatroomId;
 
-    @Column(name = "table_id")
+    @Column("table_id")
     private Integer tableId;
     
     /**
@@ -26,13 +28,13 @@ public class TFreeGameActivity {
      */
     private Integer count;
     
-    @Column(name = "invite_code")
+    @Column("invite_code")
     private String inviteCode;
     
-    @Column(name = "level")
+    @Column("level")
     private Integer level;
     
-    @Transient
+    @Column(ignore = true)
     private TActivity activity;
 
     /**

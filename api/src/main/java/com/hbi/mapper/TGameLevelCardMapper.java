@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TGameLevelCard;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TGameLevelCardMapper extends Mapper<TGameLevelCard> {
+public interface TGameLevelCardMapper extends EntityMapper<TGameLevelCard> {
 }

@@ -4,7 +4,6 @@ import com.hbi.mapper.ImsMsgMapper;
 import com.hbi.model.ImsMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.entity.Example;
 
 @Service
 public class ImsMsgService {

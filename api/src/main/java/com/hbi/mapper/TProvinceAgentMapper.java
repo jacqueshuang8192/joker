@@ -8,9 +8,9 @@ import com.hbi.model.TGameType;
 import com.hbi.model.TProvince;
 import com.hbi.model.TProvinceAgent;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TProvinceAgentMapper extends Mapper<TProvinceAgent> {
+public interface TProvinceAgentMapper extends EntityMapper<TProvinceAgent> {
 	List<TProvinceAgent> selectProvinceIdByAgentId(@Param("agentId") Long agentId);
 	TProvinceAgent selectByAgentIdAndProvinceId(@Param("agentId") Long agentId,@Param("provinceId") Long provinceId);
 }

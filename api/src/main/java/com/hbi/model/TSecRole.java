@@ -1,23 +1,25 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_sec_role")
+@Table("t_sec_role")
 public class TSecRole {
     @Id
-    @Column(name = "roleId")
+    @Column("roleId")
     private Long roleid;
 
     /**
      * 角色名称
      */
-    @Column(name = "roleName")
+    @Column("roleName")
     private String rolename;
 
     /**
      * 角色描述
      */
-    @Column(name = "roleDesc")
+    @Column("roleDesc")
     private String roledesc;
 
     /**

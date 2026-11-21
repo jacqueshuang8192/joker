@@ -103,7 +103,7 @@ public class scheduleCloseGameService {
         RedisUtil3 ru3 = RedisUtil3.getRu();
         try {
             info.info("inviteCode->" + inviteCode + " activityId=>" + gameActivityId + " round=>" + rounds);
-            TFreeGameActivity freeGameActivity = freeGameActivityMapper.selectByPrimaryKey(Long.parseLong(gameActivityId));
+            TFreeGameActivity freeGameActivity = freeGameActivityMapper.findById(Long.parseLong(gameActivityId));
             if (!StringUtil.isEmpty(freeGameActivity) ) {
                 inviteCode = freeGameActivity.getInviteCode();
             }else {
@@ -147,7 +147,7 @@ public class scheduleCloseGameService {
                 }
             }
 
-            TActivity activity =  activityMapper.selectByPrimaryKey(Long.parseLong(gameActivityId));
+            TActivity activity =  activityMapper.findById(Long.parseLong(gameActivityId));
             if (!StringUtil.isEmpty(activity) && activity.getIsDeduct() == 0 ) {
                 int cards = activity.getCards();
                 long owner_id = activity.getOwnerId();

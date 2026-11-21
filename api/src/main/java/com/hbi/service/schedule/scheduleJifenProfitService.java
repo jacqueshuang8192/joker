@@ -114,7 +114,7 @@ public class scheduleJifenProfitService {
                 return false;
             }
 
-            TGroupPlayer tgp = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tgp = groupPlayerMapper.findById(groupId);
             Integer ownerId = tgp.getOwerId();
 
             cache = CacheManager.getCache();

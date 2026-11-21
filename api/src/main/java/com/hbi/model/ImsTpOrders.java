@@ -1,77 +1,77 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Table;
 
 /**
  * Created by muzi on 06/12/2017.
  */
-@Table(name = "ims_tporders")
+@Table("ims_tporders")
 public class ImsTpOrders {
-    @Column(name = "orderid")
+    @Column("orderid")
     private Integer orderId;
 
-    @Column(name = "order_no")
+    @Column("order_no")
     private String orderNo;
 
-    @Column(name = "goodsid")
+    @Column("goodsid")
     private Integer goodsId;
 
-    @Column(name = "price")
+    @Column("price")
     private Double price;
 
-    @Column(name = "user_id")
+    @Column("user_id")
     private Integer userId;
 
-    @Column(name = "ordersstatus")
+    @Column("ordersstatus")
     private Integer orderstatus;
 
-    @Column(name = "count")
+    @Column("count")
     private Integer count;
 
-    @Column(name = "type")
+    @Column("type")
     private Integer type;
 
-    @Column(name = "create_at")
+    @Column("create_at")
     private String createAt;
 
-    @Column(name = "parentid")
+    @Column("parentid")
     private Integer parentId;
 
-    @Column(name = "commissionlevel")
+    @Column("commissionlevel")
     private Integer commissionlevel;
 
-    @Column(name = "year")
+    @Column("year")
     private Integer year;
 
-    @Column(name = "month")
+    @Column("month")
     private Integer month;
 
-    @Column(name = "myselfrebate")
+    @Column("myselfrebate")
     private Double myselfRebate;
 
-    @Column(name = "player_id")
+    @Column("player_id")
     private Integer playerId;
 
-    @Column(name = "thirdparty_order_num")
+    @Column("thirdparty_order_num")
     private String thirdpartyOrderNum;
 
-    @Column(name = "callback_time")
+    @Column("callback_time")
     private String callbackTime;
 
-    @Column(name = "actually_paid")
+    @Column("actually_paid")
     private String actuallyPaid;
 
-    @Column(name = "wx_order_num")
+    @Column("wx_order_num")
     private String wxOrderNum;
 
-    @Column(name = "good_type")
+    @Column("good_type")
     private Integer goodType;
 
-    @Column(name = "commission")
+    @Column("commission")
     private Integer commission;
 
-    @Column(name = "commission_money")
+    @Column("commission_money")
     private Integer commissionMoney;
 
     public Integer getCommission() {

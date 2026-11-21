@@ -1,38 +1,42 @@
 package com.hbi.model;
 
 
-import jakarta.persistence.Transient;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
-@Table(name = "t_free_game_singleresult")
+@Table("t_free_game_singleresult")
 public class TFreeGameSingleresult {
 	@Id
-    @Column(name = "id")
+    @Column("id")
     private Long Id;
 
-    @Column(name = "game_id")
+    @Column("game_id")
     private Long gameId;
     
-    @Column(name = "user_id")
+    @Column("user_id")
     private Long userId;
     
     private Date  date ;
     
     
+    // Populated by the ranking XML queries. Exclude primitive defaults from entity filters.
+    @Column(ignore = true)
     private int total;
-    private int  win;
-    private int  lose;
-    private int  draw;
+    @Column(ignore = true)
+    private int win;
+    @Column(ignore = true)
+    private int lose;
+    @Column(ignore = true)
+    private int draw;
     
-    @Transient
+    @Column(ignore = true)
     private String nickName;
     
-    @Transient
+    @Column(ignore = true)
     private String smallIcon;
-    @Transient
+    @Column(ignore = true)
     private Integer rank;
     
 	public String getNickName() {

@@ -51,8 +51,14 @@
 		<property name="defaultTargetDataSource" ref="dataSource"/>
 	</bean>
 
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dynamicDataSource" />
+	<bean id="flexDataSource" class="com.mybatisflex.core.datasource.FlexDataSource">
+		<constructor-arg index="0" value="joker" />
+		<constructor-arg index="1" ref="dynamicDataSource" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="com.mybatisflex.spring.FlexSqlSessionFactoryBean">
+		<property name="transactionFactory"><bean class="org.mybatis.spring.transaction.SpringManagedTransactionFactory" /></property>
+		<property name="dataSource" ref="flexDataSource" />
 		<property name="mapperLocations">
 			<array>
 				<value>classpath*:mapper/*.xml</value>
@@ -62,12 +68,8 @@
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 
-	<bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="properties"><props>
-			<prop key="mappers">tk.mybatis.mapper.common.Mapper</prop>
-			<prop key="IDENTITY">MYSQL</prop>
-			<prop key="notEmpty">true</prop>
-		</props></property>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 		<property name="basePackage"
 				  value="com.hbi.mapper" />
 	</bean>
@@ -104,7 +106,7 @@
 
 	<bean id="transactionManager"
 		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dynamicDataSource" />
+		<property name="dataSource" ref="flexDataSource" />
 	</bean>
 
 	<bean id="springApplicationContext" class="com.core.util.ApplicationContextHelper"></bean>
@@ -115,19 +117,10 @@
 		<property name="maxWaitMillis" value="100000" />
 	</bean>
 
-	<bean id="jedisShardInfo" class="redis.clients.jedis.JedisShardInfo">
-		<constructor-arg index="0" value="${redis.ip}"/>
-		<constructor-arg index="1" value="${redis.port}" type="int"/>
-
-	</bean>
-
-	<bean id="jedis" class="redis.clients.jedis.ShardedJedisPool">
-		<constructor-arg index="0" ref="jedisPoolConfig" />
-		<constructor-arg index="1">
-			<list>
-				<ref bean="jedisShardInfo" />
-			</list>
-		</constructor-arg>
+	<bean id="jedis" class="redis.clients.jedis.JedisPool" destroy-method="close">
+		<constructor-arg index="0" ref="jedisPoolConfig"/>
+		<constructor-arg index="1" type="java.lang.String" value="${redis.ip}"/>
+		<constructor-arg index="2" type="int" value="${redis.port}"/>
 	</bean>
 
 	<bean class="com.core.util.AppUtil" />

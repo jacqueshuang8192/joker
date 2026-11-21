@@ -11,7 +11,7 @@ import com.hbi.model.TPlayerGroup;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.entity.Example;
+import com.mybatisflex.core.query.QueryWrapper;
 
 import java.util.List;
 
@@ -45,8 +45,8 @@ public class InitResitService implements InitializingBean {
             System.out.println("exist-->" + exist);
             if (!exist) {
 
-                Example example = new Example(TPlayerGroup.class);
-                List<TPlayerGroup> tPlayerGroups = playerGroupMapper.selectByExample(example);
+                QueryWrapper query = QueryWrapper.create();
+                List<TPlayerGroup> tPlayerGroups = playerGroupMapper.selectListByQuery(query);
                 System.out.println(tPlayerGroups.size());
                 System.out.println("初始化邀请码---->");
                 for (TPlayerGroup pl: tPlayerGroups) {

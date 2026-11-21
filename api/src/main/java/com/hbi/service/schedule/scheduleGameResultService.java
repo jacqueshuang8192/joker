@@ -22,7 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import tk.mybatis.mapper.entity.Example;
+import com.mybatisflex.core.query.QueryWrapper;
+import static com.mybatisflex.core.query.QueryMethods.column;
 
 import java.sql.ResultSet;
 import java.util.Date;
@@ -134,10 +135,9 @@ public class scheduleGameResultService {
                     OSSUtil.simpleUpload(gameResultJson.getString("roundRoot"), replayUrl, ConfigUtil.get("oss.bucketName.replay"));
                 }
 
-                Example ex = new Example(TActivity.class);
-                Example.Criteria criteria = ex.createCriteria();
-                criteria.andEqualTo("activityId",activityId);
-                List<TActivity> tActivitys = activityMapper.selectByExample(ex);
+                QueryWrapper query = QueryWrapper.create();
+                query.and(column(TActivity::getActivityId).eq(activityId));
+                List<TActivity> tActivitys = activityMapper.selectListByQuery(query);
                 if (!StringUtil.isEmpty(tActivitys) && tActivitys.size() >= 1) {
                     TActivity tActivity = tActivitys.get(0);
                     groupId = tActivity.getGroupId();
@@ -201,7 +201,7 @@ public class scheduleGameResultService {
 
                     //个人和团队的局数--  有bug 中途加入算不到...
                     if (!StringUtil.isEmpty(groupId) ) {
-                        TGroupPlayer tgp = groupPlayerMapper.selectByPrimaryKey(groupId);
+                        TGroupPlayer tgp = groupPlayerMapper.findById(groupId);
                         Integer ownerId = tgp.getOwerId();
                         for (int i = 0; i < userinfos.size(); i++) {
                             Integer uid = userinfos.getJSONObject(i).getInteger("uid");

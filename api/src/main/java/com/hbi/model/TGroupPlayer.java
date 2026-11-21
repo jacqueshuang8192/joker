@@ -1,71 +1,71 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
 /**
  * Created by muzi on 2017/12/7.
  */
-@Table(name = "t_group_player")
+@Table("t_group_player")
 public class TGroupPlayer {
     @Id
-    @Column(name = "group_id")
+    @Column("group_id")
     private Integer groupId;
 
-    @Column(name = "group_name")
+    @Column("group_name")
     private String groupName;
 
-    @Column(name = "ower_id")
+    @Column("ower_id")
     private Integer owerId;
 
-    @Column(name = "create_time")
+    @Column("create_time")
     private Date createTime;
 
-    @Column(name = "config")
+    @Column("config")
     private String config;
 
-    @Column(name = "cost_pattern")
+    @Column("cost_pattern")
     private Integer costPattern;
 
-    @Column(name = "play_coins")
+    @Column("play_coins")
     private Integer playCoins;
 
-    @Column(name = "commission")
+    @Column("commission")
     private Double commission;
 
-    @Column(name = "cost_user_type")
+    @Column("cost_user_type")
     private Integer costUserType;
 
-    @Column(name = "cost_limit")
+    @Column("cost_limit")
     private Double costLimit;
 
-    @Column(name = "strength_limit")
+    @Column("strength_limit")
     private Integer strengthLimit;
 
-    @Column(name = "update_cost_count")
+    @Column("update_cost_count")
     private Integer updateCostCount;
 
-    @Column(name = "choushui_count")
+    @Column("choushui_count")
     private Integer choushuiCount;
 
-    @Column(name = "max_point")
+    @Column("max_point")
     private Integer maxPoint;
 
-    @Column(name = "point_pool")
+    @Column("point_pool")
     private Integer pointPool;
 
-    @Column(name = "profit_count")
+    @Column("profit_count")
     private Integer profitCount;
 
-    @Column(name = "profit_club_count")
+    @Column("profit_club_count")
     private Integer profitClubCount;
 
-    @Column(name = "profit_yesterday")
+    @Column("profit_yesterday")
     private Integer profitYesterday;
 
-    @Column(name = "profit_today")
+    @Column("profit_today")
     private Integer profitToday;
 
     public Integer getMaxPoint() {

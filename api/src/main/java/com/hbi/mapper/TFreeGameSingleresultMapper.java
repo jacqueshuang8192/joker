@@ -11,9 +11,9 @@ import com.hbi.model.TFreeGameSingleresult;
 import com.hbi.model.TFreeGameTotal;
 
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TFreeGameSingleresultMapper extends Mapper<TFreeGameSingleresult>{
+public interface TFreeGameSingleresultMapper extends EntityMapper<TFreeGameSingleresult>{
 	TFreeGameSingleresult queryGeRenSingleResult(@Param(value = "userId") Long userId,@Param(value = "startTime") String startTime,@Param(value = "endTime") String endTime);
 	TFreeGameSingleresult queryGeRenSingleResult2(@Param(value = "userId") Long userId,@Param(value = "startTime") String startTime,@Param(value = "endTime") String endTime);
 	List<TFreeGameSingleresult> querySingleResult(@Param(value = "rankcount") Long  rankcount,@Param(value = "startTime") String startTime,@Param(value = "endTime") String endTime);

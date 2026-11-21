@@ -55,7 +55,7 @@ public class TPlayerGroupService {
                 throw new InfServerException(Constants.RETURN_CODE_PARAM_ERROR, "分红比例不能大于100%!!");
             }
             // 判断邀请人是不是群主或合伙人，群主合伙人才能邀请合伙人
-            TGroupPlayer groupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer groupPlayer = groupPlayerMapper.findById(groupId);
             Integer owerId = groupPlayer.getOwerId();
             Integer p1PlayerType = playerGroupMapper.getPlayTypeByGroupIdAndPlayerId(groupId, playerId1);
             // 判断是不是普通成员，普通成员不能添加合伙人
@@ -443,7 +443,7 @@ public class TPlayerGroupService {
                 cache.hdel(Constants.Group_Uid_Shangji_Id + groupId,son.getPlayerId() + "");
             }
             //将下级玩家全部都归到群主身上
-            TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+            TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
             if (!StringUtil.isEmpty(tGroupPlayer)) {
                 playerGroupMapper.updateUpPlayerId(groupId,playerId,tGroupPlayer.getOwerId());
             }

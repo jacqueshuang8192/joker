@@ -2,12 +2,12 @@ package com.hbi.mapper;
 
 import com.hbi.model.TPointChangeRecord;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 
 
-public interface TPointChangeRecordMapper extends Mapper<TPointChangeRecord> {
+public interface TPointChangeRecordMapper extends EntityMapper<TPointChangeRecord> {
 
 
     Integer addOne(@Param("tab") Integer tab,@Param("clubId") Integer clubId, @Param("uid") Integer uid,

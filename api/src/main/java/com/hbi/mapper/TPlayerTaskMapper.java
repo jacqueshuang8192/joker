@@ -3,14 +3,14 @@ package com.hbi.mapper;
 import com.hbi.model.TPlayerTask;
 import com.hbi.model.TTask;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 
 /**
  * Created by muzi on 23/11/2017.
  */
-public interface TPlayerTaskMapper extends Mapper<TPlayerTask> {
+public interface TPlayerTaskMapper extends EntityMapper<TPlayerTask> {
 
     public Integer selectTermIsOk(@Param("l") Long l,
                                   @Param("playerId") Long playerId);

@@ -1,42 +1,42 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
 /**
  * Created by Administrator on 2017/7/12.
  */
-@Table(name = "t_gift_room_card")
+@Table("t_gift_room_card")
 public class TGiftRoomCard {
 
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Long id;
 
-    @Column(name = "user_id")
+    @Column("user_id")
     private Long userId;
 
-    @Column(name = "to_user_id")
+    @Column("to_user_id")
     private Long toUserId;
 
-    @Column(name = "roomcard_num")
+    @Column("roomcard_num")
     private Integer roomcardNum;
 
-    @Column(name = "user_roomcard_num")
+    @Column("user_roomcard_num")
     private Integer userRoomcardNum;
 
-    @Column(name = "to_user_roomcard_num")
+    @Column("to_user_roomcard_num")
     private Integer toUserRoomcardNum;
 
-    @Column(name = "create_time")
+    @Column("create_time")
     private Date createTime;
 
-    @Column(name = "type")
+    @Column("type")
     private Integer type;
 
-    @Column(name = "remark")
+    @Column("remark")
     private String remark;
 
     public String getRemark() {

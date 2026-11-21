@@ -2,7 +2,7 @@ package com.hbi.mapper;
 
 import com.hbi.model.TLoginHistory;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TLoginHistoryMapper extends Mapper<TLoginHistory> {
+public interface TLoginHistoryMapper extends EntityMapper<TLoginHistory> {
 }

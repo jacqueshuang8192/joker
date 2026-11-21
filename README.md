@@ -7,7 +7,7 @@
 | 要找的代码 | 仓库内的位置 |
 |---|---|
 | Java 的 HTTP 接口与业务逻辑 | `api/src/main/java/com/hbi/`，从 `controller/` 找接口，从 `service/` 找业务逻辑 |
-| 数据库查询映射 | Java Mapper 接口在 `api/src/main/java/com/hbi/mapper/`，对应的 MyBatis XML 在 `api/src/main/resources/mapper/` |
+| 数据库查询映射 | MyBatis-Flex Mapper 接口在 `api/src/main/java/com/hbi/mapper/`，对应的 MyBatis XML 在 `api/src/main/resources/mapper/` |
 | Java 调用游戏服务 | `api/src/main/java/com/hbi/impl/groupgame/GroupGameImpl.java` 负责开房、解散和退房的 TCP 消息 |
 | 大厅、用户、数据、金币服务 | `native/services/hall/`、`user/`、`data/`、`gold/`，四个目录均位于 `native/services/` 下 |
 | 房间分配与赛事 | `native/services/alloc/Game/`，其中 `GameServerMatches.cpp` 集中处理赛事的创建、查找、加入和列表 |
@@ -35,7 +35,7 @@ JOKER_CONFIG="$PWD/runtime/api.properties" java -jar api/target/joker-api.jar
 
 推送 `main` 或 `v*` 版本标签会触发本仓库的后端发布流程。镜像名前缀是 `ghcr.io/jacqueshuang8192/joker`。
 
-Actions 工作流会用 JDK 23 从源码生成 Spring Boot 可执行 JAR，在 Linux 上构建两张镜像，并在隔离网络中用空数据卷启动 Compose。自动检查包括数据库建表、服务端口和一次读取临时测试版本号的 HTTP 请求。检查通过后，推送到 GHCR。PR 执行构建和检查，发布由推送 main 或 v 开头的版本标签触发。手动运行会发布该提交的 SHA 标签。
+Actions 工作流会用 JDK 23 从源码生成 Spring Boot 可执行 JAR，在 Linux 上构建两张镜像，并在隔离网络中用空数据卷启动 Compose。自动检查包括 Flyway 建表、MyBatis-Flex 主键回填和分页、XML 分表读写、Spring 事务回滚、JSP 渲染、游戏服务端口和版本查询接口。检查通过后，推送到 GHCR。PR 执行构建和检查，发布由推送 main 或 v 开头的版本标签触发。手动运行会发布该提交的 SHA 标签。
 
 | 镜像 | 标签 |
 |---|---|

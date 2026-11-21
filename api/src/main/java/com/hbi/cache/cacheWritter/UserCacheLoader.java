@@ -39,12 +39,12 @@ public class UserCacheLoader {
 //    }
 
 //    public Integer hasMonthCard(Long userId, Integer cardType) {
-//        TUser user = userMapper.selectByPrimaryKey(userId);
+//        TUser user = userMapper.findById(userId);
 //        return user.getHasMonthCard();
 //    }
 
     public Integer isFirstCharged(Long userId) {
-        TUser user = userMapper.selectByPrimaryKey(userId);
+        TUser user = userMapper.findById(userId);
         return user.getFirstCharge();
     }
 
@@ -57,7 +57,7 @@ public class UserCacheLoader {
 //    }
 
     public Integer isFirstLogin(Long userId) {
-        TUser user = userMapper.selectByPrimaryKey(userId);
+        TUser user = userMapper.findById(userId);
         return user.getFirstLogin();
     }
 }

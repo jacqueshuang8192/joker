@@ -1,8 +1,8 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TRechargeTiChengFlow;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TRechargeTiChengFlowMapper extends Mapper<TRechargeTiChengFlow> {
+public interface TRechargeTiChengFlowMapper extends EntityMapper<TRechargeTiChengFlow> {
 
 }

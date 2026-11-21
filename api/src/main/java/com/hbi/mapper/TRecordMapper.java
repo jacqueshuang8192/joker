@@ -2,11 +2,11 @@ package com.hbi.mapper;
 
 import org.apache.ibatis.annotations.Param;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import com.hbi.model.TRecord;
 
-public interface TRecordMapper extends Mapper<TRecord> {
+public interface TRecordMapper extends EntityMapper<TRecord> {
 
 	/**
 	 * 获取对象主键数据，步长为1

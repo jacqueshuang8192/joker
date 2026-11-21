@@ -1,5 +1,8 @@
 package com.hbi.model;
 
+import com.mybatisflex.annotation.Table;
+
+@Table("t_record")
 public class TRecord {
 	
 	private String id;

@@ -1,35 +1,35 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "ims_tpcard")
+@Table("ims_tpcard")
 public class ImsTpCard {
-    @Column(name = "userid")
+    @Column("userid")
     private Long userId;
 
-    @Column(name = "money")
+    @Column("money")
     private Long money;
 
-    @Column(name = "agentid")
+    @Column("agentid")
     private Integer agentId;
 
-    @Column(name = "agentincome")
+    @Column("agentincome")
     private Integer agentInCome;
 
-    @Column(name = "parentid")
+    @Column("parentid")
     private Integer parentId;
 
-    @Column(name = "parentincome")
+    @Column("parentincome")
     private Integer parentInCome;
 
-    @Column(name = "grandparentid")
+    @Column("grandparentid")
     private Integer grandParentId;
 
-    @Column(name = "grandparentincome")
+    @Column("grandparentincome")
     private Integer grandParentInCome;
 
-    @Column(name = "surplus")
+    @Column("surplus")
     private Integer surplus;
 
 

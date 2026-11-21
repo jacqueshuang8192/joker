@@ -2,42 +2,41 @@ package com.hbi.model;
 
 import com.hbi.vo.request.common.TLevelFenChangVo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.List;
 
-@Table(name = "t_game")
+@Table("t_game")
 public class TGame {
     @Id
-    @Column(name = "game_id")
+    @Column("game_id")
     private Long gameId;
 
     private Integer type;
     
     private String code;
 
-    @Column(name = "level")
+    @Column("level")
     private Integer level;
 
     /**
      * 是否是组局游戏：0：否；1：是
      */
-    @Column(name = "is_free_game")
+    @Column("is_free_game")
     private Integer isFreeGame;
     
-    @Column(name = "is_gold")
+    @Column("is_gold")
     private Integer isGold;
     
-    @Column(name = "min_golds")
+    @Column("min_golds")
     private Long minGolds;
-    @Column(name = "max_golds")
+    @Column("max_golds")
     private Long maxGolds;
 
     private String photo;
     
-    @Column(name = "free_game_photo")
+    @Column("free_game_photo")
     private String freeGamePhoto;
 
     private String name;
@@ -46,50 +45,50 @@ public class TGame {
     
     private String status;
     
-    @Column(name = "jetton_exchange_ratio")
+    @Column("jetton_exchange_ratio")
     private Float jettonExchangeRatio;
-//    @Transient
+//    @Column(ignore = true)
 //    private List<TQuickGame> chipList;
 
-    @Transient
+    @Column(ignore = true)
     private List<TGroupGame> groupGameList;
     
     /**
      * 每局胜利增加段位积分
      */
-    @Column(name="dan_win_point")
+    @Column("dan_win_point")
     private Integer danWinPoint;
     
     /**
      * 每局失败减少段位积分
      */
-    @Column(name="dan_lose_point")
+    @Column("dan_lose_point")
     private Integer danLosePoint;
     
     /**
      * 每局平局变化段位积分
      */
-    @Column(name="dan_tie_point")
+    @Column("dan_tie_point")
     private Integer danTiePoint;
 
     /**
      * 是否显示在首页
      */
-    @Column(name="is_main_page")
+    @Column("is_main_page")
     private Integer isMainPage;
-    @Column(name="game_type")
+    @Column("game_type")
     private String gameType;
 
-    @Column(name="is_show")
+    @Column("is_show")
     private Integer isShow;
 
-    @Column(name="dizhu")
+    @Column("dizhu")
     private Integer dizhu;
 
-    @Column(name = "min_coins_gold")
+    @Column("min_coins_gold")
     private Integer minCoinsGold;
 
-    @Column(name = "max_player_count")
+    @Column("max_player_count")
     private Integer maxPlayerCount;
 
 
@@ -101,7 +100,7 @@ public class TGame {
         this.level = level;
     }
 
-    @Transient
+    @Column(ignore = true)
     private Integer playerCount;
 
     public String getGameType() {
@@ -112,10 +111,10 @@ public class TGame {
 		this.gameType = gameType;
 	}
 
-	@Transient
+	@Column(ignore = true)
     private String version;
 
-    @Transient
+    @Column(ignore = true)
     private List<TLevelFenChangVo> fenchang;
 
     public List<TLevelFenChangVo> getFenchang() {

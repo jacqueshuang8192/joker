@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TSecRole;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TSecRoleMapper extends Mapper<TSecRole> {
+public interface TSecRoleMapper extends EntityMapper<TSecRole> {
 }

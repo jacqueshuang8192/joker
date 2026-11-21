@@ -1,51 +1,51 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
 /**
  * Created by muzi on 23/11/2017.
  */
-@Table(name="t_point_change_record")
+@Table("t_point_change_record")
 public class TPointChangeRecord {
 
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Integer id;
 
-    @Column(name = "club_id")
+    @Column("club_id")
     private Integer clubId;
 
-    @Column(name = "uid")
+    @Column("uid")
     private Integer uid;
 
-    @Column(name = "type")
+    @Column("type")
     private Integer type;
 
-    @Column(name = "before_point")
+    @Column("before_point")
     private Integer beforePoint;
 
-    @Column(name = "now_point")
+    @Column("now_point")
     private Integer nowPoint;
 
-    @Column(name = "change_point")
+    @Column("change_point")
     private Integer changePoint;
 
-    @Column(name = "operator")
+    @Column("operator")
     private Integer operator;
 
-    @Column(name = "activity_id")
+    @Column("activity_id")
     private Integer activityId;
 
-    @Column(name = "index")
+    @Column("index")
     private Integer index;
 
-    @Column(name = "remark_info")
+    @Column("remark_info")
     private String remarkInfo;
 
-    @Column(name = "change_time")
+    @Column("change_time")
     private Date changeTime;
 
     public Integer getId() {

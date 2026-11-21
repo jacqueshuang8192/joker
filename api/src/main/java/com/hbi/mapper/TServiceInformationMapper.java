@@ -5,9 +5,9 @@ import org.apache.ibatis.annotations.Param;
 import com.hbi.model.TConfig;
 import com.hbi.model.TServiceInformation;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TServiceInformationMapper extends Mapper<TServiceInformation> {
+public interface TServiceInformationMapper extends EntityMapper<TServiceInformation> {
 
     String queryServiceInformation();
 }

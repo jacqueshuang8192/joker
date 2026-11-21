@@ -17,7 +17,8 @@ COPY build.sh /usr/local/bin/build-services
 RUN bash /usr/local/bin/build-services
 
 FROM almalinux:8
-RUN dnf -y --setopt=install_weak_deps=False install compat-openssl10 libmemcached-libs libstdc++ mariadb-connector-c python3 procps-ng && dnf clean all
+RUN dnf -y --setopt=install_weak_deps=False install compat-openssl10 libmemcached-libs libstdc++ mariadb-connector-c python3.12 procps-ng && dnf clean all && \
+    ln -s /usr/bin/python3.12 /usr/local/bin/python3
 WORKDIR /srv
 COPY prebuilt/ /srv/
 COPY --from=build /out/ /srv/

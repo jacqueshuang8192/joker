@@ -3,11 +3,11 @@ package com.hbi.mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.hbi.model.TActivity;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
 import java.util.List;
 
-public interface TActivityMapper extends Mapper<TActivity> {
+public interface TActivityMapper extends EntityMapper<TActivity> {
 	
 	Long insertActivity(TActivity activity);
 	Long selectActivityIdByuserId(@Param("userId") Long userId);

@@ -25,9 +25,9 @@ public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.s
 			JSONPObject jsonp = (JSONPObject) obj;
 			OutputStream out = outputMessage.getBody();
 			String text = jsonp.getFunction() + "("
-					+ JSON.toJSONString(jsonp.getJson(), getFeatures()) + ")";
+					+ JSON.toJSONString(jsonp.getJson(), getFastJsonConfig().getSerializerFeatures()) + ")";
 			log.warn(text);
-			byte[] bytes = text.getBytes(getCharset());
+			byte[] bytes = text.getBytes(getFastJsonConfig().getCharset());
 			out.write(bytes);
 		} else {
 			super.writeInternal(obj, outputMessage);

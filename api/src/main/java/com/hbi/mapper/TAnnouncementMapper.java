@@ -7,9 +7,9 @@ import org.apache.ibatis.annotations.Param;
 
 import com.hbi.model.TAnnouncement;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TAnnouncementMapper extends Mapper<TAnnouncement> {
+public interface TAnnouncementMapper extends EntityMapper<TAnnouncement> {
 
     List<TAnnouncement> queryAnnouncementsByType(@Param("type") String type, @Param("nowDate") Date nowDate);
 

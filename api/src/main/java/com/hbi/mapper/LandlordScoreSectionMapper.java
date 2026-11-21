@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.LandlordScoreSection;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface LandlordScoreSectionMapper extends Mapper<LandlordScoreSection> {
+public interface LandlordScoreSectionMapper extends EntityMapper<LandlordScoreSection> {
 }

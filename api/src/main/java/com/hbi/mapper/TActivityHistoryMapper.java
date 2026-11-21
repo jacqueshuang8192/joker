@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TActivityHistory;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TActivityHistoryMapper extends Mapper<TActivityHistory> {
+public interface TActivityHistoryMapper extends EntityMapper<TActivityHistory> {
 }

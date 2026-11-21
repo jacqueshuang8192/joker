@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TTown;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TTownMapper extends Mapper<TTown> {
+public interface TTownMapper extends EntityMapper<TTown> {
 }

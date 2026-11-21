@@ -1,35 +1,35 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
-@Table(name = "ims_tpgoods")
+@Table("ims_tpgoods")
 public class ImsGoods {
     @Id
-    @Column(name = "goodsid")
+    @Column("goodsid")
     private Long goodsId;
 
-    @Column(name = "goodsname")
+    @Column("goodsname")
     private String name;
 
-    @Column(name = "photo")
+    @Column("photo")
     private String photo;
 
-    @Column(name = "cardnum")
+    @Column("cardnum")
     private Integer amount;
 
-    @Column(name = "goodsprice")
+    @Column("goodsprice")
     private Integer price;
 
-    @Column(name = "goodscreatetime")
+    @Column("goodscreatetime")
     private Date createDate;
 
-    @Column(name = "category_type")
+    @Column("category_type")
     private String categoryType;
 
-    @Column(name = "goodscreateperson")
+    @Column("goodscreateperson")
     private String remark;
 
     public String getRemark() {

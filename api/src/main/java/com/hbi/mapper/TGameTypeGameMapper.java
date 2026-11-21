@@ -11,9 +11,9 @@ import com.hbi.vo.response.user.GameTypeGameVo;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TGameTypeGameMapper extends Mapper<TGameTypeGame> {
+public interface TGameTypeGameMapper extends EntityMapper<TGameTypeGame> {
     
     List<GameTypeGameVo> selectByAgentId(@Param("agentId") Long agentId);
     List<GameTypeGameVo> selectByAgent(@Param("agentId") Long agentId);

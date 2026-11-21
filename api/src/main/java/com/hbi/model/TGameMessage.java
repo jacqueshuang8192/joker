@@ -1,13 +1,13 @@
 package com.hbi.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
 /**
  * Created by muzi on 21/11/2017.
  */
-@Table(name = "t_game_message")
+@Table("t_game_message")
 public class TGameMessage {
     @Id
     private Long id;

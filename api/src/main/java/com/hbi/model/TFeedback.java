@@ -1,13 +1,13 @@
 package com.hbi.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import java.util.Date;
 
 /**
  * Created by dzesla on 2017/2/16.
  */
-@Table
+@Table("t_feedback")
 public class TFeedback {
     @Id
     private Long id;

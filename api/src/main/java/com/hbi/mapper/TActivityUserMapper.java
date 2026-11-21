@@ -6,9 +6,9 @@ import org.apache.ibatis.annotations.Param;
 
 import com.hbi.cache.model.CacheGameActivityPlayer;
 import com.hbi.model.TActivityUser;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TActivityUserMapper extends Mapper<TActivityUser> {
+public interface TActivityUserMapper extends EntityMapper<TActivityUser> {
 	public List<CacheGameActivityPlayer> queryFreeGamePlayers(
 			@Param("activityId") Long activityId);
 	public List<CacheGameActivityPlayer> queryAllFreeGamePlayers(

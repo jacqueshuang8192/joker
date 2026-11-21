@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TRobotInfo;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface RobotMapper extends Mapper<TRobotInfo> {
+public interface RobotMapper extends EntityMapper<TRobotInfo> {
 }

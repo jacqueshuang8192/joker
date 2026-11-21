@@ -40,8 +40,8 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import tk.mybatis.mapper.entity.Example;
-import tk.mybatis.mapper.entity.Example.Criteria;
+import com.mybatisflex.core.query.QueryWrapper;
+import static com.mybatisflex.core.query.QueryMethods.column;
 
 import java.util.*;
 /**
@@ -182,10 +182,9 @@ public class FreeGameService {
 			result.setOriCoins(oriCoin);
 			result.setEndDate(new Date());
 
-			Example exp = new Example(TFreeGameResult.class);
-			Criteria criteria = exp.createCriteria();
+			QueryWrapper query = QueryWrapper.create();
 
-			criteria.andEqualTo("activityId", activityId);
+			query.and(column(TFreeGameResult::getActivityId).eq(activityId));
 			// 加排行榜逻辑
 			//JSONObject json = JSON.parseObject(content);
 			//JSONArray userinfos = json.getJSONArray("userinfos");
@@ -193,7 +192,7 @@ public class FreeGameService {
 			//int score = 0;
 			//Long userId = 0L;
 			//TGroupGame groupGame = new TGroupGame();
-			if (freeGameResultMapper.updateByExampleSelective(result, exp) > 0) {
+			if (freeGameResultMapper.updateSelectiveByQuery(result, query) > 0) {
 				freeGameCacheController.uploadFreeGameResult(result, cache);
 			} else {
 
@@ -310,7 +309,7 @@ public class FreeGameService {
 			JSONObject json    = (JSONObject)o;
 			Long userId        = json.getLong("uid");
 			if (userId != null) {
-				TUser user         = userMapper.selectByPrimaryKey(userId);
+				TUser user         = userMapper.findById(userId);
 				if (user != null) {
 					String nickname = user.getNickName();
 					json.put("nickName", nickname);
@@ -704,7 +703,7 @@ public class FreeGameService {
 		ICache cache = null;
 		try {
 			cache = CacheManager.getCache();
-			TActivity t = activityMapper.selectByPrimaryKey(activityId);
+			TActivity t = activityMapper.findById(activityId);
 			if (t == null) {
 				throw new InfServerException(Constants.RETURN_CODE_FAIL, "组局不存在");
 			}
@@ -783,7 +782,7 @@ public class FreeGameService {
 		ICache cache = null;
 		try {
 			cache = CacheManager.getCache();
-			TActivity t = activityMapper.selectByPrimaryKey(activityId);
+			TActivity t = activityMapper.findById(activityId);
 			if (t == null) {
 				throw new InfServerException(Constants.RETURN_CODE_FAIL, "组局不存在");
 			}
@@ -883,13 +882,12 @@ public class FreeGameService {
 
 				TActivity t = new TActivity();
 				t.setStatus((short)2);
-				Example exp = new Example(TActivity.class);
-				Criteria criteria = exp.createCriteria();
+				QueryWrapper query = QueryWrapper.create();
 
-				criteria.andEqualTo("status", 0);
-				criteria.andEqualTo("level", level);
+				query.and(column(TActivity::getStatus).eq(0));
+				query.and(column(TActivity::getLevel).eq(level));
 
-				activityMapper.updateByExampleSelective(t, exp);
+				activityMapper.updateSelectiveByQuery(t, query);
 			}
 
 		} catch (Exception e) {
@@ -923,12 +921,11 @@ public class FreeGameService {
 
 				TActivity t = new TActivity();
 				t.setStatus((short)2);
-				Example exp = new Example(TActivity.class);
-				Criteria criteria = exp.createCriteria();
+				QueryWrapper query = QueryWrapper.create();
 
-				criteria.andEqualTo("status", 0);
+				query.and(column(TActivity::getStatus).eq(0));
 
-				activityMapper.updateByExampleSelective(t, exp);
+				activityMapper.updateSelectiveByQuery(t, query);
 			}
 
 		} catch (Exception e) {
@@ -1175,7 +1172,7 @@ public class FreeGameService {
 
 			if (StringUtil.isNotEmpty(groupId)) {
 				//初始化玩法配置
-				TGroupPlayer tgp = groupPlayerMapper.selectByPrimaryKey(groupId);
+				TGroupPlayer tgp = groupPlayerMapper.findById(groupId);
 				if (!StringUtil.isEmpty(tgp) ) {
 					JSONObject clubConifg = JSONObject.parseObject(tgp.getConfig());
 					String clubStatus = clubConifg.getString(ClubConstant.club_status);
@@ -1396,7 +1393,7 @@ public class FreeGameService {
 			IGroupGame gameService = new GroupGameImpl(ip, port, protocolNo);
 
 			//将玩家的名字和头像直接传给服务器
-			TUser tUser = userMapper.selectByPrimaryKey(Long.parseLong(userId));
+			TUser tUser = userMapper.findById(Long.parseLong(userId));
 			String creatorNickname = tUser.getNickName();
 			String creatorPortrait = tUser.getSmallIcon();
 			if (StringUtil.isEmpty(creatorNickname)) {
@@ -1631,7 +1628,7 @@ public class FreeGameService {
 			synchronized (lock) {
 				String extendActivityId = cache.hget(GAME_EXTEND_ACTIVITY, activityId + "");
 				if (StringUtil.isEmpty(extendActivityId) ) {
-					TActivity tActivity = activityMapper.selectByPrimaryKey(activityId);
+					TActivity tActivity = activityMapper.findById(activityId);
 					if (StringUtil.isEmpty(tActivity) ) {
 						throw new InfServerException(Constants.RETURN_CODE_FAIL,"组局数据异常,请返回大厅重新开始...");
 					}
@@ -1706,7 +1703,7 @@ public class FreeGameService {
 		//过期时间为1天
 		int expiretime=1*24*60*60;
 		try {
-			TUser user = userMapper.selectByPrimaryKey(userId);
+			TUser user = userMapper.findById(userId);
 			if (user != null) {
 				Long self1 = freeGameTotalMapper.queryTotalByUserId(userId);
 				List<TFreeGameTotal> result=null;

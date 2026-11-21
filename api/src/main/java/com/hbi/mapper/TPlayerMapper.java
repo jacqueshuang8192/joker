@@ -11,9 +11,9 @@ import com.hbi.cache.model.CachePlayerProfile;
 import com.hbi.cache.model.CachePlayerRelation;
 import com.hbi.model.TPlayer;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TPlayerMapper extends Mapper<TPlayer> {
+public interface TPlayerMapper extends EntityMapper<TPlayer> {
 //    List<TaskVo> getTaksList(
 //            @Param("playerId")String playerId);
 

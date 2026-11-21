@@ -2,21 +2,21 @@ package com.hbi.model;
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_announcement")
+@Table("t_announcement")
 public class TAnnouncement {
     @Id
-    @Column(name = "id")
+    @Column("id")
     private Long id;
     private String name;
     private String type;
     private String content;
-    @Column(name = "start_date")
+    @Column("start_date")
     private Date startDate;
-    @Column(name = "end_date")
+    @Column("end_date")
     private Date endDate;
     private String status;
 

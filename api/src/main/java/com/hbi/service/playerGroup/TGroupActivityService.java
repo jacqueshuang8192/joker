@@ -51,7 +51,7 @@ public class TGroupActivityService {
             // 群主查全部
             Integer tempUid = playerId;
             if(selectAll != null && selectAll == 1) {
-                TGroupPlayer tGroupPlayer = groupPlayerMapper.selectByPrimaryKey(groupId);
+                TGroupPlayer tGroupPlayer = groupPlayerMapper.findById(groupId);
                 if (tGroupPlayer.getOwerId().equals(playerId)) {
                     tempUid = null;
                 }

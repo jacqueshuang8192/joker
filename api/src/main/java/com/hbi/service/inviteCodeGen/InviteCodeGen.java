@@ -65,7 +65,7 @@ public class InviteCodeGen {
             index = config.getV();
             Integer next = Integer.parseInt(index) + 1;
             config.setV(next.toString());
-            configMapper.updateByPrimaryKeySelective(config);
+            configMapper.updateSelective(config);
         }
         for (int i = 0; i < 9999; i++) {
             String str = String.format("%0"+4+"d", i);

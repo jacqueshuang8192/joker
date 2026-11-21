@@ -1,11 +1,13 @@
 package com.hbi.model;
 
-import jakarta.persistence.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_chip_select")
+@Table("t_chip_select")
 public class TChipSelect {
     @Id
-    @Column(name = "chip_id")
+    @Column("chip_id")
     private Long chipId;
 
     private String name;
@@ -16,18 +18,18 @@ public class TChipSelect {
 
     private String photo;
 
-    @Column(name = "game_id")
+    @Column("game_id")
     private Long gameId;
 
     private Long version;
 
-    @Column(name = "coin_count")
+    @Column("coin_count")
     private Integer coinCount;
 
-    @Column(name = "player_count")
+    @Column("player_count")
     private Integer playerCount;
 
-    @Column(name = "Nullity")
+    @Column("Nullity")
     private String nullity;
 
     /**

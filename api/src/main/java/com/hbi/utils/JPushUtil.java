@@ -1,8 +1,8 @@
 package com.hbi.utils;
 
 import cn.jpush.api.JPushClient;
-import cn.jpush.api.common.APIConnectionException;
-import cn.jpush.api.common.APIRequestException;
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
 import cn.jpush.api.push.model.Message;
 import cn.jpush.api.push.model.Options;
 import cn.jpush.api.push.model.Platform;

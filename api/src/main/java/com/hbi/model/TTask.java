@@ -1,8 +1,8 @@
 package com.hbi.model;
 
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_task")
+@Table("t_task")
 public class TTask {
     private Integer taskId;
     private String taskName;

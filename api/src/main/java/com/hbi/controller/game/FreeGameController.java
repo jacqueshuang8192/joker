@@ -335,7 +335,7 @@ public class FreeGameController {
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {
-	//		TUser player = userMapper.selectByPrimaryKey(Long.parseLong(userId));
+	//		TUser player = userMapper.findById(Long.parseLong(userId));
 	//		String status = player.getState();
 	//		if ( status == null || status.equals("0")) {
 	//			response.setReturnCode(Constants.RETURN_CODE_FAIL);
@@ -958,7 +958,7 @@ public class FreeGameController {
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {
-	//		TUser user = userMapper.selectByPrimaryKey(userId);
+	//		TUser user = userMapper.findById(userId);
 	//		if (user != null) {
 	//			Long self1 = freeGameTotalMapper.queryTotalByUserId(userId);
 	//			if (self1 != null) {
@@ -1047,7 +1047,7 @@ public class FreeGameController {
 	//		HttpServletRequest request) {
 	//	Response response = new Response();
 	//	try {
-	//		TUser user = userMapper.selectByPrimaryKey(userId);
+	//		TUser user = userMapper.findById(userId);
 	//		if (user!=null) {
 	//			Long self1 = freeGameTotalMapper.queryTotalByUserId(userId);
 	//			List<TFreeGameSingleresult> result = freeGameService.querySingleResult(rankcount, startTime, endTime);

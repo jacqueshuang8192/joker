@@ -1,11 +1,11 @@
 package com.hbi.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
 /**
  */
-@Table(name = "t_charge_pool")
+@Table("t_charge_pool")
 public class TChargePool {
     @Id
     private Long   id;

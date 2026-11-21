@@ -31,7 +31,6 @@ import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import tk.mybatis.mapper.entity.Example;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -134,11 +133,11 @@ public class PlayerService {
     public void userBindingPromoter(Long userId,Long promoterId) throws Exception {
         ICache cache = CacheManager.getCache();
         try {
-            TUser user = userMapper.selectByPrimaryKey(userId);
+            TUser user = userMapper.findById(userId);
             if (user != null) {
                 Integer isYaoqing = user.getIsYaoqing();
                 if (isYaoqing != 1) {
-                	TUser user1 = userMapper.selectByPrimaryKey(promoterId);
+                    TUser user1 = userMapper.findById(promoterId);
                     if (user1!=null) {
                     	userMapper.updateIsYaoqing(userId);
                     	//记录推荐表
@@ -449,7 +448,7 @@ public class PlayerService {
             user = new TUser();
             user.setUserid(userId);
             user.setPhone(phone);
-            if (userMapper.updateByPrimaryKeySelective(user) > 0) {
+            if (userMapper.updateSelective(user) > 0) {
                 playerCacheController.updatePlayerField(userId, "phone", phone, cache);
             }
             //绑定送卡
@@ -534,7 +533,7 @@ public class PlayerService {
         try {
             cache = CacheManager.getCache();
             TGameServer server = gameService.queryGameServer(userId);
-//            TUser player = userMapper.selectByPrimaryKey(Long.parseLong(userId));
+//            TUser player = userMapper.findById(Long.parseLong(userId));
             Integer isFirstLogin = userCacheController.getIsFirstLogin(Long.parseLong(userId), cache);
 //            Integer isFirstLogin = userCacheController.getIsFirstLogin(Long.parseLong(userId),cache);
 //            Date lastLogin = player.getLastLogin();
@@ -546,7 +545,7 @@ public class PlayerService {
             user.setUserid(Long.parseLong(userId));
             user.setLastLogin(new Date());
 //            user.setFirstLogin(0);
-            userMapper.updateByPrimaryKeySelective(user);
+            userMapper.updateSelective(user);
             authInfo.setHall(server);
             authInfo.setMtKey(ConfigUtil.get("protocol.mtKey"));
             authInfo.setAnnouncement(baseDataService.queryAnnouncementByType(AnnounceConstants.ANNOUNCE_TYPE_ZOUMADENG));
@@ -556,7 +555,7 @@ public class PlayerService {
 //                TUser user = new TUser();
 //                user.setUserid(Long.parseLong(userId));
 //                user.setFirstLogin(1);
-//                if (userMapper.updateByPrimaryKeySelective(user) > 0) {
+//                if (userMapper.updateSelective(user) > 0) {
 //                    userCacheController.setFirstLogin(Long.parseLong(userId), cache);
 //                }
 //            }
@@ -578,9 +577,9 @@ public class PlayerService {
      * @throws Exception
      */
     public TPlayer getPlayerById(String userid) throws Exception {
-        TPlayer player = playerMapper.selectByPrimaryKey(Long.parseLong(userid));
+        TPlayer player = playerMapper.findById(Long.parseLong(userid));
         if (player != null) {
-            TUser user = userMapper.selectByPrimaryKey(Long.parseLong(userid));
+            TUser user = userMapper.findById(Long.parseLong(userid));
             if (user != null) {
                 player.setUser(user);
             } else {
@@ -601,8 +600,8 @@ public class PlayerService {
      * @throws Exception
      */
     public void updatePlayer(TPlayer player) throws Exception {
-        playerMapper.updateByPrimaryKeySelective(player);
-        userMapper.updateByPrimaryKeySelective(player.getUser());
+        playerMapper.updateSelective(player);
+        userMapper.updateSelective(player.getUser());
         // 更新Redis
         ICache cache = null;
         try {
@@ -621,11 +620,11 @@ public class PlayerService {
     public void userBindingAgent(Long userId,Long agentId) throws Exception {
         ICache cache = CacheManager.getCache();
         try {
-            TUser user = userMapper.selectByPrimaryKey(userId);
+            TUser user = userMapper.findById(userId);
             if (user != null) {
                 Long secuserId = user.getAgentId();
                 if (secuserId == null) {
-                    TSecUser secUser = secUserMapper.selectByPrimaryKey(agentId);
+                    TSecUser secUser = secUserMapper.findById(agentId);
                     if (secUser!=null) {
                         userMapper.userBindingAgent(userId, agentId);
                         TSecUser sec = new TSecUser();
@@ -812,7 +811,7 @@ public class PlayerService {
             TAgentId tAgentId = new TAgentId();
             tAgentId.setAgentId(agentId);
             tAgentId.setUsedFlag("1");
-            agentIdMapper.updateByPrimaryKeySelective(tAgentId);
+            agentIdMapper.updateSelective(tAgentId);
         }
         return agentId;
     }
@@ -821,7 +820,7 @@ public class PlayerService {
         Response response = new Response();
         ICache cache = null;
 //        try {
-            TUser user = userMapper.selectByPrimaryKey(userId);
+            TUser user = userMapper.findById(userId);
             if (user == null) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL,"玩家不存在!!");
             } else if(StringUtil.isNotEmpty(user.getAgentId())) {
@@ -899,7 +898,7 @@ public class PlayerService {
             if (StringUtil.isNotEmpty(name)) {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL,"您好,此用户名已经被使用!!");
             }else {
-                TUser tUser = userMapper.selectByPrimaryKey(userId);
+                TUser tUser = userMapper.findById(userId);
                 Long agnetId = 1L;
                 if (StringUtil.isNotEmpty(tUser.getAgentId())) {
                     agnetId = tUser.getAgentId();
@@ -921,7 +920,7 @@ public class PlayerService {
         if (Long.parseLong(count+"") > goldCount) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL,"您好,您的钻石数量不足,请充值!!");
         }
-        TUser tUser = userMapper.selectByPrimaryKey(Long.parseLong(playerId2 + ""));
+        TUser tUser = userMapper.findById(Long.parseLong(playerId2 + ""));
         if (tUser == null ) {
             throw new InfServerException(Constants.RETURN_CODE_FAIL,"您好,该账号不存在,请重新输入");
         }
@@ -1164,7 +1163,7 @@ public class PlayerService {
             user.setPhone(phone);
             user.setAccount(phone);
             user.setPassword(Md5.getMd5ofStr(password));
-            if (userMapper.updateByPrimaryKeySelective(user) > 0) {
+            if (userMapper.updateSelective(user) > 0) {
                 playerCacheController.updatePlayerField(Long.parseLong(userId+""), "phone", phone, cache);
             }
             //绑定送卡
@@ -1216,7 +1215,7 @@ public class PlayerService {
             user = new TUser();
             user.setAccount(phone);
             user.setPassword(Md5.getMd5ofStr(password));
-            if (userMapper.updateByPrimaryKeySelective(user) > 0) {
+            if (userMapper.updateSelective(user) > 0) {
 
             }
 

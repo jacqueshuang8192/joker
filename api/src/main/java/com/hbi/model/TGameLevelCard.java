@@ -1,10 +1,10 @@
 package com.hbi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_game_level_card")
+@Table("t_game_level_card")
 public class TGameLevelCard {
     @Id
     private Long id;
@@ -13,7 +13,7 @@ public class TGameLevelCard {
 
     private Integer round;
 
-    @Column(name = "card_count")
+    @Column("card_count")
     private Integer cardCount;
 
     public Integer getCardCount() {

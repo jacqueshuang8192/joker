@@ -3,7 +3,7 @@ package com.hbi.mapper;
 
 import com.hbi.model.TGameMessage;
 
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TGameMessageMapper extends Mapper<TGameMessage> {
+public interface TGameMessageMapper extends EntityMapper<TGameMessage> {
 }

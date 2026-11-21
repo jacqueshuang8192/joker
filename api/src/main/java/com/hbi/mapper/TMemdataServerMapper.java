@@ -1,7 +1,7 @@
 package com.hbi.mapper;
 
 import com.hbi.model.TMemdataServer;
-import tk.mybatis.mapper.common.Mapper;
+import com.core.mapper.EntityMapper;
 
-public interface TMemdataServerMapper extends Mapper<TMemdataServer> {
+public interface TMemdataServerMapper extends EntityMapper<TMemdataServer> {
 }

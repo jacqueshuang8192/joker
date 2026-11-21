@@ -2,16 +2,16 @@ package com.hbi.model;
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 
-@Table(name = "t_login_history")
+@Table("t_login_history")
 public class TLoginHistory {
     @Id
     private Long id;
     
-    @Column(name = "user_id")
+    @Column("user_id")
     private Long userId;
     
     private String name;
