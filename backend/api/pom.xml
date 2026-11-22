@@ -246,12 +246,6 @@
 		<!-- 资源文件配置 -->
 		<resources>
 			<resource>
-				<directory>${basedir}/../database/migrations</directory>
-				<targetPath>db/migration</targetPath>
-				<filtering>false</filtering>
-				<includes><include>V*.sql</include></includes>
-			</resource>
-			<resource>
 				<directory>${basedir}/src/main/java</directory>
 				<includes>
 					<include>**/*.xml</include>

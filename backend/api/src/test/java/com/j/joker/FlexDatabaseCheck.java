@@ -40,7 +40,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
 
-/** Runs against the disposable, migrated MySQL database in tools/smoke.sh. */
+/** Runs against the disposable, migrated MySQL database in backend/tests/smoke.sh. */
 public class FlexDatabaseCheck {
     public static void main(String[] args) {
         var properties = new PropertySourcesPlaceholderConfigurer();

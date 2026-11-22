@@ -21,10 +21,10 @@ jobs:
         with:
           # The client artwork is not part of either backend image.
           sparse-checkout: |
-            api
-            native
+            backend/api
+            backend/native
+            backend/tests
             config
-            database
             deploy/1panel
             tools
       - uses: actions/setup-java@v6.3.0
@@ -33,7 +33,7 @@ jobs:
           java-version: '23'
           cache: maven
       - name: Compile the API from source
-        run: mvn -B -f api/pom.xml clean package
+        run: mvn -B -f backend/api/pom.xml clean package
       - name: Build and validate both images
         shell: bash
         run: |
@@ -43,11 +43,11 @@ jobs:
           echo "PREFIX=$prefix" >> "$GITHUB_ENV"
           echo "TAG=$tag" >> "$GITHUB_ENV"
           for kind in api native; do
-            docker build --platform linux/amd64 --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" --label "org.opencontainers.image.revision=$GITHUB_SHA" -t "$prefix-$kind:$tag" "$kind"
+            docker build --platform linux/amd64 --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" --label "org.opencontainers.image.revision=$GITHUB_SHA" -t "$prefix-$kind:$tag" "backend/$kind"
           done
           docker run --rm --entrypoint java "$prefix-api:$tag" -version
       - name: Smoke test the stack on a fresh database
-        run: bash tools/smoke.sh
+        run: bash backend/tests/smoke.sh
       - name: Log in to GitHub Container Registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v4.8.0

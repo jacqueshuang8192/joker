@@ -1,7 +1,8 @@
--- Run from the repo root with Lua 5.3+: lua client/tools/tests/packet_receive.lua path/to/PacketParser.lua
+-- Run from the repo root with Lua 5.3+: lua client/tests/packet_receive.lua path/to/PacketParser.lua
 -- The input is a valid pair of frames. Exercise every TCP split point through SocketService:onData.
 local parserPath = assert(arg[1], "expected PacketParser.lua path")
-local servicePath = assert(parserPath:match("^(.*)/PacketParser%.lua$")) .. "/SocketService.lua"
+local socketDir = assert(parserPath:match("^(.*)/PacketParser%.lua$"))
+local servicePath = socketDir .. "/SocketService.lua"
 local pack, nativeUnpack = string.pack, string.unpack
 local function quiet() end
 function class()
@@ -27,12 +28,12 @@ DEBUG = 0
 print = quiet
 printf = quiet
 bm = {Logger = {new = function() return {enabled = quiet} end}}
-local bytes = dofile("client/desktop/main/src/framework/cc/utils/ByteArray.lua")
+local bytes = dofile(socketDir .. "/../framework/cc/utils/ByteArray.lua")
 cc = setmetatable({utils = {ByteArray = bytes}}, {__call = function(_, obj)
     obj.addComponent = function() return {exportMethods = quiet} end
     return obj
 end})
-local types = dofile("client/desktop/main/src/socket/PACKET_DATA_TYPE.lua")
+local types = dofile(socketDir .. "/PACKET_DATA_TYPE.lua")
 local parser
 function import(name)
     if name:match("PACKET_DATA_TYPE$") then return types end

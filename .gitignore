@@ -10,7 +10,8 @@ runtime/
 *.key
 *.war
 *.sql
-!database/migrations/V*__*.sql
+!backend/api/src/main/resources/db/migration/V*__*.sql
 !tools/check-schema.sql
 
 /panel.ini
+/build/

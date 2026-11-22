@@ -1,6 +1,18 @@
-# 神兽客户端源码
+# 千玺游戏客户端
 
 `desktop/main/` 来自外层 ClientHall，`desktop/alternate/` 来自另一份 ClientHall。两份均包含大厅、玩法脚本和对应资源。先从 [主版启动入口](desktop/main/src/main.lua)、[大厅](desktop/main/hall/) 或 [玩法](desktop/main/games/) 开始阅读。Android、iOS 和其他原生项目在 [platforms/](platforms/) 中。
+
+## 主版常用入口
+
+| 要修改的内容 | 源码位置 |
+|---|---|
+| 登录与注册界面 | [hall/login](desktop/main/hall/login/) |
+| 启动流程 | [main.lua](desktop/main/src/main.lua)、[MainScene.lua](desktop/main/src/app/scenes/MainScene.lua) |
+| 登录 API 域名 | Windows 改 [config.lua](desktop/main/src/config.lua) 的 `HttpAddr`，Android 改 [CocosCaller.java](platforms/main/AndroidProject/frameworks/runtime-src/proj.android-studio/libcocos2dx/java/src/org/cocos2dx/lib/CocosCaller.java) 的 `getHttpAddr()` |
+| 游戏玩法与公共资源 | [games](desktop/main/games/)、[assets](desktop/main/assets/) |
+| 客户端网络回归测试 | [tests](tests/) |
+
+## 移动端工程
 
 | 工程 | 入口 |
 |---|---|

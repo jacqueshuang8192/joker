@@ -1,35 +1,13 @@
-# 神兽客户端与后端部署
+# 千玺游戏客户端与服务端
 
-本仓库同时维护 Cocos2d-x/Lua 客户端、Java API 和 C++ 游戏服务。客户端源码和平台工程请从 [client/README.md](client/README.md) 进入。服务器安装、升级和排障请按[1Panel 部署手册](DEPLOYMENT.md)操作，核验结果见 [后端检查报告](AUDIT.md)。
-
-## 源码目录
-
-| 要找的代码 | 仓库内的位置 |
+| 要做的事 | 从这里开始 |
 |---|---|
-| Java 的 HTTP 接口与业务逻辑 | `api/src/main/java/com/j/joker/`，从 `controller/` 找接口，从 `service/` 找业务逻辑 |
-| 数据库查询映射 | MyBatis-Flex Mapper 接口在 `api/src/main/java/com/j/joker/mapper/`，对应的 MyBatis XML 在 `api/src/main/resources/mapper/` |
-| Java 调用游戏服务 | `api/src/main/java/com/j/joker/impl/groupgame/GroupGameImpl.java` 负责开房、解散和退房的 TCP 消息 |
-| 大厅、用户、数据、金币服务 | `native/services/hall/`、`user/`、`data/`、`gold/`，四个目录均位于 `native/services/` 下 |
-| 房间分配与赛事 | `native/services/alloc/Game/`，其中 `GameServerMatches.cpp` 集中处理赛事的创建、查找、加入和列表 |
-| 原生依赖与牛牛程序 | `native/vendor/hiredis/` 为第三方库源码，`native/prebuilt/douniu/` 为现有牛牛程序和运行库 |
-| 构建与容器启动 | `api/Dockerfile`、`native/Dockerfile`、`native/build.sh`，原生服务入口和健康检查在 `native/container/` |
-| 部署与数据库 | 根目录 `docker-compose.yml`，配置模板在 `config/`，Flyway 版本迁移在 `database/migrations/`，配置生成与核验工具在 `tools/` |
-| 已停用的 Java 源文件 | `archive/java/` 保留原包路径和文件内容，供追溯历史 |
-
-排查房间问题时，可以先看 `com/j/joker/service/game/FreeGameService.java` 如何选择游戏服务器，再到 `GroupGameImpl.java` 核对发往该地址的消息字段。
+| 修改玩家客户端的登录页、大厅、玩法或打移动包 | [客户端源码与平台入口](client/README.md) |
+| 修改 Java API、C++ 游戏服务或 Flyway 建表脚本 | [服务端源码与本地构建](backend/README.md) |
+| 在 1Panel 安装或升级 | [部署手册](DEPLOYMENT.md)、[可直接粘贴的 Compose](deploy/1panel/docker-compose.yml) |
+| 核对数据库覆盖情况和已有游戏服务 | [后端检查报告](AUDIT.md) |
 
 1Panel 部署包只包含编排、模板、数据库脚本、部署工具和说明。查看或修改业务代码时，请打开完整源码仓库。
-
-## 本地运行 Java API
-
-使用 JDK 23 和 Maven，在仓库根目录执行下列命令。先准备好 `runtime/api.properties`（生成方式见下方部署步骤），并确保配置中的 MySQL、Redis 和其他业务服务可达。Spring Boot 启动时会校验历史记录并执行 JAR 内待应用的 Flyway 迁移。
-
-```sh
-mvn -f api/pom.xml clean package
-JOKER_CONFIG="$PWD/runtime/api.properties" java -jar api/target/joker-api.jar
-```
-
-启动入口为 `com.j.joker.JokerApiApplication`，默认访问路径为 `http://localhost:8080/hbiInterface/index.html`。Spring Boot 内嵌 Tomcat 和 Jasper，启动时会把 JAR 内的 JSP 写入 JVM 临时目录用于编译。1Panel 仍挂载同一份 `runtime/api.properties`，升级时请使用与镜像同版本的 Compose 文件。直接在宿主机运行时，按实际可达地址设置 JDBC、MongoDB 和 Redis（包括邀请码使用的 `redis.port1`）。
 
 ## 推送和自动打包
 
@@ -56,7 +34,7 @@ Actions 工作流会用 JDK 23 从源码生成 Spring Boot 可执行 JAR，在 L
 
 ## 业务数据与客户端配置
 
-构建 API 时，Maven 将 `database/migrations/` 的 SQL 原样打入 JAR。Spring Boot 使用业务库连接执行待应用的迁移。API 健康后，Compose 再启动原生游戏服务。空库依次执行 V1 至 V4，创建 163 张业务表。V1 提供 86 张原始表，V2 补建 62 张兼容表，V3 补建 14 张通用 Mapper 引用的表，并为赛事玩家记录补齐两个筹码列。V4 新增用户名登录凭据表。Flyway 通过 `flyway_schema_history` 记录版本和校验和。在 `api` 日志中查看迁移结果。
+构建 API 时，Maven 将 `backend/api/src/main/resources/db/migration/` 中的 SQL 原样打入 JAR。Spring Boot 使用业务库连接执行待应用的迁移。API 健康后，Compose 再启动原生游戏服务。空库依次执行 V1 至 V4，创建 163 张业务表。V1 提供 86 张原始表，V2 补建 62 张兼容表，V3 补建 14 张通用 Mapper 引用的表，并为赛事玩家记录补齐两个筹码列。V4 新增用户名登录凭据表。Flyway 通过 `flyway_schema_history` 记录版本和校验和。在 `api` 日志中查看迁移结果。
 
 旧版编排升级时，先备份数据库并保留原编排名与数据卷。已有业务表且尚无迁移历史的库会以版本 0 接入，再执行待应用的迁移。已有 V2 的库执行 V3 和 V4。V3 按列检查 `t_activity_user`，只添加缺少的 `bring_chip` 和 `present_chip`。已有同名表的结构和索引需要与业务库核对。以后使用新的版本文件记录结构变更。更新时部署同次发布的镜像和编排。每次启动 API 都会校验迁移历史。
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run only on the disposable CI runner, with its dedicated Compose project.
 set -euo pipefail
-repo=$(cd "$(dirname "$0")/.." && pwd)
+repo=$(cd "$(dirname "$0")/../.." && pwd)
 stage=$(mktemp -d)
 project="smoke-${GITHUB_RUN_ID:?}-${GITHUB_RUN_ATTEMPT:?}"
 export PANEL_NETWORK="$project-panel"
@@ -9,7 +9,7 @@ export CI_DB_PASSWORD="$(python3 -c 'import secrets; print(secrets.token_hex(12)
 export CI_CACHE_PASSWORD="$(python3 -c 'import secrets; print(secrets.token_hex(18) + "%!")')"
 export CI_GAME_REDIS_PASSWORD="$(python3 -c 'import secrets; print(secrets.token_hex(20) + " %&")')"
 export CI_MONGO_PASSWORD="$(python3 -c 'import secrets; print(secrets.token_hex(12) + "@")')"
-infra=(docker compose -p "$project-infra" -f "$repo/tools/ci-services.yml")
+infra=(docker compose -p "$project-infra" -f "$repo/backend/tests/ci-services.yml")
 dc=(docker compose -p "$project" -f docker-compose.yml -f local.yml --profile gold)
 cleanup() {
   "${dc[@]}" down -v --remove-orphans >/dev/null
@@ -66,13 +66,13 @@ public class PanelMongoCheck {
     }
 }
 JAVA
-unzip -q "$repo/api/target/joker-api.jar" 'BOOT-INF/lib/mongodb-driver-*.jar' 'BOOT-INF/lib/bson-*.jar'
-javac --release 23 -cp "$repo/api/target/classes:BOOT-INF/lib/*" PanelMongoCheck.java
+unzip -q "$repo/backend/api/target/joker-api.jar" 'BOOT-INF/lib/mongodb-driver-*.jar' 'BOOT-INF/lib/bson-*.jar'
+javac --release 23 -cp "$repo/backend/api/target/classes:BOOT-INF/lib/*" PanelMongoCheck.java
 "${dc[@]}" exec -T api mkdir -p /tmp/panel-probe
 "${dc[@]}" cp PanelMongoCheck.class api:/tmp/panel-probe/
 "${dc[@]}" exec -T api java -Dloader.path=/tmp/panel-probe -Dloader.main=PanelMongoCheck \
   -cp /srv/joker/joker-api.jar org.springframework.boot.loader.launch.PropertiesLauncher
-"${dc[@]}" cp "$repo/api/target/test-classes/com" api:/tmp/panel-probe/
+"${dc[@]}" cp "$repo/backend/api/target/test-classes/com" api:/tmp/panel-probe/
 "${dc[@]}" exec -T api java -Dloader.path=/tmp/panel-probe -Dloader.main=com.j.joker.FlexDatabaseCheck \
   -cp /srv/joker/joker-api.jar org.springframework.boot.loader.launch.PropertiesLauncher
 "${dc[@]}" exec -T user python3 - <<'PYMC'
@@ -100,7 +100,7 @@ SQL
 applied=$(mysql_query <<<"SELECT COUNT(*) FROM flyway_schema_history WHERE version IN ('1','2','3','4') AND type='SQL' AND success=1")
 [[ $applied == 4 ]]
 "${dc[@]}" exec -T api wget -qO- 'http://127.0.0.1:8080/hbiInterface/version/queryVersion?type=2&interfaceType=J' | python3 -c 'import json,sys; r=json.load(sys.stdin); assert r["returnCode"]=="0" and r["data"]["version"]=="ci-smoke"'
-"${dc[@]}" exec -T user python3 - http://127.0.0.1:8080/hbiInterface < "$repo/tools/check-username.py"
+"${dc[@]}" exec -T user python3 - http://127.0.0.1:8080/hbiInterface < "$repo/backend/tests/check-username.py"
 # Exercise Jasper and JSP EL from the packaged jar, without contacting a payment provider.
 for page in mazhifu biqiPayOrder shanyun payOrder rongZhouPayOrder qilin rongZhouPayOrder2; do
   "${dc[@]}" exec -T api wget -qO- "http://127.0.0.1:8080/hbiInterface/views/$page.jsp" |

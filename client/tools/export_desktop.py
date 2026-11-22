@@ -13,7 +13,7 @@ def export(variant, destination):
     destination = destination.resolve()
     if destination.exists():
         raise ValueError(f"Output already exists: {destination}")
-    for folder in ("desktop", "platforms", "tools"):
+    for folder in ("desktop", "platforms", "tools", "tests"):
         if ROOT / folder in destination.parents:
             raise ValueError("Choose an output directory outside the source folders.")
 

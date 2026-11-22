@@ -16,7 +16,7 @@
 
 | 组件 | 本次检查结果 | 镜像内容 |
 |---|---|---|
-| Java API，`interface_yuan` | 用 JDK 8 从清洁源码目录成功生成 WAR。原工程有 807 个 Java 源文件。部署副本将其中 356 个仅含注释或空行的文件移入 `archive/java/`，其余 451 个保留在 Maven 源码目录。归档 WAR 和重建 WAR 均有 469 个应用 class 文件。 | 历史部署基线为 Tomcat 9。当前部署使用 Spring Boot 可执行 JAR、内嵌 Tomcat 和 Java 23，沿用 `/hbiInterface`。 |
+| Java API，`interface_yuan` | 用 JDK 8 从清洁源码目录成功生成 WAR。原工程有 807 个 Java 源文件。部署副本将其中 356 个仅含注释或空行的文件移入 `backend/archive/java/`，其余 451 个保留在 Maven 源码目录。归档 WAR 和重建 WAR 均有 469 个应用 class 文件。 | 历史部署基线为 Tomcat 9。当前部署使用 Spring Boot 可执行 JAR、内嵌 Tomcat 和 Java 23，沿用 `/hbiInterface`。 |
 | 另一份 Java 工程，`Alloc/interface` | 有 806 个 Java 文件。使用当前 Maven 验证原 POM 时因重复声明 `org.apache.httpcomponents:httpmime:4.5` 在模型校验阶段失败。两个接口工程存在内容差异。 | 选用已编译通过且附带可对照 WAR 的 `interface_yuan`。 |
 | 大厅 `CCHallServer` | 核心库、大厅代码和 hiredis 均能重新编译。 | C++ 源码构建，默认启动一个实例，监听 TCP 4700。 |
 | 用户 `CCUserServer` | 原依赖目录内的 hiredis 只有库文件。使用同一归档其他模块的 hiredis 源码，处理旧头文件名和编译器兼容性后完成编译。 | C++ 源码构建，监听 7500。 |
