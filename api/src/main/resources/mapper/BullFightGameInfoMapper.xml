@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.BullFightGameInfoMapper">
-	<resultMap id="BaseResultMap" type="com.hbi.model.BullfightGameinfo">
+<mapper namespace="com.j.joker.mapper.BullFightGameInfoMapper">
+	<resultMap id="BaseResultMap" type="com.j.joker.model.BullfightGameinfo">
 	</resultMap>
-	<select id = "selectById" resultType="com.hbi.model.BullfightGameinfo">
+	<select id = "selectById" resultType="com.j.joker.model.BullfightGameinfo">
 		select 
 		    *
 		from

@@ -908,6 +908,13 @@ function Request:getGameList()
                         
                         local gameListdata = responseData["data"]
 
+                        if responseData.returnCode ~= "0" or type(gameListdata) ~= "table" then
+                            require(CommonTips_filePath):showTips({
+                                type = 1, title = "提示", content = "游戏列表加载失败，点击确定重试",
+                                callBackSingleSure = function() self:getGameList() end
+                            })
+                            return
+                        end
                         cacheGameList = gameListdata
 
                         --添加游戏列表到本地

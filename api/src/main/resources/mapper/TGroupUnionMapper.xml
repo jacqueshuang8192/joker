@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.groupunion.GroupUnionMapper">
+<mapper namespace="com.j.joker.mapper.groupunion.GroupUnionMapper">
 
     <!-- 添加联盟联盟-->
-    <insert id="add" parameterType="com.hbi.model.TGroupUnion" useGeneratedKeys="true" keyProperty="vo.id">
+    <insert id="add" parameterType="com.j.joker.model.TGroupUnion" useGeneratedKeys="true" keyProperty="vo.id">
         INSERT INTO
             `t_group_union` (`union_name`, `create_time`)
         VALUES

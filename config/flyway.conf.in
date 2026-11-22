@@ -1,8 +1,0 @@
-flyway.url=jdbc:mysql://@DB_HOST@:@DB_PORT@/@DB_NAME@?permitMysqlScheme=true
-flyway.user=@DB_USER@
-flyway.password=@DB_PASSWORD@
-flyway.connectRetries=15
-flyway.baselineOnMigrate=true
-flyway.baselineVersion=0
-flyway.cleanDisabled=true
-flyway.validateMigrationNaming=true

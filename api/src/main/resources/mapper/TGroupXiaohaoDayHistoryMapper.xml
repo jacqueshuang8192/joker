@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TGroupXiaohaoDayHistoryMapper" >
-  <resultMap id="BaseResultMap" type="com.hbi.model.TGroupXiaohaoDayHistory" >
+<mapper namespace="com.j.joker.mapper.TGroupXiaohaoDayHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.j.joker.model.TGroupXiaohaoDayHistory" >
     <!--
       WARNING - @mbggenerated
     -->
@@ -20,7 +20,7 @@
       where group_id = #{groupId} and hehuoren_id = #{hehuorenId} and DATE_FORMAT(day_time,'%Y-%m-%d') = #{now_data}
 
     </update>
-    <select id="selectXiaoHaoInfo" resultType="com.hbi.vo.request.common.XiaoHaoInfoVO">
+    <select id="selectXiaoHaoInfo" resultType="com.j.joker.vo.request.common.XiaoHaoInfoVO">
         SELECT ifnull(sum(profit),0) as xiaohaoCount ,ifnull(sum(dayingjia_count),0) as dayingjiaCount ,ifnull(sum(player_count),0) as playerCount  from t_group_xiaohao_day_history
         where group_id = ${groupId} and hehuoren_id = ${playerId}
         <if test="startTime != null">

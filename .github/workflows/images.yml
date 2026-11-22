@@ -25,6 +25,7 @@ jobs:
             native
             config
             database
+            deploy/1panel
             tools
       - uses: actions/setup-java@v6.3.0
         with:
@@ -69,7 +70,10 @@ jobs:
 
       - name: Package files for 1Panel
         if: github.event_name != 'pull_request'
-        run: tar czf 1panel-deploy.tar.gz docker-compose.yml game-services.yml panel.ini.example config database tools/configure.py tools/check-schema.sql README.md AUDIT.md
+        run: |
+          sed -i -e "s|^image_prefix = .*|image_prefix = $PREFIX|" -e "s/^tag = main$/tag = $TAG/" panel.ini.example
+          sed -i 's/${IMAGE_TAG:?填写支持Redis直连的发布标签}/'"$TAG"'/g' deploy/1panel/docker-compose.yml
+          tar czf 1panel-deploy.tar.gz docker-compose.yml deploy/1panel/docker-compose.yml panel.ini.example config tools/configure.py tools/check-schema.sql README.md AUDIT.md DEPLOYMENT.md
       - uses: actions/upload-artifact@v7.0.2
         if: github.event_name != 'pull_request'
         with:

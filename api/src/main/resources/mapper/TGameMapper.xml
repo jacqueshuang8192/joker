@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hbi.mapper.TGameMapper">
-  <resultMap id="BaseResultMap" type="com.hbi.model.TGame">
+<mapper namespace="com.j.joker.mapper.TGameMapper">
+  <resultMap id="BaseResultMap" type="com.j.joker.model.TGame">
     <!--
       WARNING - @mbggenerated
     -->
@@ -18,7 +18,7 @@
     <result column="dan_tie_point" jdbcType="INTEGER" property="danTiePoint" />
   </resultMap>
 
-  <select id="selectGameByLevel" resultType="com.hbi.model.TGame">
+  <select id="selectGameByLevel" resultType="com.j.joker.model.TGame">
       SELECT
           *
       FROM

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TCluRepositoryHandleHistoryMapper" >
-  <resultMap id="BaseResultMap" type="com.hbi.model.TCluRepositoryHandleHistory" >
+<mapper namespace="com.j.joker.mapper.TCluRepositoryHandleHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.j.joker.model.TCluRepositoryHandleHistory" >
     <!--
       WARNING - @mbggenerated
     -->
@@ -12,7 +12,7 @@
     <result column="point" property="point" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
-    <select id="selectMyHistory" resultType="com.hbi.model.TCluRepositoryHandleHistory">
+    <select id="selectMyHistory" resultType="com.j.joker.model.TCluRepositoryHandleHistory">
       select * from t_clu_repository_handle_history
        where player_id = #{playerId} and group_id = #{groupId}
        <if test="type != null">

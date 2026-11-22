@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TMsgPlayerGroupMapper">
+<mapper namespace="com.j.joker.mapper.TMsgPlayerGroupMapper">
     <update id="updateStatus">
         UPDATE t_msg_playergroup
         SET
@@ -13,7 +13,7 @@
         status = #{status}
         where id = #{msgId}
     </update>
-    <select id="getMsg" resultType="com.hbi.model.TMsgPlayerGroup">
+    <select id="getMsg" resultType="com.j.joker.model.TMsgPlayerGroup">
         SELECT
         *
         FROM

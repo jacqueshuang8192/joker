@@ -1,4 +1,5 @@
 #include "RedisServer.h"
+#include <panel_redis.h>
 #include "json.h"
 
 
@@ -20,8 +21,8 @@ int CRedisServer::Connect(string& ip, int port)
 	//fflush(stdout);
 	m_strIp = ip;
 	m_nPort = port;
-	m_pRedisConn = redisConnect(ip.c_str(), port);
-	if (m_pRedisConn->err)
+	m_pRedisConn = connectGameRedis(ip.c_str(), port);
+	if (!m_pRedisConn || m_pRedisConn->err)
 	{
 		//ACE_DEBUG((LM_ERROR, ACE_TEXT("Connect Redis Server failed, ip:%s, port:%d\r\n"), ip.c_str(), port));
 		return -1;
@@ -37,8 +38,8 @@ int CRedisServer::Connect(string& ip, int port)
 int CRedisServer::Reconnect()
 {
 	redisFree(m_pRedisConn);
-	m_pRedisConn = redisConnect(m_strIp.c_str(), m_nPort);
-	if (m_pRedisConn->err)
+	m_pRedisConn = connectGameRedis(m_strIp.c_str(), m_nPort);
+	if (!m_pRedisConn || m_pRedisConn->err)
 	{
 		return -1;
 	}

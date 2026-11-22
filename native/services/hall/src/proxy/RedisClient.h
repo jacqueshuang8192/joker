@@ -2,6 +2,7 @@
 #define __REDIS_CLIENT_H__
 
 #include <string>
+#include <panel_redis.h>
 #include <iostream>
 #include "hiredis.h"
 #include "log.h"
@@ -88,9 +89,9 @@ class CRedisClient
             }
             memcpy(m_strIP,strIP,strlen(strIP));
             m_nPort = nPort;
-            m_redis = redisConnect(strIP,nPort);
+            m_redis = connectGameRedis(strIP,nPort);
 
-            if (m_redis->err)	
+            if (!m_redis || m_redis->err)	
             {
                 return -1;
             }

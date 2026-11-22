@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TGameProvinceMapper">
+<mapper namespace="com.j.joker.mapper.TGameProvinceMapper">
 	<select id="selectAgentByProvinceId" resultType="Long">
 		SELECT
 		default_agent
@@ -18,7 +18,7 @@
 		province_id = 100000
 	</select>
 
-	<select id="selectByProvinceId" resultType="com.hbi.model.TGameProvince">
+	<select id="selectByProvinceId" resultType="com.j.joker.model.TGameProvince">
 		SELECT
 		*
 		FROM
@@ -28,7 +28,7 @@
 	</select>
 
 
-	<select id="queryGameProvince" resultType="com.hbi.model.TGameProvince">
+	<select id="queryGameProvince" resultType="com.j.joker.model.TGameProvince">
 		SELECT
 		province_id AS provinceId,
 		province_name AS provinceName,
@@ -39,7 +39,7 @@
 		t_game_province
 
 	</select>
-    <select id="getAllProvince" resultType="com.hbi.model.TGameProvince">
+    <select id="getAllProvince" resultType="com.j.joker.model.TGameProvince">
 		SELECT
 		*
 		FROM

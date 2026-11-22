@@ -1,0 +1,7 @@
+package com.j.joker.mapper;
+
+import com.j.joker.model.TChipSelect;
+import com.j.joker.core.mapper.EntityMapper;
+
+public interface TChipSelectMapper extends EntityMapper<TChipSelect> {
+}

@@ -13,7 +13,7 @@
   },
   "android": {
     "package_name": "com.shenshou.game",
-    "app_name": "神兽游戏",
+    "app_name": "千玺",
     "min_sdk_version": 19,
     "target_sdk_version": 28,
     "compile_sdk_version": 28,

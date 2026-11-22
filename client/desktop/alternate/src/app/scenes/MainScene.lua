@@ -16,21 +16,18 @@ end
 local isShowErrorPanle=false
 function MainScene:initData()
 
-    local function SplitInterFace(word)
-        local begin_index , end_index = string.find(word , "http://")
-        local second_index , second_end = string.find(word , "/h")
-        local result_word = string.sub(word , begin_index , end_index)
-        local last_word = string.sub(word , end_index + 1 , second_index - 1)
-        local boss_word = string.sub(word , second_index)
-        local inter_word = result_word .. last_word .. ":35655" .. boss_word
-        return inter_word
-    end 
+    local function interfaceAddress(url)
+        local scheme, authority, path = url:match("^(https?://)([^/]+)(/.*)$")
+        if not scheme then return url end
+        local host = authority:gsub(":%d+$", "")
+        return scheme .. host .. ":35655" .. path
+    end
 
     --获取接口链接
     if device.platform ~= "windows" then
         local sigs = "Ljava/lang/String;"
         HttpAddr = cct.getDateForApp("getHttpAddr",{},sigs)
-        HttpInterFace = SplitInterFace(HttpAddr)
+        HttpInterFace = interfaceAddress(HttpAddr)
     end
 
     --新建定时器池

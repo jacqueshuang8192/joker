@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TPlayerGroupMapper">
+<mapper namespace="com.j.joker.mapper.TPlayerGroupMapper">
     <update id="updatePoingCount">
         update t_player_group SET  point_count = point_count +#{coins} WHERE group_id = #{groupId} and player_id = #{playerId} and point_count >= -#{coins}
     </update>
@@ -17,19 +17,19 @@
         WHERE
         group_id =#{groupId}
     </delete>
-    <select id="selectByPlayerIdAndGroupId" resultType="com.hbi.model.TPlayerGroup">
+    <select id="selectByPlayerIdAndGroupId" resultType="com.j.joker.model.TPlayerGroup">
         SELECT *
         FROM t_player_group
         WHERE
         player_id=#{playerId} and group_id =#{groupId}
     </select>
-    <select id="selectByPlayerId" resultType="com.hbi.model.TPlayerGroup">
+    <select id="selectByPlayerId" resultType="com.j.joker.model.TPlayerGroup">
         select *
         from t_player_group
         WHERE player_id=#{playerId}
     </select>
 
-    <select id="selectByGroupId" resultType="com.hbi.model.TPlayerGroup">
+    <select id="selectByGroupId" resultType="com.j.joker.model.TPlayerGroup">
         select *
         from t_player_group
         WHERE group_id=#{groupId}
@@ -72,7 +72,7 @@
     </select>
 
     <!-- 添加玩家到群组-->
-    <insert id="add" parameterType="com.hbi.model.TPlayerGroup">
+    <insert id="add" parameterType="com.j.joker.model.TPlayerGroup">
         INSERT INTO
             t_player_group (`player_id`, `group_id`, `up_player_id`, create_time, player_type,invite_code,bonus,is_robot)
         VALUES
@@ -92,7 +92,7 @@
     </update>
 
     <!-- 获取合伙人列表信息-->
-    <select id="getPlayerGroupList" parameterType="hashMap" resultType="com.hbi.vo.response.hehuoren.PlayerGroupHhrListVo">
+    <select id="getPlayerGroupList" parameterType="hashMap" resultType="com.j.joker.vo.response.hehuoren.PlayerGroupHhrListVo">
         SELECT
             u.userid, u.nick_name, `group_id`,
             (SELECT COUNT(1) FROM t_group_zhanji WHERE player_id=h.player_id AND group_id=#{groupId}) game_count,
@@ -115,7 +115,7 @@
     </select>
 
     <!-- 根据群组ID、玩家ID获得群成员信息-->
-    <select id="getPlayerGroupByGroupIdAndPlayerId" parameterType="hashMap" resultType="com.hbi.model.TPlayerGroup">
+    <select id="getPlayerGroupByGroupIdAndPlayerId" parameterType="hashMap" resultType="com.j.joker.model.TPlayerGroup">
         SELECT
             id, player_id, group_id, up_player_id, player_type, bonus
         FROM
@@ -125,7 +125,7 @@
         AND
             player_id=#{playerId}
     </select>
-    <select id="selectMySonList" resultType="com.hbi.model.TPlayerGroup">
+    <select id="selectMySonList" resultType="com.j.joker.model.TPlayerGroup">
 
         SELECT * from t_player_group
         where  group_id = #{groupId}
@@ -140,7 +140,7 @@
         </if>
     </select>
 
-    <select id="selectMySonListByOne" resultType="com.hbi.model.TPlayerGroup">
+    <select id="selectMySonListByOne" resultType="com.j.joker.model.TPlayerGroup">
 
         SELECT * from t_player_group
         where  group_id = #{groupId}
@@ -171,7 +171,7 @@
             and player_id = #{searchId}
         </if>
     </select>
-    <select id="getClubPointRanking" resultType="com.hbi.model.TPlayerGroup">
+    <select id="getClubPointRanking" resultType="com.j.joker.model.TPlayerGroup">
         select
             player_id,
             group_id,
@@ -188,17 +188,17 @@
         from t_player_group
         where group_id = #{groupId}
     </select>
-    <select id="selectAll" resultType="com.hbi.model.TPlayerGroup">
+    <select id="selectAll" resultType="com.j.joker.model.TPlayerGroup">
         select * from t_player_group
     </select>
-    <select id="selctAllList" resultType="com.hbi.model.TPlayerGroup">
+    <select id="selctAllList" resultType="com.j.joker.model.TPlayerGroup">
          select
             player_id,
             up_player_id
         from t_player_group
         where group_id = #{groupId}
     </select>
-    <select id="selectClubRepositoryPoint" resultType="com.hbi.model.TPlayerGroup">
+    <select id="selectClubRepositoryPoint" resultType="com.j.joker.model.TPlayerGroup">
         select
             player_id,
             repository_point

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TPlayerMapper" >
+<mapper namespace="com.j.joker.mapper.TPlayerMapper" >
 	<!---->
-	<resultMap id="BaseResultMap" type="com.hbi.model.TPlayer" >
+	<resultMap id="BaseResultMap" type="com.j.joker.model.TPlayer" >
 	</resultMap>
 
-	<select id="queryPlayerDetails" resultType="com.hbi.cache.model.CachePlayerProfile">
+	<select id="queryPlayerDetails" resultType="com.j.joker.cache.model.CachePlayerProfile">
 		SELECT
 			u.userid AS userId,
 			u. NAME AS NAME,
@@ -75,7 +75,7 @@
 		  t.player_id=#{playerId}
 	</update>
 
-	<select id="queryPlayerAllRelation" resultType="com.hbi.cache.model.CachePlayerRelation">
+	<select id="queryPlayerAllRelation" resultType="com.j.joker.cache.model.CachePlayerRelation">
 		SELECT
 			p.player_id AS playerId,
 			p.compere_id AS compereId,

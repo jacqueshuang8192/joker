@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TRongcloudServerMapper" >
+<mapper namespace="com.j.joker.mapper.TRongcloudServerMapper" >
   <resultMap id="BaseResultMap" type="TRongcloudServer" >
     <id column="rongcloud_id" property="rongcloudId" jdbcType="BIGINT" />
     <result column="province" property="provinceId" jdbcType="VARCHAR" />
@@ -24,7 +24,7 @@
       t_rongcloud_server
       WHERE room_id=#{room_id};
     </delete>
-    <select id="getAllProvinceIds" resultType="com.hbi.model.TRongcloudServer">
+    <select id="getAllProvinceIds" resultType="com.j.joker.model.TRongcloudServer">
     SELECT
     province AS provinceId,
     room_id,
@@ -33,7 +33,7 @@
     t_rongcloud_server
     WHERE SUBSTRING(province,1,6)=#{provinceId} AND length(province)=10;
   </select>
-  <select id="getAllRoom" resultType="com.hbi.model.TRongcloudServer">
+  <select id="getAllRoom" resultType="com.j.joker.model.TRongcloudServer">
     SELECT
     *
     FROM

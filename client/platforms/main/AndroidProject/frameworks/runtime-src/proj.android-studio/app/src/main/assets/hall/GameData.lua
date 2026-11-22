@@ -14,8 +14,7 @@ function GameData:InitData()
     end
 
     ------------
-    self:getUidForFile()
-    dump("selfUid = "..UID)
+    UID = USER_INFO and tonumber(USER_INFO.uid)
     --设置音量开关
     MUSIC_ON = cc.UserDefault:getInstance():getBoolForKey("music_on", true)
     SOUND_ON = cc.UserDefault:getInstance():getBoolForKey("sound_on", true)

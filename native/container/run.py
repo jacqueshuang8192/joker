@@ -1,4 +1,6 @@
 """Run one legacy service as container PID 1 and reap its daemon child."""
+import asyncio
+import json
 import os
 import signal
 import sys
@@ -27,8 +29,23 @@ def main():
     for sig in (signal.SIGTERM, signal.SIGINT):
         signal.signal(sig, stop)
     program = "./" + PROGRAMS[role]
-    if os.fork() == 0:
-        os.execv(program, [program] + args)
+    def start_game():
+        if os.fork() == 0:
+            os.execv(program, [program] + args)
+
+    config = os.environ.get("JOKER_REDIS_CONFIG")
+    if config:
+        settings = json.loads(Path(config).read_text())
+        if role == "douniu":
+            from douniu_redis import run_game
+            sys.exit(asyncio.run(run_game(settings, start_game, wait_for_game)))
+        os.environ.update(JOKER_REDIS_HOST=settings["host"], JOKER_REDIS_PORT=str(settings["port"]),
+                          JOKER_REDIS_USER=settings["user"], JOKER_REDIS_PASSWORD=settings["password"])
+    start_game()
+    sys.exit(wait_for_game())
+
+
+def wait_for_game():
     status = 0
     while True:
         try:

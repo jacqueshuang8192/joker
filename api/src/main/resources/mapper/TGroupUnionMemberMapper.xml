@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.groupunion.GroupUnionMemberMapper">
+<mapper namespace="com.j.joker.mapper.groupunion.GroupUnionMemberMapper">
 
     <!-- 添加联盟联盟成员-->
-    <insert id="add" parameterType="com.hbi.model.TGroupUnionMember">
+    <insert id="add" parameterType="com.j.joker.model.TGroupUnionMember">
         INSERT INTO
             t_group_union_member (`union_id`, `player_id`, inviter_id, `player_type`, `from_group_id`, `bonus`, `create_time`)
         VALUES

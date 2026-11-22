@@ -1,0 +1,194 @@
+# 1Panel 首次部署 · Linux amd64 · Docker Engine 26+ / Compose v2.29.7 已验证
+# 在编排环境变量中填写 IMAGE_TAG、ADVERTISE_IP 和 MYSQL_PASSWORD，再按面板实际地址填写下方连接参数。
+# 首次启动从本仓库固定提交下载并校验运行配置模板；API 内置 Flyway 迁移。保留 settings 与 uploads 卷。
+# 单大厅 TCP 4700，牛牛 TCP 13600，HTTP API 默认 127.0.0.1:8080。
+x-settings-file: &settings-file {type: volume, source: settings, read_only: true}
+x-redis-settings: &redis-settings {<<: *settings-file, target: /srv/redis.json, volume: {nocopy: true, subpath: runtime/redis.json}}
+x-native: &native
+  platform: linux/amd64
+  restart: unless-stopped
+  network_mode: service:api
+  image: ghcr.io/jacqueshuang8192/joker-native:${IMAGE_TAG:?填写支持Redis直连的发布标签}
+  depends_on:
+    api: {condition: service_healthy}
+  environment: {JOKER_REDIS_CONFIG: /srv/redis.json}
+  security_opt: [no-new-privileges:true]
+services:
+  prepare:
+    image: ghcr.io/jacqueshuang8192/joker-native:${IMAGE_TAG:?填写支持Redis直连的发布标签}
+    platform: linux/amd64
+    user: "0:0"
+    networks: [panel]
+    volumes: [settings:/settings]
+    environment:
+      PANEL_INI: |
+        [deployment]
+        network = ${PANEL_NETWORK:-1panel-network}
+        advertise_ip = ${ADVERTISE_IP:?填写玩家可达的IPv4地址}
+        image_prefix = ghcr.io/jacqueshuang8192/joker
+        tag = ${IMAGE_TAG:?填写支持Redis直连的发布标签}
+        [mysql]
+        host = ${MYSQL_HOST:-mysql}
+        port = ${MYSQL_PORT:-3306}
+        database = ${MYSQL_DATABASE:-shenshou_game}
+        user = ${MYSQL_USER:-shenshou_game}
+        password = ${MYSQL_PASSWORD:?填写游戏库密码}
+        [mongodb]
+        host = ${MONGO_HOST:-mongo}
+        port = ${MONGO_PORT:-27017}
+        user = ${MONGO_USER:-}
+        password = ${MONGO_PASSWORD:-}
+        auth_database = ${MONGO_AUTH_DATABASE:-admin}
+        [redis]
+        host = ${REDIS_HOST:-redis}
+        port = ${REDIS_PORT:-6379}
+        user = ${REDIS_USER:-}
+        password = ${REDIS_PASSWORD:-}
+        [memcached]
+        host = ${MEMCACHED_HOST:-memcached}
+        port = ${MEMCACHED_PORT:-11211}
+    entrypoint: [python3, /tmp/prepare.py]
+    configs:
+      - {source: prepare-script, target: /tmp/prepare.py}
+
+  api:
+    platform: linux/amd64
+    restart: unless-stopped
+    networks: [panel]
+    environment:
+      JOKER_REDIS_CONFIG: /srv/redis.json
+      JOKER_CONFIG: /srv/config/api.properties
+      JAVA_TOOL_OPTIONS: "-Xms128m -Xmx768m"
+    image: ghcr.io/jacqueshuang8192/joker-api:${IMAGE_TAG:?填写支持Redis直连的发布标签}
+    depends_on: {prepare: {condition: service_completed_successfully}}
+    ports:
+      - "${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080"
+      - "${GAME_BIND:-0.0.0.0}:4700:4700"
+      - "${GAME_BIND:-0.0.0.0}:13600:13600"
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/config/api.properties, volume: {nocopy: true, subpath: runtime/api.properties}}
+      - uploads:/srv/uploads
+    healthcheck:
+      test: [CMD, wget, -qO, /dev/null, http://127.0.0.1:8080/hbiInterface/index.html]
+      interval: 20s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+
+  user:
+    <<: *native
+    command: [user, -h, 127.0.0.1, -p, "7500", -s, "1", -m, "500000"]
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/user/conf/config.ini, volume: {nocopy: true, subpath: runtime/user.ini}}
+  data:
+    <<: *native
+    command: [data, -h, 127.0.0.1, -p, "6001", -s, "0"]
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/data/bin/config.xml, volume: {nocopy: true, subpath: runtime/data.xml}}
+  alloc:
+    <<: *native
+    command: [alloc, -p, "11603", -l, "302", -s, "63", -u, "4", -m, "400", -d]
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/alloc/bin/server.xml, volume: {nocopy: true, subpath: runtime/alloc.xml}}
+      - {<<: *settings-file, target: /srv/alloc/bin/config.ini, volume: {nocopy: true, subpath: runtime/alloc.ini}}
+      - {<<: *settings-file, target: /srv/alloc/bin/GameServer.ini, volume: {nocopy: true, subpath: runtime/game.ini}}
+  douniu:
+    <<: *native
+    depends_on:
+      alloc: {condition: service_healthy}
+    command: [douniu, -p, "13600", -s, "1802", -l, "302", -d]
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/douniu/bin/server.xml, volume: {nocopy: true, subpath: runtime/douniu.xml}}
+  gold:
+    <<: *native
+    profiles: [gold]
+    command: [gold, -h, 127.0.0.1, -p, "6005", -s, "0"]
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/gold/bin/config.xml, volume: {nocopy: true, subpath: runtime/gold.xml}}
+  hall-4700:
+    <<: *native
+    command: [hall, -p, "4700", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/hall/conf/config.xml, volume: {nocopy: true, subpath: runtime/hall-config.xml}}
+      - {<<: *settings-file, target: /srv/hall/conf/server.xml, volume: {nocopy: true, subpath: runtime/hall-server.xml}}
+
+networks:
+  panel:
+    external: true
+    name: ${PANEL_NETWORK:-1panel-network}
+volumes:
+  settings:
+  uploads:
+
+configs:
+  prepare-script:
+    content: |
+      from pathlib import Path
+      from tempfile import TemporaryDirectory
+      from urllib.request import urlopen
+      import hashlib, json, os, runpy
+
+      os.umask(0o077)
+      state = Path("/settings")
+      source = state / "source-57b281e25ff3f7ba155b5f0d08b66539f6370943"
+      if not source.exists():
+          names = """config/alloc.ini.in
+      config/alloc.xml.in
+      config/api.properties.in
+      config/data.xml.in
+      config/douniu.xml.in
+      config/game.ini.in
+      config/gold-example.xml.in
+      config/hall-config.xml.in
+      config/hall-server.xml.in
+      config/user.ini.in
+      tools/configure.py""".split()
+          with TemporaryDirectory(dir=state) as tmp:
+              folder = Path(tmp) / "release"
+              digest = hashlib.sha256()
+              for name in names:
+                  target = folder / name
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  with urlopen("https://raw.githubusercontent.com/jacqueshuang8192/joker/57b281e25ff3f7ba155b5f0d08b66539f6370943/" + name, timeout=30) as response:
+                      data = response.read()
+                  digest.update(data)
+                  target.write_bytes(data)
+              if digest.hexdigest() != "162c38190e37dd1060239ba3009593c817b72a2afcd85f07dcbbae118b918737":
+                  raise SystemExit("Release file checksum mismatch")
+              folder.rename(source)
+
+      cfg = os.environ["PANEL_INI"]
+      saved = state / "panel.ini"
+      if saved.exists() and saved.read_text() == cfg:
+          print("Settings ready")
+          raise SystemExit(0)
+      with TemporaryDirectory(dir=state) as tmp:
+          work = Path(tmp)
+          (work / "config").symlink_to(source / "config")
+          (work / "panel.ini").write_text(cfg)
+          deploy = runpy.run_path(str(source / "tools/configure.py"))
+          args = deploy["parse_args"](work)
+          values = deploy["configuration_values"](args)
+          keys = state / "keys.json"
+          if keys.exists():
+              values.update(json.loads(keys.read_text()))
+          else:
+              selected = {k: values[k] for k in ("DEFAULT_KEY","SYSTEM_PASSWORD","SIGN_KEY","AGENT_PASSWORD","AES_KEY","MT_KEY")}
+              (work / "keys.json").write_text(json.dumps(selected))
+              (work / "keys.json").replace(keys)
+          deploy["write_runtime_configs"](work, work / "runtime", values, args.settings["redis"])
+          api = work / "runtime/api.properties"
+          api.chmod(0o600)
+          api.write_text(api.read_text().replace("game.round=3", "game.round=1"))
+          api.chmod(0o444)
+          (state / "runtime").mkdir(exist_ok=True)
+          for file in (work / "runtime").iterdir(): file.replace(state / "runtime" / file.name)
+          (work / "panel.ini").replace(saved)
+      print("Settings ready")

@@ -91,34 +91,34 @@ function PacketParser:read(buf,service)
                 local command, bodyLen = verifyHeadAndGetBodyLenAndCmd(self.buf_)
 
                 --self.logger_:debugf("command %x bodylen %d", command, bodyLen)
-                print("command %x bodylen %d,string:%s", command, bodyLen,cc.utils.ByteArray.toString(self.buf_, 16))
+                if isShowNetLog then
+                    print("command %x bodylen %d,string:%s", command, bodyLen, cc.utils.ByteArray.toString(self.buf_, 16))
+                end
 
                 if bodyLen == 14 then
                     --无包体，直接返回一个只有cmd字段的table，并重置缓冲区
 
                     ret[#ret + 1] = { cmd = command }
                     self:reset()
-                elseif bodyLen > 0 then
-                    --有包体
+                elseif bodyLen > HEAD_LEN - 4 then
+                    local remaining = bodyLen + 4 - self.buf_:getLen()
                     available = buf:getAvailable()
-                    buffLen = self.buf_:getLen()
-                    if available <= 0 then
+                    if available < remaining then
+                        for i = 1, available do
+                            self.buf_:writeRawByte(buf:readRawByte())
+                        end
                         break
-                    elseif available + buffLen >= 4 + bodyLen - HEAD_LEN then
-                        -- 收到完整包，向缓冲区补齐当前包剩余字节
-                        for i=1, bodyLen + 4 - HEAD_LEN do
+                    else
+                        for i = 1, remaining do
                             self.buf_:writeRawByte(buf:readRawByte())
                         end
                         -- 开始解析
                         --解密
-                        local debuffer = cc.utils.ByteArray.new(cc.utils.ByteArray.ENDIAN_BIG)
+                        local debuffer = self.buf_
                         if not self.isEncrypt then
-                            --todo
                             debuffer = require("src.socket.Encrypt"):DecryptBuffer(self.buf_)
-                        else
-                            debuffer=self.buf_
                         end
-                        if command ~= 0x110 then
+                        if isShowNetLog and command ~= 0x110 then
 							print("recv PACKET(de) ==> %x(%d) [%s]", command, debuffer:getLen(), cc.utils.ByteArray.toString(debuffer, 16))
 						end
                         -- by tao
@@ -141,12 +141,6 @@ function PacketParser:read(buf,service)
                         self:reset()
 
 
-                    else
-                        --不够包体长度，全部内容写入缓冲区
-                        for i=1, available do
-                            self.buf_:writeRawByte(buf:readRawByte())
-                        end
-                        break
                     end
                 else
                     -- 包头校验失败

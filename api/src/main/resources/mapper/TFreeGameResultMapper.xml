@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TFreeGameResultMapper" >
-  <resultMap id="BaseResultMap" type="com.hbi.model.TFreeGameResult" >
+<mapper namespace="com.j.joker.mapper.TFreeGameResultMapper" >
+  <resultMap id="BaseResultMap" type="com.j.joker.model.TFreeGameResult" >
     <!--
       WARNING - @mbggenerated
     -->
@@ -27,7 +27,7 @@
         update t_free_game_result set content=#{toJSONString},round_index=#{index} where activity_id=#{activityId}
     </update>
 
-    <select id="queryActivitiesByUserId" resultType="com.hbi.model.TFreeGameResult">
+    <select id="queryActivitiesByUserId" resultType="com.j.joker.model.TFreeGameResult">
     SELECT
         id AS id,
         activity_id AS activityId,
@@ -51,7 +51,7 @@
     limit 0,10
   </select>
 
-  <select id="queryActivitiesByOwner" resultType="com.hbi.model.TFreeGameResult">
+  <select id="queryActivitiesByOwner" resultType="com.j.joker.model.TFreeGameResult">
     SELECT
         fgr.id AS id,
         fgr.activity_id AS activityId,
@@ -74,7 +74,7 @@
     <select id="selectFreeGameResult" resultType="java.lang.Integer">
         select ifnull(round_index,0) from t_free_game_result where activity_id=#{activityId}
     </select>
-    <select id="queryActivitiesResult" resultType="com.hbi.model.TFreeGameResult">
+    <select id="queryActivitiesResult" resultType="com.j.joker.model.TFreeGameResult">
         SELECT * from player_result_activityid${l} pra RIGHT JOIN t_free_game_result tfr on pra.activity_id = tfr.activity_id
             WHERE pra.player_id=#{userId}
             <if test="groupId != null">

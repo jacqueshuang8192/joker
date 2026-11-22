@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TFreeGameRoundMapper" >
-  <resultMap id="BaseResultMap" type="com.hbi.model.TFreeGameRound" >
+<mapper namespace="com.j.joker.mapper.TFreeGameRoundMapper" >
+  <resultMap id="BaseResultMap" type="com.j.joker.model.TFreeGameRound" >
     <!--
       WARNING - @mbggenerated
     -->
   </resultMap>
   
-  <select id="queryUrlsByLevel" resultType="com.hbi.model.TFreeGameRound">
+  <select id="queryUrlsByLevel" resultType="com.j.joker.model.TFreeGameRound">
     SELECT
         replay_url as replayUrl
     FROM

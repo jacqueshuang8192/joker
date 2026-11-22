@@ -4,14 +4,14 @@
 <shardingConfig>
 	<!-- parseList可选配置 如果配置了parseList,只有在parseList范围内并且不再ignoreList内的sql才会被解析和修改 -->
 	<parseList>
-		<value>com.hbi.mapper.GameInfoMapper.selectById</value>
-		<value>com.hbi.mapper.GameInfoMapper.createUser</value>
-		<value>com.hbi.mapper.BullFightGameInfoMapper.selectById</value>
-		<value>com.hbi.mapper.BullFightGameInfoMapper.createUser</value>
+		<value>com.j.joker.mapper.GameInfoMapper.selectById</value>
+		<value>com.j.joker.mapper.GameInfoMapper.createUser</value>
+		<value>com.j.joker.mapper.BullFightGameInfoMapper.selectById</value>
+		<value>com.j.joker.mapper.BullFightGameInfoMapper.createUser</value>
 	</parseList>
 
 	
 	<!-- 配置分表策略 -->
-	<strategy tableName="bullfight_gameinfo" strategyClass="com.hbi.shardbatis.ShardStrategyImpl" />
+	<strategy tableName="bullfight_gameinfo" strategyClass="com.j.joker.shardbatis.ShardStrategyImpl" />
 </shardingConfig>  
 

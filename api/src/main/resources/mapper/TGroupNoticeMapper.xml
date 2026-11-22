@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TGroupNoticeMapper">
+<mapper namespace="com.j.joker.mapper.TGroupNoticeMapper">
     <!-- 根据群组ID查询公告-->
-    <select id="getByGroupId" parameterType="java.lang.Integer" resultType="com.hbi.model.TGroupNotice">
+    <select id="getByGroupId" parameterType="java.lang.Integer" resultType="com.j.joker.model.TGroupNotice">
         SELECT
             id, group_id, notice
         FROM
@@ -12,7 +12,7 @@
     </select>
 
     <!-- 添加公告-->
-    <insert id="insertTGroupNotice" parameterType="com.hbi.model.TGroupNotice" useGeneratedKeys="true" keyProperty="notice.id">
+    <insert id="insertTGroupNotice" parameterType="com.j.joker.model.TGroupNotice" useGeneratedKeys="true" keyProperty="notice.id">
         INSERT INTO
             t_group_notice(group_id, notice)
         VALUES
@@ -20,7 +20,7 @@
     </insert>
 
     <!-- 修改公告-->
-    <update id="updateTGroupNotice" parameterType="com.hbi.model.TGroupNotice">
+    <update id="updateTGroupNotice" parameterType="com.j.joker.model.TGroupNotice">
         UPDATE
             t_group_notice
         SET

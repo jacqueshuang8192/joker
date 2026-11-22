@@ -134,6 +134,34 @@ FROM (
   UNION ALL
   SELECT 't_version' AS table_name
   UNION ALL
+  SELECT 'landlord_score_section' AS table_name
+  UNION ALL
+  SELECT 't_ad' AS table_name
+  UNION ALL
+  SELECT 't_chip_select' AS table_name
+  UNION ALL
+  SELECT 't_exchange_history' AS table_name
+  UNION ALL
+  SELECT 't_feedback' AS table_name
+  UNION ALL
+  SELECT 't_fortune_address' AS table_name
+  UNION ALL
+  SELECT 't_gift_point' AS table_name
+  UNION ALL
+  SELECT 't_goods_category' AS table_name
+  UNION ALL
+  SELECT 't_rechargeticheng_flow' AS table_name
+  UNION ALL
+  SELECT 't_role_res' AS table_name
+  UNION ALL
+  SELECT 't_sec_resource' AS table_name
+  UNION ALL
+  SELECT 't_sec_role' AS table_name
+  UNION ALL
+  SELECT 't_user_goods_buy_record' AS table_name
+  UNION ALL
+  SELECT 't_yaoqing_bangding' AS table_name
+  UNION ALL
   SELECT CONCAT(families.prefix, digits.n)
   FROM (
     SELECT 'bullfight_gameinfo' AS prefix
@@ -153,3 +181,9 @@ LEFT JOIN information_schema.tables AS actual
   ON actual.table_schema=DATABASE() AND LOWER(actual.table_name)=expected.table_name
 WHERE actual.table_name IS NULL
 ORDER BY expected.table_name;
+
+SELECT CONCAT('t_activity_user.', expected.column_name) AS missing_column
+FROM (SELECT 'bring_chip' AS column_name UNION ALL SELECT 'present_chip') AS expected
+LEFT JOIN information_schema.columns AS actual ON actual.table_schema = DATABASE()
+  AND actual.table_name = 't_activity_user' AND actual.column_name = expected.column_name
+WHERE actual.column_name IS NULL;

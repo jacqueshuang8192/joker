@@ -41,7 +41,7 @@
 		<property name="logAbandoned" value="true" />
 	</bean>
 
-	<bean id="dynamicDataSource" class="com.hbi.datasource.DynamicDataSource">
+	<bean id="dynamicDataSource" class="com.j.joker.datasource.DynamicDataSource">
 		<property name="targetDataSources">
 			<map key-type="java.lang.String">
 				<entry key="commonDataSource" value-ref="dataSource" />
@@ -64,17 +64,17 @@
 				<value>classpath*:mapper/*.xml</value>
 			</array>
 		</property>
-		<property name="typeAliasesPackage" value="com.hbi.model" />
+		<property name="typeAliasesPackage" value="com.j.joker.model" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 		<property name="basePackage"
-				  value="com.hbi.mapper" />
+				  value="com.j.joker.mapper" />
 	</bean>
 
-	<bean id="sqlMapper" class="com.core.mapper.SqlMapper"
+	<bean id="sqlMapper" class="com.j.joker.core.mapper.SqlMapper"
 		  scope="prototype">
 		<constructor-arg ref="sqlSession" />
 	</bean>
@@ -91,7 +91,7 @@
 
 	<aop:config>
 		<aop:pointcut id="appService"
-					  expression="execution(* com.hbi.service..*Service*.*(..))" />
+					  expression="execution(* com.j.joker.service..*Service*.*(..))" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="appService" />
 	</aop:config>
 
@@ -109,7 +109,7 @@
 		<property name="dataSource" ref="flexDataSource" />
 	</bean>
 
-	<bean id="springApplicationContext" class="com.core.util.ApplicationContextHelper"></bean>
+	<bean id="springApplicationContext" class="com.j.joker.core.util.ApplicationContextHelper"></bean>
 
 	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
 		<property name="maxTotal" value="100000" />
@@ -117,14 +117,14 @@
 		<property name="maxWaitMillis" value="100000" />
 	</bean>
 
-	<bean id="jedis" class="redis.clients.jedis.JedisPool" destroy-method="close">
+	<bean id="jedis" class="com.j.joker.core.util.GameRedisPool" factory-method="applicationPool" destroy-method="close">
 		<constructor-arg index="0" ref="jedisPoolConfig"/>
 		<constructor-arg index="1" type="java.lang.String" value="${redis.ip}"/>
 		<constructor-arg index="2" type="int" value="${redis.port}"/>
 	</bean>
 
-	<bean class="com.core.util.AppUtil" />
+	<bean class="com.j.joker.core.util.AppUtil" />
 
-	<bean id="accountProvider" class="com.hbi.impl.account.NativeAccount" />
+	<bean id="accountProvider" class="com.j.joker.impl.account.NativeAccount" />
 
 </beans>

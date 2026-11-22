@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TGroupZhanjiMapper">
-    <resultMap id="BaseResultMap" type="com.hbi.model.TGroupZhanji">
+<mapper namespace="com.j.joker.mapper.TGroupZhanjiMapper">
+    <resultMap id="BaseResultMap" type="com.j.joker.model.TGroupZhanji">
         <!--
           WARNING - @mbggenerated
         -->
@@ -32,7 +32,7 @@
         WHERE
             activity_id=#{activityId}
 </select>
-    <select id="selectByMyExample" resultType="com.hbi.model.TGroupZhanji">
+    <select id="selectByMyExample" resultType="com.j.joker.model.TGroupZhanji">
         select * from t_group_zhanji
         where 1 = 1
          <if test="dateStr != null">

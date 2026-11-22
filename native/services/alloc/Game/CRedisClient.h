@@ -2,6 +2,7 @@
 #define __REDIS_CLIENT_H__
 
 #include <string>
+#include <panel_redis.h>
 #include <vector>
 #include <iostream>
 #include "hiredis.h"
@@ -75,26 +76,15 @@ public:
 		memcpy(m_strIP,strIP,strlen(strIP));
 		m_nPort = nPort;
 		m_password = password;
-		m_redis = redisConnect(strIP,nPort);
+		m_redis = connectGameRedis(strIP,nPort, m_password.c_str());
 
-		if (m_redis->err)	
+		if (!m_redis || m_redis->err)	
 		{
 			g_pDebugLog->logMsg("Connect_Redis ip=%s, port=%d, ERR!! \n", m_strIP, m_nPort);
 		
 			return -1;
 		}
 
-		if (m_password.length() > 0)
-		{
-			char szVal[25];
-			sprintf(szVal, "AUTH %s", m_password.c_str());
-			if (!RedisCommand(szVal))
-			{
-				g_pDebugLog->logMsg("[%d]Connect_Redis ip=%s, port=%d, ERR!! \n", m_strIP, m_nPort);
-		
-				return -1;
-			}
-		}
 		g_pDebugLog->logMsg("Connect_Redis ip=%s, port=%d, Success!!  \n", m_strIP, m_nPort);
 		return 0;
 	}
@@ -102,23 +92,13 @@ public:
 	int Reconnect()
 	{
 		redisFree(m_redis);
-		m_redis = redisConnect(m_strIP, m_nPort);
-		if (m_redis->err)
+		m_redis = connectGameRedis(m_strIP, m_nPort, m_password.c_str());
+		if (!m_redis || m_redis->err)
 		{
 			g_pDebugLog->logMsg("[%d]Reconnect_Redis ip=%s, port=%d, ERR!! \n", m_strIP, m_nPort);
 			return -1;
 		}
 
-		if (m_password.length() > 0)
-		{
-			char szVal[25];
-			sprintf(szVal, "AUTH %s", m_password.c_str());
-			if (!RedisCommand(szVal))
-			{
-				g_pDebugLog->logMsg("Reconnect_Redis ip=%s, port=%d, ERR!! \n", m_strIP, m_nPort);
-				return -1;
-			}
-		}
 		g_pDebugLog->logMsg("Reconnect_Redis ip=%s, port=%d, Success!!  \n", m_strIP, m_nPort);
 		
 

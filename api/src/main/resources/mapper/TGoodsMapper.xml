@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TGoodsMapper" >
-  <resultMap id="BaseResultMap" type="com.hbi.model.TGoods" >
+<mapper namespace="com.j.joker.mapper.TGoodsMapper" >
+  <resultMap id="BaseResultMap" type="com.j.joker.model.TGoods" >
     <!--
       WARNING - @mbggenerated
     -->
@@ -20,7 +20,7 @@
     <result column="status" property="status" jdbcType="CHAR"/>
   </resultMap>
   
-  <select id="findGoodsByCategoryType" resultType="com.hbi.model.TGoods">
+  <select id="findGoodsByCategoryType" resultType="com.j.joker.model.TGoods">
   	SELECT 
   		g.goods_id as goodsId,
   		g.category_id as categoryId,
@@ -44,7 +44,7 @@
 		</if>
 
   </select>
-	<select id="findImsGoodsByCategoryType" resultType="com.hbi.model.ImsGoods">
+	<select id="findImsGoodsByCategoryType" resultType="com.j.joker.model.ImsGoods">
 		select
 			goodsid as goodsId,
 			goodsname as name,
@@ -64,7 +64,7 @@
 			</if>
 		ORDER BY goodsId
 	</select>
-	<select id="findImsGoodsById" resultType="com.hbi.model.ImsGoods">
+	<select id="findImsGoodsById" resultType="com.j.joker.model.ImsGoods">
 		select
 		goodsid as goodsId,
 		goodsname as name,

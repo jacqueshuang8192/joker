@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TPointChangeRecordMapper">
+<mapper namespace="com.j.joker.mapper.TPointChangeRecordMapper">
 
 
     <insert id="addOne">
@@ -8,7 +8,7 @@
 		VALUES
 		(#{clubId}, #{uid}, #{type}, #{beforePoint}, #{changePoint}, #{nowPoint}, #{operator}, #{activityId}, #{index}, #{remarkInfo}, #{changeTime})
     </insert>
-    <select id="selectChangeRecord" resultType="com.hbi.model.TPointChangeRecord">
+    <select id="selectChangeRecord" resultType="com.j.joker.model.TPointChangeRecord">
         select * from t_point_change_record${tab}
         where club_id = #{clubId} and uid = #{uid}
         <if test="typesStr != null">

@@ -10,7 +10,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-	<!--<bean id="compereIncomeScheduleService" class="com.hbi.schedule.service.CompereIncomeScheduleService" />-->
+	<!--<bean id="compereIncomeScheduleService" class="com.j.joker.schedule.service.CompereIncomeScheduleService" />-->
 	<!---->
 	<!--<bean id="deleteCompereYesterdayCacheGiftIncome"-->
         <!--class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
@@ -50,7 +50,7 @@
         <!--</property>-->
     <!--</bean>-->
     <!---->
-    <!--<bean id="quickGameExtractDailyScheduleService" class="com.hbi.schedule.service.QuickGameExtractDailyScheduleService" />-->
+    <!--<bean id="quickGameExtractDailyScheduleService" class="com.j.joker.schedule.service.QuickGameExtractDailyScheduleService" />-->
 	<!---->
 	<!--<bean id="quickGameExtractDailyInsert"-->
         <!--class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
@@ -71,7 +71,7 @@
         <!--</property>-->
     <!--</bean>-->
     <!---->
-    <!--<bean id="taskScheduleService" class="com.hbi.schedule.service.TaskScheduleService" />-->
+    <!--<bean id="taskScheduleService" class="com.j.joker.schedule.service.TaskScheduleService" />-->
 	<!---->
 	<!--<bean id="previousUserDailyTasksDelete"-->
         <!--class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
@@ -92,7 +92,7 @@
         <!--</property>-->
     <!--</bean>-->
     <!---->
-    <!--<bean id="radioStationContentScheduleService" class="com.hbi.schedule.service.RadioStationContentScheduleService" />-->
+    <!--<bean id="radioStationContentScheduleService" class="com.j.joker.schedule.service.RadioStationContentScheduleService" />-->
 	<!---->
 	<!--<bean id="loadRadioStationJokeContent"-->
         <!--class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->

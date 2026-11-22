@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TUserMapper">
-	<resultMap id="BaseResultMap" type="com.hbi.model.TUser">
+<mapper namespace="com.j.joker.mapper.TUserMapper">
+	<resultMap id="BaseResultMap" type="com.j.joker.model.TUser">
 		<!-- WARNING - @mbggenerated -->
 		<id column="userid" property="userid" jdbcType="BIGINT" />
 		<result column="type" property="type" jdbcType="CHAR" />
@@ -131,7 +131,7 @@
 	</select>
 
 
-	<select id="queryUserByPhoneOrNickName" resultType="com.hbi.cache.model.CacheUserListProfile">
+	<select id="queryUserByPhoneOrNickName" resultType="com.j.joker.cache.model.CacheUserListProfile">
 		SELECT
 		userid
 		AS userId,
@@ -159,7 +159,7 @@
 		WHERE
 		deprecated = 0
 	</select>
-	<select id="isCardCountEnough" resultType="com.hbi.vo.request.common.MapVo">
+	<select id="isCardCountEnough" resultType="com.j.joker.vo.request.common.MapVo">
 		SELECT
 		userid as mapKey,
 		if(card_count>=${cardNum},card_count,0) as mapValue
@@ -208,7 +208,7 @@
     <select id="selectImsTpUserById" resultType="int">
 		SELECT parentid from ims_tpuser where id = #{agentId}
 	</select>
-    <select id="selectImsCommission" resultType="com.hbi.vo.request.common.CommissionVo">
+    <select id="selectImsCommission" resultType="com.j.joker.vo.request.common.CommissionVo">
 		select commissions1 as commission1,
 		commissions2 as commission2,
 		commissions3 as commission3
@@ -236,13 +236,13 @@
 	<select id="selectImsTpUserByBiqiId" resultType="string">
 		SELECT biqi_id from ims_tpuser WHERE id=#{l}
 	</select>
-	<select id="selectImsTpUserByIsShare" resultType="com.hbi.vo.request.common.MapVo">
+	<select id="selectImsTpUserByIsShare" resultType="com.j.joker.vo.request.common.MapVo">
 		SELECT
 		id as mapKey,
 		is_share as mapValue
 		from ims_tpuser WHERE id=#{agentId}
 	</select>
-	<select id="selectImsTpUserByIsBind" resultType="com.hbi.vo.request.common.MapVo">
+	<select id="selectImsTpUserByIsBind" resultType="com.j.joker.vo.request.common.MapVo">
 		SELECT
 		id as mapKey,
 		is_bind as mapValue
@@ -290,10 +290,10 @@
 	<select id="selectAgentGoldMoneyAdmin" resultType="_int">
 		SELECT ifnull(sum(surplusgold),0) from ims_tpgold WHERE date_format(createtime,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY) and type=0
 	</select>
-	<select id="selectAgentGoldinfo" resultType="com.hbi.vo.request.common.MapVo">
+	<select id="selectAgentGoldinfo" resultType="com.j.joker.vo.request.common.MapVo">
 		SELECT ifnull(count(DISTINCT(userid)),0) as mapKey ,ifnull(count(1),0) as mapValue FROM ims_tpgold WHERE agentid=${agentId} and date_format(createtime,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
 	</select>
-	<select id="selectAgentGoldinfoAdmin" resultType="com.hbi.vo.request.common.MapVo">
+	<select id="selectAgentGoldinfoAdmin" resultType="com.j.joker.vo.request.common.MapVo">
 		SELECT ifnull(count(DISTINCT(userid)),0) as mapKey ,ifnull(count(1),0) as mapValue FROM ims_tpgold WHERE date_format(createtime,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
 	</select>
 	<select id="selectAgentUseMoney" resultType="_int">
@@ -308,7 +308,7 @@
     <select id="selectAgentImsTpmoney" resultType="_int">
 		select ifnull(sum(money),0) from ims_tpmoney${ii} WHERE agent_id =${agentId} and type =1 and  date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
 	</select>
-	<select id="selectAgentGoldinfoImsTpmoney" resultType="com.hbi.vo.request.common.MapVo">
+	<select id="selectAgentGoldinfoImsTpmoney" resultType="com.j.joker.vo.request.common.MapVo">
 		  SELECT ifnull(count(DISTINCT(uid)),0) as mapKey ,ifnull(count(1),0) as mapValue FROM ims_tpmoney${ii} WHERE agent_id=${agentId} and date_format(create_time,'%Y-%m-%d')=date_sub(curdate(),INTERVAL 1 DAY)
 	</select>
 	<select id="selectAgentMoneyCountAImstpmoney" resultType="_int">
@@ -326,7 +326,7 @@
 	</select>
 
 
-	<insert id="insertUser" parameterType="com.hbi.model.TUser"
+	<insert id="insertUser" parameterType="com.j.joker.model.TUser"
 		useGeneratedKeys="true" keyProperty="userid">
 		INSERT INTO t_user (
 		phone,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TFreeGameActivityMapper">
-	<resultMap id="BaseResultMap" type="com.hbi.model.TFreeGameActivity">
+<mapper namespace="com.j.joker.mapper.TFreeGameActivityMapper">
+	<resultMap id="BaseResultMap" type="com.j.joker.model.TFreeGameActivity">
 		<!-- WARNING - @mbggenerated -->
 		<id column="activity_id" property="activityId" jdbcType="BIGINT" />
 		<result column="game_id" property="gameId" jdbcType="BIGINT" />
@@ -11,7 +11,7 @@
 		<result column="invite_code" property="inviteCode" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<select id="queryFreeGameRecord" resultType="com.hbi.model.FreeGameActivityInfo">
+	<select id="queryFreeGameRecord" resultType="com.j.joker.model.FreeGameActivityInfo">
 		select
 		u.userid as userId,
 		u.small_icon as creatorPhotoUrl,
@@ -38,7 +38,7 @@
 		and a.status = 0 and au.status = 1 order by a.create_date desc
 	</select>
 
-	<select id="queryOwnFreeGameRecord" resultType="com.hbi.model.FreeGameActivityInfo">
+	<select id="queryOwnFreeGameRecord" resultType="com.j.joker.model.FreeGameActivityInfo">
 		select
 		u.small_icon as creatorPhotoUrl,
 		u.nick_name as creatorNickname,
@@ -61,7 +61,7 @@
 		and a.status = 0 order by a.create_date desc
 	</select>
 
-	<select id="queryFreeGameByInviteCode" resultType="com.hbi.cache.model.CacheGameActivity">
+	<select id="queryFreeGameByInviteCode" resultType="com.j.joker.cache.model.CacheGameActivity">
 		select
 		fg.activity_id as gameActivityId,
 		a.activity_name as activityName,
@@ -97,7 +97,7 @@
 		AND invite_code = #{inviteCode}
 	</select>
 
-	<select id="queryNonCloseFreeGameByLevel" resultType="com.hbi.cache.model.CacheGameActivity">
+	<select id="queryNonCloseFreeGameByLevel" resultType="com.j.joker.cache.model.CacheGameActivity">
 		select
 		fg.activity_id as gameActivityId,
 		a.activity_name as activityName,
@@ -115,7 +115,7 @@
 		fg.activity_id=a.activity_id and a.status!=2
 	</select>
 
-	<select id="queryAllNonCloseFreeGame" resultType="com.hbi.cache.model.CacheGameActivity">
+	<select id="queryAllNonCloseFreeGame" resultType="com.j.joker.cache.model.CacheGameActivity">
 		select
 		fg.activity_id as gameActivityId,
 		a.activity_name as activityName,
@@ -133,7 +133,7 @@
 		fg.activity_id=a.activity_id and a.status!=2
 	</select>
 
-	<select id="queryFreeGameByOwner" resultType="com.hbi.model.FreeGameActivityInfoForPlayer">
+	<select id="queryFreeGameByOwner" resultType="com.j.joker.model.FreeGameActivityInfoForPlayer">
 		select v.*,u.userid as userId,
 		u.small_icon as photo,
 		u.nick_name as nickname from
@@ -160,7 +160,7 @@
 		`t_activity_user` au on v.activityId = au.`activity_id` LEFT JOIN
 		`t_user` u on u.`userid` = au.`userid`
 	</select>
-	<select id="selectActivityIds2Gold" resultType="com.hbi.vo.request.common.MapVo">
+	<select id="selectActivityIds2Gold" resultType="com.j.joker.vo.request.common.MapVo">
 		SELECT
 		activity_id as mapKey,
 		round_index as mapValue
@@ -171,7 +171,7 @@
 		order by create_time desc , round_index desc
 		limit #{beginRowIndex},#{pageSize}
 	</select>
-	<select id="queryGoldActivitiesByUserIdAndLevel" resultType="com.hbi.model.TFreeGameRound">
+	<select id="queryGoldActivitiesByUserIdAndLevel" resultType="com.j.joker.model.TFreeGameRound">
 		SELECT
 		tfgr.id as id,
 		tfgr.activity_id as activityId,
@@ -185,7 +185,7 @@
 		order by pra4.create_time DESC
 		limit #{beginRowIndex},#{pageSize}
 	</select>
-	<select id="selectActivityIds2Card" resultType="com.hbi.vo.request.common.MapVo">
+	<select id="selectActivityIds2Card" resultType="com.j.joker.vo.request.common.MapVo">
 		SELECT
 		activity_id as mapKey,
 		round_index as mapValue
@@ -196,7 +196,7 @@
 		order by create_time desc
 		limit #{beginRowIndex},#{pageSize}
 	</select>
-	<select id="selectFreeActivityRound" resultType="com.hbi.model.TFreeGameRound">
+	<select id="selectFreeActivityRound" resultType="com.j.joker.model.TFreeGameRound">
 		SELECT
 		content as content,
 		round_index as roundIndex,
@@ -207,7 +207,7 @@
 		where
 		activity_id=#{mapKey} and round_index=#{mapValue}
 	</select>
-	<select id="selectFreeActivityResult" resultType="com.hbi.model.TFreeGameResult">
+	<select id="selectFreeActivityResult" resultType="com.j.joker.model.TFreeGameResult">
 		SELECT
 		activity_id as activityId,
 		content as content,
@@ -217,7 +217,7 @@
 		where
 		activity_id=#{mapKey} limit 1
 	</select>
-	<select id="queryCardActivities2RoundByUserI" resultType="com.hbi.model.TFreeGameRound">
+	<select id="queryCardActivities2RoundByUserI" resultType="com.j.joker.model.TFreeGameRound">
 		SELECT
 		content as content,
 		round_index as roundIndex,

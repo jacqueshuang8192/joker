@@ -1,32 +1,28 @@
-include:
-  - game-services.yml
-
+x-native: &native
+  platform: linux/amd64
+  restart: unless-stopped
+  network_mode: service:api
+  image: ${IMAGE_PREFIX:-ghcr.io/jacqueshuang8192/joker}-native:${IMAGE_TAG:?Image tag required}
+  depends_on:
+    api: {condition: service_healthy}
+  environment: {JOKER_REDIS_CONFIG: /srv/redis.json}
+  security_opt: [no-new-privileges:true]
 services:
-  flyway:
-    image: flyway/flyway:13.13.0-alpine
-    platform: linux/amd64
-    networks: [panel]
-    volumes:
-      - type: bind
-        source: ./database/migrations
-        target: /flyway/sql
-        read_only: true
-        bind: {create_host_path: false}
-      - ./runtime/flyway.conf:/flyway/conf/joker.conf:ro
-    command: ["-configFiles=/flyway/conf/joker.conf", "migrate"]
-
   api:
     platform: linux/amd64
     restart: unless-stopped
-    network_mode: service:redis-link
+    networks: [panel]
     environment:
+      JOKER_REDIS_CONFIG: /srv/redis.json
       JOKER_CONFIG: /srv/config/api.properties
       JAVA_TOOL_OPTIONS: "-Xms128m -Xmx768m"
-    image: ${IMAGE_PREFIX:?Run tools/configure.py}-api:${IMAGE_TAG:?Image tag required}
-    depends_on:
-      flyway: {condition: service_completed_successfully}
-      redis-link: {condition: service_healthy}
+    image: ${IMAGE_PREFIX:-ghcr.io/jacqueshuang8192/joker}-api:${IMAGE_TAG:?Image tag required}
+    ports:
+      - "${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080"
+      - "${GAME_BIND:-127.0.0.1}:4700:4700"
+      - "${GAME_BIND:-127.0.0.1}:13600:13600"
     volumes:
+      - ./runtime/redis.json:/srv/redis.json:ro
       - ./runtime/api.properties:/srv/config/api.properties:ro
       - uploads:/srv/uploads
     healthcheck:
@@ -35,6 +31,53 @@ services:
       timeout: 5s
       retries: 6
       start_period: 60s
+
+  user:
+    <<: *native
+    command: [user, -h, 127.0.0.1, -p, "7500", -s, "1", -m, "500000"]
+    volumes:
+      - ./runtime/redis.json:/srv/redis.json:ro
+      - ./runtime/user.ini:/srv/user/conf/config.ini:ro
+  data:
+    <<: *native
+    command: [data, -h, 127.0.0.1, -p, "6001", -s, "0"]
+    volumes:
+      - ./runtime/redis.json:/srv/redis.json:ro
+      - ./runtime/data.xml:/srv/data/bin/config.xml:ro
+  alloc:
+    <<: *native
+    command: [alloc, -p, "11603", -l, "302", -s, "63", -u, "4", -m, "400", -d]
+    volumes:
+      - ./runtime/redis.json:/srv/redis.json:ro
+      - ./runtime/alloc.xml:/srv/alloc/bin/server.xml:ro
+      - ./runtime/alloc.ini:/srv/alloc/bin/config.ini:ro
+      - ./runtime/game.ini:/srv/alloc/bin/GameServer.ini:ro
+  douniu:
+    <<: *native
+    depends_on:
+      alloc: {condition: service_healthy}
+    command: [douniu, -p, "13600", -s, "1802", -l, "302", -d]
+    volumes:
+      - ./runtime/redis.json:/srv/redis.json:ro
+      - ./runtime/douniu.xml:/srv/douniu/bin/server.xml:ro
+  gold:
+    <<: *native
+    profiles: [gold]
+    command: [gold, -h, 127.0.0.1, -p, "6005", -s, "0"]
+    volumes:
+      - ./runtime/redis.json:/srv/redis.json:ro
+      - type: bind
+        source: ./runtime/gold.xml
+        target: /srv/gold/bin/config.xml
+        read_only: true
+        bind: {create_host_path: false}
+  hall-4700:
+    <<: *native
+    command: [hall, -p, "4700", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
+    volumes:
+      - ./runtime/redis.json:/srv/redis.json:ro
+      - ./runtime/hall-config.xml:/srv/hall/conf/config.xml:ro
+      - ./runtime/hall-server.xml:/srv/hall/conf/server.xml:ro
 
 networks:
   panel:

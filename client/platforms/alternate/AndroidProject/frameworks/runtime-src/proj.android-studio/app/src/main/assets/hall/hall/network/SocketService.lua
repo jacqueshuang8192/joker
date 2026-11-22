@@ -22,9 +22,9 @@ function SocketService:ctor(name, protocol,isChat_Msg)
 
     self.name_ = name
     self.protocol_ = protocol
-    self.parser_ = PacketParser.new(protocol.CONFIG.SERVER, self.name_,self.isChat_Msg)
+    self.isChat_Msg = isChat_Msg
+    self.parser_ = PacketParser.new(protocol.CONFIG.SERVER, self.name_, self.isChat_Msg)
     self.log = bm.Logger.new(name)
-    self.isChat_Msg=isChat_Msg
 end
 
 function SocketService:setProtocol(protocol)
@@ -128,27 +128,24 @@ function SocketService:onConnectFailure(evt)
 end
 
 function SocketService:onData(evt)
-    if isShowNetLog and not self.isChat_Msg then
-        --todo
-         print("socket receive raw data:", cc.utils.ByteArray.toString(evt.data, 16))
+    local tracePackets = isShowNetLog and not self.isChat_Msg
+    if tracePackets then
+        print("socket receive raw data:", cc.utils.ByteArray.toString(evt.data, 16))
     end
-   
+
     local buf = cc.utils.ByteArray.new(cc.utils.ByteArray.ENDIAN_LITTLE)
     buf:writeBuf(evt.data)
     buf:setPos(1)
     local success, packets = self.parser_:read(buf)
     if not success then
         self:dispatchEvent({name=SocketService.EVT_ERROR})
-    else
-        for i, v in ipairs(packets) do
-            --self.log:debugf("[====PACK====][%x][%s]\n==>%s", v.cmd, table.keyof(self.protocol_, v.cmd), json.encode(v))
-            if v.cmd~=272 and not self.isChat_Msg then
-                --todo
-                print("NEO[====PACK====][%x][%s]\n==>%s", v.cmd, table.keyof(self.protocol_, v.cmd), json.encode(v))
-            end
-            
-            self:dispatchEvent({name=SocketService.EVT_PACKET_RECEIVED, data=v})
+        return
+    end
+    for _, packet in ipairs(packets) do
+        if tracePackets and packet.cmd ~= 272 then
+            print("socket receive packet:", packet.cmd, json.encode(packet))
         end
+        self:dispatchEvent({name=SocketService.EVT_PACKET_RECEIVED, data=packet})
     end
 end
 

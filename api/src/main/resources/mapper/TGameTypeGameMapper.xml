@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TGameTypeGameMapper">
+<mapper namespace="com.j.joker.mapper.TGameTypeGameMapper">
 
 
-	<select id="selectByAgentId" resultType="com.hbi.vo.response.user.GameTypeGameVo">
+	<select id="selectByAgentId" resultType="com.j.joker.vo.response.user.GameTypeGameVo">
 		SELECT
 		t_game_type_game.game_type_id AS gameTypeId,
 		t_game_config.content AS
@@ -24,7 +24,7 @@
 		t_game_type_game.game_type_id
 		AND agent_id = #{agentId}
 	</select>
-	<select id="selectByAgent" resultType="com.hbi.vo.response.user.GameTypeGameVo">
+	<select id="selectByAgent" resultType="com.j.joker.vo.response.user.GameTypeGameVo">
 		SELECT
 		t_game_type_game.game_type_id AS gameTypeId,
 		t_game_config.content AS
@@ -58,7 +58,7 @@
 		))GROUP BY game_type_id
 	</select>
 
-	<select id="selectGameTypeByParentId" resultType="com.hbi.model.TGameType">
+	<select id="selectGameTypeByParentId" resultType="com.j.joker.model.TGameType">
 		SELECT
 		*
 		FROM
@@ -81,7 +81,7 @@
 		)
 	</select>
 
-	<select id="selectGameTypeByParentIdByGold" resultType="com.hbi.model.TGameType">
+	<select id="selectGameTypeByParentIdByGold" resultType="com.j.joker.model.TGameType">
 		SELECT
 		gt.id,
 		gt.name,
@@ -107,7 +107,7 @@
 		)
 		)AND gt.game_id=g.game_id and g.is_gold=1
 	</select>
-	<select id="selectGameTypeByAgentId" resultType="com.hbi.model.TGameType">
+	<select id="selectGameTypeByAgentId" resultType="com.j.joker.model.TGameType">
 		SELECT
 		*
 		FROM
@@ -123,7 +123,7 @@
 		)
 	</select>
 
-	<select id="selectGameTypeByAgentIdByGold" resultType="com.hbi.model.TGameType">
+	<select id="selectGameTypeByAgentIdByGold" resultType="com.j.joker.model.TGameType">
 		SELECT
 		gt.id,
 		gt.name,
@@ -143,7 +143,7 @@
 		) AND gt.game_id=g.game_id and g.is_gold=1
 	</select>
 
-	<select id="selectGameTypeByAgent" resultType="com.hbi.model.TGameType">
+	<select id="selectGameTypeByAgent" resultType="com.j.joker.model.TGameType">
 		SELECT
 		*
 		FROM
@@ -173,7 +173,7 @@
 		)
 	</select>
 
-	<select id="selectGameTypeByAgentByGold" resultType="com.hbi.model.TGameType">
+	<select id="selectGameTypeByAgentByGold" resultType="com.j.joker.model.TGameType">
 		SELECT
 		gt.id,
 		gt.name,
@@ -206,7 +206,7 @@
 		)
 		) AND gt.game_id=g.game_id and g.is_gold=1
 	</select>
-	<select id="selectGameTypeByRoomTyper" resultType="com.hbi.model.TGameType">
+	<select id="selectGameTypeByRoomTyper" resultType="com.j.joker.model.TGameType">
 		SELECT
 		*
 		FROM

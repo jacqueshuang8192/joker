@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TActivityUserMapper">
-	<resultMap id="BaseResultMap" type="com.hbi.model.TActivityUser">
+<mapper namespace="com.j.joker.mapper.TActivityUserMapper">
+	<resultMap id="BaseResultMap" type="com.j.joker.model.TActivityUser">
 		<!-- WARNING - @mbggenerated -->
 		<id column="userid" property="userid" jdbcType="BIGINT" />
 		<id column="activity_id" property="activityId" jdbcType="BIGINT" />
@@ -16,7 +16,7 @@
 		<result column="present_chip" property="presentChip" jdbcType="INTEGER" />
 	</resultMap>
 
-	<select id="queryFreeGamePlayers" resultType="com.hbi.cache.model.CacheGameActivityPlayer">
+	<select id="queryFreeGamePlayers" resultType="com.j.joker.cache.model.CacheGameActivityPlayer">
 		select
 		u.userid as userId,
 		u.small_icon as photoUrl,
@@ -25,11 +25,11 @@
 		au.bring_chip as oriCoins,
 		au.present_chip as nowCoins,
 		au.status as status
-		from T_USER u, T_ACTIVITY_USER au
+		from t_user u, t_activity_user au
 		where au.activity_id=#{activityId} and au.userid=u.userid and au.status=1
 	</select>
 
-	<select id="queryAllFreeGamePlayers" resultType="com.hbi.cache.model.CacheGameActivityPlayer">
+	<select id="queryAllFreeGamePlayers" resultType="com.j.joker.cache.model.CacheGameActivityPlayer">
 		select
 		u.userid as userId,
 		u.small_icon as photoUrl,
@@ -38,12 +38,12 @@
 		au.bring_chip as oriCoins,
 		au.present_chip as nowCoins,
 		au.status as status
-		from T_USER u, T_ACTIVITY_USER au
+		from t_user u, t_activity_user au
 		where au.activity_id=#{activityId} and au.userid=u.userid
 	</select>
 
 
-	<select id="selectUserId" resultType="com.hbi.model.TActivityUser">
+	<select id="selectUserId" resultType="com.j.joker.model.TActivityUser">
 		SELECT
 		userid
 		FROM

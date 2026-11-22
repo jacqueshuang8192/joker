@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TFreeGameSingleresultMapper">
-	<resultMap id="BaseResultMap" type="com.hbi.model.TFreeGameSingleresult">
+<mapper namespace="com.j.joker.mapper.TFreeGameSingleresultMapper">
+	<resultMap id="BaseResultMap" type="com.j.joker.model.TFreeGameSingleresult">
 
 		<!-- WARNING - @mbggenerated -->
 
@@ -15,7 +15,7 @@
 		<result column="lose" property="lose" jdbcType="BIGINT" />
 		<result column="level" property="level" jdbcType="INTEGER" />
 	</resultMap>
-	<select id="querySingleResult" resultType="com.hbi.model.TFreeGameSingleresult">
+	<select id="querySingleResult" resultType="com.j.joker.model.TFreeGameSingleresult">
 		SELECT
 		*,
 		(@rank :=@rank + 1) AS rank
@@ -51,7 +51,7 @@
 
 
 	</select>
-	<select id="queryGeRenSingleResult" resultType="com.hbi.model.TFreeGameSingleresult">
+	<select id="queryGeRenSingleResult" resultType="com.j.joker.model.TFreeGameSingleresult">
 		SELECT
 		*
 		FROM
@@ -89,7 +89,7 @@
 		userId=#{userId}
 
 	</select>
-	<select id="queryGeRenSingleResult2" resultType="com.hbi.model.TFreeGameSingleresult">
+	<select id="queryGeRenSingleResult2" resultType="com.j.joker.model.TFreeGameSingleresult">
 		SELECT
 		*
 		FROM

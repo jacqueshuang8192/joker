@@ -18,7 +18,7 @@
 |---|---|---|
 | Java API，`interface_yuan` | 用 JDK 8 从清洁源码目录成功生成 WAR。原工程有 807 个 Java 源文件。部署副本将其中 356 个仅含注释或空行的文件移入 `archive/java/`，其余 451 个保留在 Maven 源码目录。归档 WAR 和重建 WAR 均有 469 个应用 class 文件。 | 历史部署基线为 Tomcat 9。当前部署使用 Spring Boot 可执行 JAR、内嵌 Tomcat 和 Java 23，沿用 `/hbiInterface`。 |
 | 另一份 Java 工程，`Alloc/interface` | 有 806 个 Java 文件。使用当前 Maven 验证原 POM 时因重复声明 `org.apache.httpcomponents:httpmime:4.5` 在模型校验阶段失败。两个接口工程存在内容差异。 | 选用已编译通过且附带可对照 WAR 的 `interface_yuan`。 |
-| 大厅 `CCHallServer` | 核心库、大厅代码和 hiredis 均能重新编译。 | C++ 源码构建，启动 4700–4704 五个实例。 |
+| 大厅 `CCHallServer` | 核心库、大厅代码和 hiredis 均能重新编译。 | C++ 源码构建，默认启动一个实例，监听 TCP 4700。 |
 | 用户 `CCUserServer` | 原依赖目录内的 hiredis 只有库文件。使用同一归档其他模块的 hiredis 源码，处理旧头文件名和编译器兼容性后完成编译。 | C++ 源码构建，监听 7500。 |
 | 数据 `CCMDataServerNew` | reactor、数据服务及 Redis 客户端均能编译。原构建脚本依赖固定安装路径的 MySQL 客户端静态库。 | 从源码构建，链接 AlmaLinux 的 MariaDB C 客户端，连接 MySQL 5.7。 |
 | 金币 `CCGoldUpdateServer` | 能从源码编译。原始运行目录缺少程序要求的 `config.xml`，原总启动脚本也没有启用它。 | 提供可选 profile 及由源码还原的配置示例；正式游戏编号、更新间隔及业务结果须对照线上资料。 |
@@ -43,14 +43,14 @@ V2 的 62 张表使用 `CREATE TABLE IF NOT EXISTS`。列名、类型和索引�
 
 将 71 个通用 Mapper 迁移至 MyBatis-Flex 1.11.8 时，对比了它们实际使用的 70 种实体。迁移前后，每种实体的表名和属性到列名的映射一致。74 份业务 Mapper XML 继续随 JAR 打包。数据库回归在同一 Spring 事务中执行 Flex 和 XML 读写，并在事务结束后验证两者一起回滚。
 
-本次对比也发现，原 V1/V2 未覆盖一部分实体引用。例如积分赠送会写入 `t_gift_point`，反馈会写入 `t_feedback`，赛事逻辑还要读写 `t_activity_user.bring_chip` 和 `present_chip`。这几项在仅执行 V1/V2 的空库中缺失。部署前应与实际业务库核对，148 张表的冒烟结果只覆盖下述表清单和已执行的业务路径。
+V3 补齐了 14 张通用 Mapper 引用的表，覆盖反馈、积分赠送、兑换记录、角色资源等实体。列名和字段类型来自实体及 XML，字符串长度和索引是针对可见读写的兼容定义。V3 还会检查 `t_activity_user` 的两个筹码列，只添加缺少的列。MySQL 5.7.44 空库运行 V1 至 V3 后共 162 张业务表。另一组 V2 升级测试保留了已有反馈表的自定义列、既有筹码列的类型及默认值和测试数据。
 
-以下只读检查使用 Mapper 需要的物理表名，覆盖包括积分流水在内的 7 组分表。无结果表示清单中的表均存在，列和业务数据需另行核验。
+代理账号表另有历史命名差异。V1 的 `t_sec_user` 使用 `secondLayerSellCount`、`grandfatherId`、`createDate`，当前实体默认映射到对应的下划线列名，销售计数 SQL 也使用 `second_layer_sell_count`。只含 V1 字段的库在执行这些读写时会报列不存在。V3 保留了该表，后续统一命名需核对线上数据及其他读写方。
+
+部署后，可以在能访问 1Panel MySQL 的机器上执行以下只读检查。将四个变量设置为面板中该业务库的地址、端口、用户和库名，按提示输入密码。无输出表示检查清单中的表和两列均存在。
 
 ```sh
-docker compose -p shenshou exec -T mysql sh -ec \
-  'MYSQL_PWD="$MYSQL_PASSWORD" exec mysql -h127.0.0.1 -u"$MYSQL_USER" "$MYSQL_DATABASE"' \
-  < tools/check-schema.sql
+mysql -h "$MYSQL_HOST" -P "$MYSQL_PORT" -u "$MYSQL_USER" -p "$MYSQL_DATABASE" < tools/check-schema.sql
 ```
 
 应向项目提供方取回与客户端版本匹配的业务库备份、活动及房间配置、需要的附属服务、牛牛及其他玩法服务源码，并核对发布地址和第三方服务配置。现有静态资料不足以可靠推导这些表的唯一索引、数据约束和初始业务记录。

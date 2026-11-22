@@ -10,11 +10,16 @@ local ViewBaseLayer = require("hall.ViewBaseLayer")
 local LoginLayer = class("LoginLayer", ViewBaseLayer)
 local LoginRegView = require("hall.login.LoginRegView")
 function LoginLayer:show()
-    self.new():addTo(SCENENOW["scene"], 90000)
+    local scene = SCENENOW["scene"]
+    if scene:getChildByName("loginLayer") then return end
+    bm.checknetworking = false
+    USER_INFO, UID, token = {}, nil, nil
+    self.new():addTo(scene, 90000)
 end
 
 function LoginLayer:ctor()
     LoginLayer.super.ctor(self, "hall/res/login/loginLayer.csb")
+    require("hall.login.UsernameView").attach(self)
     self.isCanLogin = true
     -- 设置 name，方便后续查找和移除
     self:setName("loginLayer")
@@ -34,17 +39,13 @@ function LoginLayer:ctor()
 end
 
 function LoginLayer:onClickBtnLogin(sender, event)
+    if device.platform == "windows" then
+        require("hall.tool.viewManager"):showTip({text = "微信登录请使用手机客户端"})
+        return
+    end
     if self.checkBox:isSelected() then
-        if not self.isCanLogin then
-            return
-        end
-
-        if device.platform == "windows" then
-            require("hall.hallScene"):initFinished()
-        else
-            local sigs = {}
-            cct.getDateForApp("wxLogin", {}, "V")
-        end
+        if not self.isCanLogin then return end
+        cct.getDateForApp("wxLogin", {}, "V")
 
         self.isCanLogin = false
         bm.SchedulerPool:delayCall(
@@ -57,13 +58,16 @@ function LoginLayer:onClickBtnLogin(sender, event)
         local paras = {}
         paras.type = 1
         paras.title = "提示"
-        paras.content = "您没没勾选同意游戏协议，不能进入游戏"
+        paras.content = "请先勾选同意游戏协议"
 
         require("hall.tips.CommonTips"):showTips(paras)
     end
 end
 function LoginLayer:onClickBtnPhone(sender, event)
-    LoginRegView.new():addTo(self)
+    if self:getChildByName("phoneForm") then return end
+    local form = LoginRegView.new()
+    form:setName("phoneForm")
+    form:addTo(self)
 end
 
 return LoginLayer

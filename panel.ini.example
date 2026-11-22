@@ -2,6 +2,8 @@
 [deployment]
 network = 1panel-network
 advertise_ip =
+# 公开游戏端口时填 0.0.0.0 或宿主机网卡 IPv4，本机测试填 127.0.0.1。
+game_bind = 127.0.0.1
 image_prefix = ghcr.io/jacqueshuang8192/joker
 tag = main
 

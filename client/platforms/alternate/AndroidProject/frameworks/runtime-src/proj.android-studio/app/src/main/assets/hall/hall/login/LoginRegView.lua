@@ -2,7 +2,7 @@
 local NewViewBaseLayer = require("hall.NewViewBaseLayer")
 local LoginRegView = class("LoginRegView", NewViewBaseLayer)
 
-function LoginRegView:ctor()
+function LoginRegView:ctor(profileOnly)
     LoginRegView.super.ctor(self, "hall/res/login/LoginRegView.csb")
     -- self:registerScriptHandler(
     --     function(state)
@@ -23,8 +23,12 @@ function LoginRegView:ctor()
     self:initData()
     self:initUI()
     self:bindButton()
-    self:initCache()
-    HeadImgUpLoadOK = GameEvent:addListen("HeadImgUpLoadOK", handler(self, self.onUploadOK))
+    if profileOnly then
+        self:switchPanel("register")
+    else
+        self:initCache()
+    end
+    self.uploadListener = GameEvent:addListen("HeadImgUpLoadOK", handler(self, self.onUploadOK))
 end
 
 function LoginRegView:onEnter()
@@ -33,7 +37,10 @@ function LoginRegView:onEnter()
 end
 
 function LoginRegView:onExit()
-    -- GameEvent:delListen(self.event1)
+    if self.uploadListener then
+        GameEvent:delListen(self.uploadListener)
+        self.uploadListener = nil
+    end
 end
 
 function LoginRegView:initData()
@@ -100,7 +107,6 @@ function LoginRegView:initCache()
             end
         end
     end
-    print("self.is_keep_pwd, self.login_phone, self.login_pwd", self.is_keep_pwd, self.login_phone, self.login_pwd)
 end
 
 function LoginRegView:switchPanel(name)
@@ -160,6 +166,12 @@ function LoginRegView:onRegister()
     -- end
     
     -- 发送注册请求
+    if self.submitPhoneProfile then
+        self.submitPhoneProfile(self.register_phone, self.register_pwd, {
+            nickname = self.register_name, sex = self.register_sex, photo = self.register_head
+        })
+        return
+    end
     local register_data = {
         url = HttpAddr .. "/playerUser/quickRegisterByPhone",
         date = {

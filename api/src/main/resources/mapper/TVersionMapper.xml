@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TVersionMapper">
-	<resultMap id="BaseResultMap" type="com.hbi.model.TVersion">
+<mapper namespace="com.j.joker.mapper.TVersionMapper">
+	<resultMap id="BaseResultMap" type="com.j.joker.model.TVersion">
 		<!-- WARNING - @mbggenerated -->
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="type" property="type" jdbcType="CHAR" />
@@ -16,7 +16,7 @@
 		<result column="status" property="status" jdbcType="CHAR" />
 	</resultMap>
 
-	<select id="queryNewestApplicationVersions" resultType="com.hbi.model.TVersion">
+	<select id="queryNewestApplicationVersions" resultType="com.j.joker.model.TVersion">
 		SELECT
 		application_type AS applicationType,
 		version AS version,
@@ -30,7 +30,7 @@
 		type = "1"
 		AND status = "2"
 	</select>
-	<select id="queryVersionByGameIds" resultType="com.hbi.model.TVersion">
+	<select id="queryVersionByGameIds" resultType="com.j.joker.model.TVersion">
 		SELECT
 		v.version AS version,
 		v.update_url AS update_url,
@@ -43,7 +43,7 @@
 		AND g.game_id = #{gameId}
 	</select>
 
-	<select id="queryNewestGameHallVersions" resultType="com.hbi.model.TVersion">
+	<select id="queryNewestGameHallVersions" resultType="com.j.joker.model.TVersion">
 		SELECT
 		version AS version,
 		update_url AS updateUrl,
@@ -57,7 +57,7 @@
 		AND status = "2"
 	</select>
 
-	<select id="queryNewestGameVersionByGameIds" resultType="com.hbi.model.TVersion">
+	<select id="queryNewestGameVersionByGameIds" resultType="com.j.joker.model.TVersion">
 		SELECT
 		game_id as gameId,
 		version AS version,

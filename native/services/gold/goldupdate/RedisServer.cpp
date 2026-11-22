@@ -1,4 +1,5 @@
 #include "RedisServer.h"
+#include <panel_redis.h>
 #include "global.h"
 CRedisServer::CRedisServer()
 {
@@ -18,8 +19,8 @@ int CRedisServer::Connect(const string& ip, int port, string password)
 	m_nPort = port;
 	m_password = password;
 
-	m_pRedisConn = redisConnect(ip.c_str(), port);
-	if (m_pRedisConn->err)
+	m_pRedisConn = connectGameRedis(ip.c_str(), port, m_password.c_str());
+	if (!m_pRedisConn || m_pRedisConn->err)
 	{
 		//ACE_DEBUG((LM_ERROR, ACE_TEXT("Connect Redis Server failed, ip:%s, port:%d\r\n"), ip.c_str(), port));
 		return -1;
@@ -29,12 +30,6 @@ int CRedisServer::Connect(const string& ip, int port, string password)
 		VLogMsg(CLIB_LOG_LEV_DEBUG," Connect Redis Server success, ip:%s, port:%d", ip.c_str(), port);
 	}
 
-	if (m_password.length() > 0)
-	{
-		char szVal[25];
-		sprintf(szVal, "AUTH %s", m_password.c_str());
-		RedisCommand(szVal);
-	}
 	
 	return 0;
 }
@@ -42,17 +37,10 @@ int CRedisServer::Connect(const string& ip, int port, string password)
 int CRedisServer::Reconnect()
 {
 	redisFree(m_pRedisConn);
-	m_pRedisConn = redisConnect(m_strIp.c_str(), m_nPort);
-	if (m_pRedisConn->err)
+	m_pRedisConn = connectGameRedis(m_strIp.c_str(), m_nPort, m_password.c_str());
+	if (!m_pRedisConn || m_pRedisConn->err)
 	{
 		return -1;
-	}
-
-	if (m_password.length() > 0)
-	{
-		char szVal[25];
-		sprintf(szVal, "AUTH %s", m_password.c_str());
-		RedisCommand(szVal);
 	}
 
 	return 0;

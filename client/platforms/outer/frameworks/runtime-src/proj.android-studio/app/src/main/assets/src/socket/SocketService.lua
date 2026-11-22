@@ -22,9 +22,9 @@ function SocketService:ctor(name, protocol,isChat_Msg)
 
     self.name_ = name
     self.protocol_ = protocol
-    self.parser_ = PacketParser.new(protocol.CONFIG.SERVER, self.name_,self.isChat_Msg)
+    self.isChat_Msg = isChat_Msg
+    self.parser_ = PacketParser.new(protocol.CONFIG.SERVER, self.name_, self.isChat_Msg)
     self.log = bm.Logger.new(name)
-    self.isChat_Msg=isChat_Msg
 end
 
 function SocketService:setProtocol(protocol)
@@ -128,29 +128,24 @@ function SocketService:onConnectFailure(evt)
 end
 
 function SocketService:onData(evt)
-    print("===== SocketService:onData 收到原始数据 =====")
-    -- 始终打印原始数据，不管 isShowNetLog 的值
-    print("socket receive raw data:", cc.utils.ByteArray.toString(evt.data, 16))
-   
+    local tracePackets = isShowNetLog and not self.isChat_Msg
+    if tracePackets then
+        print("socket receive raw data:", cc.utils.ByteArray.toString(evt.data, 16))
+    end
+
     local buf = cc.utils.ByteArray.new(cc.utils.ByteArray.ENDIAN_BIG)
     buf:writeBuf(evt.data)
     buf:setPos(1)
-    print("===== 开始解析数据包 =====")
     local success, packets = self.parser_:read(buf)
     if not success then
-        print("===== 数据包解析失败！=====")
         self:dispatchEvent({name=SocketService.EVT_ERROR})
-    else
-        print("===== 解析成功，得到", #packets, "个数据包 =====")
-        for i, v in ipairs(packets) do
-            --self.log:debugf("[====PACK====][%x][%s]\n==>%s", v.cmd, table.keyof(self.protocol_, v.cmd), json.encode(v))
-            -- 始终打印数据包，不管 cmd 的值
-            print("NEO[====PACK====][%x][%s]\n==>%s", v.cmd, table.keyof(self.protocol_, v.cmd), json.encode(v))
-            
-            print("===== 准备分发数据包 =====")
-            self:dispatchEvent({name=SocketService.EVT_PACKET_RECEIVED, data=v})
-            print("===== 数据包分发完成 =====")
+        return
+    end
+    for _, packet in ipairs(packets) do
+        if tracePackets and packet.cmd ~= 272 then
+            print("socket receive packet:", packet.cmd, json.encode(packet))
         end
+        self:dispatchEvent({name=SocketService.EVT_PACKET_RECEIVED, data=packet})
     end
 end
 

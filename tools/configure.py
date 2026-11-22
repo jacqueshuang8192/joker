@@ -26,6 +26,7 @@ def parse_args(root):
         args.image_prefix = args.image_prefix or settings["deployment"]["image_prefix"]
         args.tag = args.tag or settings["deployment"]["tag"]
         args.advertise_ip = args.advertise_ip or ipaddress.IPv4Address(settings["deployment"]["advertise_ip"])
+        args.game_bind = ipaddress.IPv4Address(settings.get("deployment", "game_bind", fallback="127.0.0.1"))
         args.network = settings["deployment"]["network"]
         for section in ("mysql", "mongodb", "redis", "memcached"):
             host = settings[section]["host"]
@@ -100,8 +101,8 @@ def write_runtime_configs(root, runtime, values, redis):
 
 def write_environment(env, args):
     env.write_text("IMAGE_PREFIX={}\nIMAGE_TAG={}\nADVERTISE_IP={}\nPANEL_NETWORK={}\n"
-                   "API_BIND=127.0.0.1\nAPI_PORT=8080\nGAME_BIND=127.0.0.1\n".format(
-                       args.image_prefix, args.tag, args.advertise_ip, args.network))
+                   "API_BIND=127.0.0.1\nAPI_PORT=8080\nGAME_BIND={}\n".format(
+                       args.image_prefix, args.tag, args.advertise_ip, args.network, args.game_bind))
 
 
 def main():

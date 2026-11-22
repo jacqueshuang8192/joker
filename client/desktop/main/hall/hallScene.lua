@@ -147,73 +147,33 @@ end
 
 --进入
 function hallScene:onEnter()
-    print("===== hallScene:onEnter 被调用 =====")
-    --显示加载界面
+    if not USER_INFO or not tonumber(USER_INFO.uid) or tonumber(USER_INFO.uid) <= 0
+        or type(USER_INFO.token) ~= "string" or USER_INFO.token == "" then
+        require(LoginScene_filePath):show()
+        return
+    end
     require("hall.GameCommon"):landLoading(true)
     require("hall.GameCommon"):setLoadingProgress(10)
-    require("hall.GameCommon"):showLoadingTips("正为您准备游戏")
-    
-    dump(USER_INFO, "当前USER_INFO:")
-    
-    -- 检查是否已经登录（有uid和token）
-    if USER_INFO and USER_INFO["uid"] and USER_INFO["token"] then
-        print("===== 用户已登录，直接进入初始化流程 =====")
-        -- 已经登录，直接调用initFinished
-        self:initFinished()
-    else
-        print("===== 用户未登录，走初始化流程 =====")
-        -- 初始化用户数据
-        -- require("hall.hallScene"):initData()
-        self:initData()
-    end
-
-    -- require("ninetysix_poker.src.view.NinetySixGameInfo")
-    -- local game_obj = require("ninetysix_poker.src.view.NinetySixScene").new(true)
-    -- display.replaceScene(game_obj)
-
-    -- local LoginRegView = require("hall.login.LoginRegView")
-    -- LoginRegView.new():addTo(self, 99999)
+    self:initFinished()
 end
 
---初始化用户数据
-function hallScene:initData()
-    require("hall.GameCommon"):showLoadingTips("进入大厅")
-
-    --注册回调函数完成
-    if (cc.PLATFORM_OS_ANDROID == targetPlatform) then
-        cc.Director:getInstance():purgeCachedData()
-        local luaj = require "cocos.cocos2d.luaj"
-        local className = luaJniClass
-        local ok, ret = luaj.callStaticMethod(className, "autoLogin")
-        if not ok then
-            print("exitGame luaj error:", ret)
-        else
-            print("exitGame PLATFORM_OS_ANDROID")
-        end
-    elseif (cc.PLATFORM_OS_IPHONE == targetPlatform) or (cc.PLATFORM_OS_IPAD == targetPlatform) or (cc.PLATFORM_OS_MAC == targetPlatform) then
-        local args = {}
-        local luaoc = require "cocos.cocos2d.luaoc"
-        local className = "CocosCaller"
-        local ok, ret = luaoc.callStaticMethod(className, "autoLogin")
-        if not ok then
-            cc.Director:getInstance():resume()
-            print("exitGame PLATFORM_OS_IPHONE failed")
-        else
-            print("exitGame PLATFORM_OS_IPHONE")
-        end
-    else
-        require("hall.hallScene"):initFinished()
-    end
-end
-
---初始化完成
 function hallScene:initFinished()
     --快速登录标志
     -- bm.isQuickLogin = "1"
 
     --获取用户数据
     require("hall.GameCommon"):showLoadingTips("获取用户信息")
-    require(GameData_filePath):getUserInfo()
+    if USER_INFO.token and USER_INFO.token ~= "" then
+        UID, token = tonumber(USER_INFO.uid), USER_INFO.token
+    else
+        -- Native WeChat sign-in delivers its identity through the platform bridge.
+        require(GameData_filePath):getUserInfo()
+        if not tonumber(UID) or tonumber(UID) <= 0 or type(token) ~= "string" or token == "" then
+            require(LoginScene_filePath):show()
+            return
+        end
+        USER_INFO.uid, USER_INFO.token = tonumber(UID), token
+    end
 
     --开启心跳检测,这里他们要求loginLayer隐藏的时候开始检测心跳。
     --loginLayer显示的时候不检测心跳包

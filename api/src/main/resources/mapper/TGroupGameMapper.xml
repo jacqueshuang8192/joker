@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hbi.mapper.TGroupGameMapper">
+<mapper namespace="com.j.joker.mapper.TGroupGameMapper">
 
-	<select id="queryValidGroupGamesByGameId" resultType="com.hbi.model.TGroupGame">
+	<select id="queryValidGroupGamesByGameId" resultType="com.j.joker.model.TGroupGame">
 		SELECT
 			qg.id AS id,
 			qg.name AS name,
@@ -27,7 +27,7 @@
 		AND g.status = "2"
 	</select>
 
-	<select id="queryAllValidGroupGames" resultType="com.hbi.model.TGroupGame">
+	<select id="queryAllValidGroupGames" resultType="com.j.joker.model.TGroupGame">
 		SELECT
 			qg.id AS id,
 			qg.level AS level,

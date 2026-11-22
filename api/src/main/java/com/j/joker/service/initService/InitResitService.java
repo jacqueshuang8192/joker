@@ -1,0 +1,66 @@
+package com.j.joker.service.initService;
+
+import com.j.joker.core.util.RedisUtil;
+import com.j.joker.core.util.RedisUtil1;
+import com.j.joker.core.util.RedisUtil3;
+import com.j.joker.cache.CacheManager;
+import com.j.joker.cache.ICache;
+import com.j.joker.constants.ClubConstants;
+import com.j.joker.mapper.TPlayerGroupMapper;
+import com.j.joker.model.TPlayerGroup;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.mybatisflex.core.query.QueryWrapper;
+
+import java.util.List;
+
+/**
+ * Create by Mars on 2019/7/20 21:42
+ */
+@Service
+public class InitResitService implements InitializingBean {
+
+    @Autowired
+    private TPlayerGroupMapper playerGroupMapper;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
+        RedisUtil ru = RedisUtil.getRu();
+        RedisUtil3 ru3 = RedisUtil3.getRu();
+        RedisUtil1 ru1 = RedisUtil1.getRu();
+
+        System.out.println("初始化redis锁--》");
+
+        ru.del("WAIT_CLOSE_GROUP_LOCK");
+        ru.del("JIFENPROFIT_LOCK");
+        ru3.del("GAME_RESULT_QUEUE_LOCK");
+        ru.del("USER_POINT_CHANGE_LOCK");
+
+
+        //初始化邀请码
+        try {
+            boolean exist = ru1.exists(ClubConstants.Club_Invite_Code_Set);
+            System.out.println("exist-->" + exist);
+            if (!exist) {
+
+                QueryWrapper query = QueryWrapper.create();
+                List<TPlayerGroup> tPlayerGroups = playerGroupMapper.selectListByQuery(query);
+                System.out.println(tPlayerGroups.size());
+                System.out.println("初始化邀请码---->");
+                for (TPlayerGroup pl: tPlayerGroups) {
+                    ru1.sadd(ClubConstants.Club_Invite_Code_Set,pl.getInviteCode());
+                }
+
+            }
+
+        }catch (Exception e ) {
+            System.out.println(e);
+            System.out.println("初始化邀请码失败--->");
+        }finally {
+
+        }
+
+    }
+}
