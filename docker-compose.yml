@@ -1,6 +1,13 @@
+# 1Panel 部署包的路径部署模式。在部署目录复制 panel.ini.example 为 panel.ini，
+# 填好四项基础服务的连接信息后，执行 python3 tools/configure.py 生成 .env 和 runtime/。
+# 在 1Panel 的「容器 → 编排 → 创建编排 → 路径选择」中选择本文件。
+# 若要直接在面板粘贴编排，请使用 deploy/1panel/docker-compose.yml。
+
+# 共用设置：下方带 <<: *native 的服务复用同一张 C++ 镜像，通过 command 选择进程。
 x-native: &native
   platform: linux/amd64
   restart: unless-stopped
+  # 游戏进程和 api 共用网络，内部服务通过回环地址通信，宿主机端口统一写在 api 下。
   network_mode: service:api
   image: ${IMAGE_PREFIX:-ghcr.io/jacqueshuang8192/joker}-native:${IMAGE_TAG:?Image tag required}
   depends_on:
@@ -8,6 +15,7 @@ x-native: &native
   environment: {JOKER_REDIS_CONFIG: /srv/redis.json}
   security_opt: [no-new-privileges:true]
 services:
+  # Java HTTP 服务：处理客户端登录与业务请求，启动时由内置 Flyway 在游戏库内建表、升级。
   api:
     platform: linux/amd64
     restart: unless-stopped
@@ -18,13 +26,16 @@ services:
       JAVA_TOOL_OPTIONS: "-Xms128m -Xmx768m"
     image: ${IMAGE_PREFIX:-ghcr.io/jacqueshuang8192/joker}-api:${IMAGE_TAG:?Image tag required}
     ports:
+      # HTTP 接口默认只绑定宿主机回环地址，供宿主机反向代理转发 /hbiInterface/。
       - "${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080"
+      # 两个游戏 TCP 端口默认仅本机可达。对外服务时在 .env 设置 GAME_BIND 并放行端口。
       - "${GAME_BIND:-127.0.0.1}:4700:4700"
       - "${GAME_BIND:-127.0.0.1}:13600:13600"
     volumes:
       - ./runtime/redis.json:/srv/redis.json:ro
       - ./runtime/api.properties:/srv/config/api.properties:ro
       - uploads:/srv/uploads
+    # 首页能正常响应后，Compose 才启动依赖 API 健康状态的游戏服务。
     healthcheck:
       test: [CMD, wget, -qO, /dev/null, http://127.0.0.1:8080/hbiInterface/index.html]
       interval: 20s
@@ -32,18 +43,21 @@ services:
       retries: 6
       start_period: 60s
 
+  # 用户服务，内部端口 7500。
   user:
     <<: *native
     command: [user, -h, 127.0.0.1, -p, "7500", -s, "1", -m, "500000"]
     volumes:
       - ./runtime/redis.json:/srv/redis.json:ro
       - ./runtime/user.ini:/srv/user/conf/config.ini:ro
+  # 游戏数据服务，内部端口 6001。
   data:
     <<: *native
     command: [data, -h, 127.0.0.1, -p, "6001", -s, "0"]
     volumes:
       - ./runtime/redis.json:/srv/redis.json:ro
       - ./runtime/data.xml:/srv/data/bin/config.xml:ro
+  # 房间分配服务，内部端口 11603。牛牛启动前会等待它通过健康检查。
   alloc:
     <<: *native
     command: [alloc, -p, "11603", -l, "302", -s, "63", -u, "4", -m, "400", -d]
@@ -52,6 +66,7 @@ services:
       - ./runtime/alloc.xml:/srv/alloc/bin/server.xml:ro
       - ./runtime/alloc.ini:/srv/alloc/bin/config.ini:ro
       - ./runtime/game.ini:/srv/alloc/bin/GameServer.ini:ro
+  # 牛牛游戏进程，玩家通过 TCP 13600 连接。
   douniu:
     <<: *native
     depends_on:
@@ -60,6 +75,7 @@ services:
     volumes:
       - ./runtime/redis.json:/srv/redis.json:ro
       - ./runtime/douniu.xml:/srv/douniu/bin/server.xml:ro
+  # 可选金币更新服务，默认关闭。启用 gold profile 前须准备 runtime/gold.xml。
   gold:
     <<: *native
     profiles: [gold]
@@ -71,6 +87,7 @@ services:
         target: /srv/gold/bin/config.xml
         read_only: true
         bind: {create_host_path: false}
+  # 默认启动一个大厅，玩家通过 TCP 4700 连接。ADVERTISE_IP 填玩家可达的 IPv4。
   hall-4700:
     <<: *native
     command: [hall, -p, "4700", -s, "1", -h, "${ADVERTISE_IP:?Set a client-reachable IPv4 address}", -d]
@@ -79,9 +96,11 @@ services:
       - ./runtime/hall-config.xml:/srv/hall/conf/config.xml:ro
       - ./runtime/hall-server.xml:/srv/hall/conf/server.xml:ro
 
+# 应用加入已有的面板网络。用基础服务的容器名连接时，应确保它们在该网络上可达。
 networks:
   panel:
     external: true
     name: ${PANEL_NETWORK:?Set your 1Panel Docker network}
 volumes:
+  # API 上传文件，升级或重建时保留此卷。
   uploads:
