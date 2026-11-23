@@ -4,9 +4,9 @@
 
 ## 在 1Panel 直接粘贴已发布版本的编排
 
-新建实例可使用[单文件编排](deploy/1panel/docker-compose.yml)。请使用支持 Redis 直连并集成 Flyway 的 `joker-api` 和同次发布的 `joker-native`。Actions 部署包已填好两张镜像的 SHA 标签。直接使用源码中的编排时，需在环境变量区填写该次发布的 `IMAGE_TAG`。在 **容器 → 编排 → 创建编排 → 编辑** 中粘贴全文，在环境变量区填写 `ADVERTISE_IP` 和 `MYSQL_PASSWORD`。按实际情况填写 `PANEL_NETWORK`、`MYSQL_HOST`、`MYSQL_DATABASE`、`MYSQL_USER`、`MONGO_HOST`、`MONGO_USER`、`MONGO_PASSWORD`、`MONGO_AUTH_DATABASE`、`REDIS_HOST`、`REDIS_USER`、`REDIS_PASSWORD` 和 `MEMCACHED_HOST`。四个服务的端口均可配置。首次启动需能访问 GitHub 原始文件和镜像仓库，已验证环境为 Docker Engine 27.3.1 和 Compose 2.29.7。
+新建实例可使用[单文件编排](deploy/1panel/docker-compose.yml)。请选用已内置初始化脚本和配置模板的 `joker-native`，并搭配同次发布的 `joker-api`。Actions 部署包已填好两张镜像的 SHA 标签。直接使用源码中的编排时，需在环境变量区填写该次发布的 `IMAGE_TAG`。在 **容器 → 编排 → 创建编排 → 编辑** 中粘贴全文，在环境变量区填写 `ADVERTISE_IP` 和 `MYSQL_PASSWORD`。按实际情况填写 `PANEL_NETWORK`、`MYSQL_HOST`、`MYSQL_DATABASE`、`MYSQL_USER`、`MONGO_HOST`、`MONGO_USER`、`MONGO_PASSWORD`、`MONGO_AUTH_DATABASE`、`REDIS_HOST`、`REDIS_USER`、`REDIS_PASSWORD` 和 `MEMCACHED_HOST`。四个服务的端口均可配置。镜像拉取后，`prepare` 直接在无网络的容器内生成配置。已验证环境为 Docker Engine 27.3.1 和 Compose 2.29.7。
 
-启动后 `prepare` 成功退出，`api` 在启动期间执行 Flyway 并进入健康状态。备份 `settings`、`uploads` 及数据库。修改连接参数后重新创建整个编排，以便各服务挂载新配置。已有实例请按第 6 节更新，以沿用原有协议密钥、业务配置和数据库历史。此前发布的 `57b281e2` 镜像需要旧版编排。
+启动后 `prepare` 成功退出，`api` 在启动期间执行 Flyway 并进入健康状态。备份 `settings`、`uploads` 及数据库。修改连接参数后重新创建整个编排，以便各服务挂载新配置。已有实例请按第 6 节更新，以沿用原有协议密钥、业务配置和数据库历史。从下载模板的旧版编排升级时，请沿用原编排名和 `settings` 卷，并同时更新编排和镜像标签；旧镜像缺少新版编排使用的初始化脚本。
 
 ## 首次部署，按这三步操作
 

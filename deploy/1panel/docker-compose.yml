@@ -16,7 +16,7 @@ x-native: &native
   restart: unless-stopped
   # 游戏进程和 api 共用网络，内部服务通过回环地址通信，宿主机端口统一写在 api 下。
   network_mode: service:api
-  image: ghcr.io/jacqueshuang8192/joker-native:${IMAGE_TAG:?填写支持Redis直连的发布标签}
+  image: ghcr.io/jacqueshuang8192/joker-native:${IMAGE_TAG:?填写内置初始化脚本的发布标签}
   depends_on:
     api: {condition: service_healthy}
   environment: {JOKER_REDIS_CONFIG: /srv/redis.json}
@@ -24,10 +24,12 @@ x-native: &native
 services:
   # 初始化任务：复用原生镜像，在 settings 卷中准备配置。成功退出后，API 自动启动。
   prepare:
-    image: ghcr.io/jacqueshuang8192/joker-native:${IMAGE_TAG:?填写支持Redis直连的发布标签}
+    image: ghcr.io/jacqueshuang8192/joker-native:${IMAGE_TAG:?填写内置初始化脚本的发布标签}
     platform: linux/amd64
+    # 以 UID 0、GID 0 初始化卷，创建配置文件并设置文件权限。
     user: "0:0"
-    networks: [panel]
+    network_mode: none
+    # 把 settings 持久卷挂到 /settings。prepare 可写，业务服务按需只读挂载其中的文件。
     volumes: [settings:/settings]
     environment:
       # 下方 host 填容器名或可达的内网地址，port 填服务监听端口。
@@ -37,7 +39,7 @@ services:
         network = ${PANEL_NETWORK:-1panel-network}
         advertise_ip = ${ADVERTISE_IP:?填写玩家可达的IPv4地址}
         image_prefix = ghcr.io/jacqueshuang8192/joker
-        tag = ${IMAGE_TAG:?填写支持Redis直连的发布标签}
+        tag = ${IMAGE_TAG:?填写内置初始化脚本的发布标签}
         [mysql]
         host = ${MYSQL_HOST:-mysql}
         port = ${MYSQL_PORT:-3306}
@@ -58,9 +60,8 @@ services:
         [memcached]
         host = ${MEMCACHED_HOST:-memcached}
         port = ${MEMCACHED_PORT:-11211}
-    entrypoint: [python3, /tmp/prepare.py]
-    configs:
-      - {source: prepare-script, target: /tmp/prepare.py}
+    # 初始化脚本和模板随 joker-native 发布，拉取镜像后可在断网环境生成配置。
+    entrypoint: [python3, /opt/joker/panel/prepare.py]
 
   # Java HTTP 服务：处理客户端登录与业务请求，启动时由内置 Flyway 在游戏库内建表、升级。
   api:
@@ -71,7 +72,8 @@ services:
       JOKER_REDIS_CONFIG: /srv/redis.json
       JOKER_CONFIG: /srv/config/api.properties
       JAVA_TOOL_OPTIONS: "-Xms128m -Xmx768m"
-    image: ghcr.io/jacqueshuang8192/joker-api:${IMAGE_TAG:?填写支持Redis直连的发布标签}
+    image: ghcr.io/jacqueshuang8192/joker-api:${IMAGE_TAG:?填写内置初始化脚本的发布标签}
+    # prepare 退出码为 0 后才启动 API。初始化失败时，从 1Panel 查看 prepare 的日志。
     depends_on: {prepare: {condition: service_completed_successfully}}
     ports:
       # HTTP 接口默认只绑定宿主机回环地址，供宿主机反向代理转发 /hbiInterface/。
@@ -150,71 +152,3 @@ volumes:
   settings:
   # API 上传文件，升级或重建时保留此卷。
   uploads:
-
-# prepare 使用的内嵌初始化脚本。首次从 GitHub 下载固定版本的模板并校验摘要；
-# 连接参数变更时重新生成配置，沿用 settings 卷中已有的协议密钥。
-configs:
-  prepare-script:
-    content: |
-      from pathlib import Path
-      from tempfile import TemporaryDirectory
-      from urllib.request import urlopen
-      import hashlib, json, os, runpy
-
-      os.umask(0o077)
-      state = Path("/settings")
-      source = state / "source-57b281e25ff3f7ba155b5f0d08b66539f6370943"
-      if not source.exists():
-          names = """config/alloc.ini.in
-      config/alloc.xml.in
-      config/api.properties.in
-      config/data.xml.in
-      config/douniu.xml.in
-      config/game.ini.in
-      config/gold-example.xml.in
-      config/hall-config.xml.in
-      config/hall-server.xml.in
-      config/user.ini.in
-      tools/configure.py""".split()
-          with TemporaryDirectory(dir=state) as tmp:
-              folder = Path(tmp) / "release"
-              digest = hashlib.sha256()
-              for name in names:
-                  target = folder / name
-                  target.parent.mkdir(parents=True, exist_ok=True)
-                  with urlopen("https://raw.githubusercontent.com/jacqueshuang8192/joker/57b281e25ff3f7ba155b5f0d08b66539f6370943/" + name, timeout=30) as response:
-                      data = response.read()
-                  digest.update(data)
-                  target.write_bytes(data)
-              if digest.hexdigest() != "162c38190e37dd1060239ba3009593c817b72a2afcd85f07dcbbae118b918737":
-                  raise SystemExit("Release file checksum mismatch")
-              folder.rename(source)
-
-      cfg = os.environ["PANEL_INI"]
-      saved = state / "panel.ini"
-      if saved.exists() and saved.read_text() == cfg:
-          print("Settings ready")
-          raise SystemExit(0)
-      with TemporaryDirectory(dir=state) as tmp:
-          work = Path(tmp)
-          (work / "config").symlink_to(source / "config")
-          (work / "panel.ini").write_text(cfg)
-          deploy = runpy.run_path(str(source / "tools/configure.py"))
-          args = deploy["parse_args"](work)
-          values = deploy["configuration_values"](args)
-          keys = state / "keys.json"
-          if keys.exists():
-              values.update(json.loads(keys.read_text()))
-          else:
-              selected = {k: values[k] for k in ("DEFAULT_KEY","SYSTEM_PASSWORD","SIGN_KEY","AGENT_PASSWORD","AES_KEY","MT_KEY")}
-              (work / "keys.json").write_text(json.dumps(selected))
-              (work / "keys.json").replace(keys)
-          deploy["write_runtime_configs"](work, work / "runtime", values, args.settings["redis"])
-          api = work / "runtime/api.properties"
-          api.chmod(0o600)
-          api.write_text(api.read_text().replace("game.round=3", "game.round=1"))
-          api.chmod(0o444)
-          (state / "runtime").mkdir(exist_ok=True)
-          for file in (work / "runtime").iterdir(): file.replace(state / "runtime" / file.name)
-          (work / "panel.ini").replace(saved)
-      print("Settings ready")

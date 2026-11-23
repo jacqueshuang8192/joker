@@ -24,7 +24,7 @@ Actions 工作流会用 JDK 23 从源码生成 Spring Boot 可执行 JAR，在 L
 
 ## 首次部署到 1Panel
 
-部署包提供[可直接粘贴到 1Panel 的独立编排](deploy/1panel/docker-compose.yml)，适合新建实例。使用内置 Flyway 的同次发布镜像，运行配置保存在 `settings` 卷。直接使用源码中的独立编排时须填写该次发布的 `IMAGE_TAG`。仓库根目录的编排用于与源码同次发布的部署包。
+部署包提供[可直接粘贴到 1Panel 的独立编排](deploy/1panel/docker-compose.yml)，适合新建实例。选用同次发布的两张镜像。`joker-native` 自带初始化脚本和模板，`prepare` 在本地生成配置并写入 `settings` 卷，随后由 `joker-api` 执行 Flyway 迁移。直接使用源码中的独立编排时须填写该次发布的 `IMAGE_TAG`。仓库根目录的编排用于与源码同次发布的部署包。
 
 1. 在 1Panel 准备 MySQL、MongoDB、Redis、Memcached 和游戏专用库，解压同版本的部署包到 `/opt/joker`。
 2. 在部署目录复制 `panel.ini.example` 为 `panel.ini`，填写网络、玩家可达的 IPv4、游戏端口绑定地址及四项服务的连接信息，再执行 `python3 tools/configure.py && docker compose config --quiet`。GitHub 发布包预填同一版本的镜像标签。

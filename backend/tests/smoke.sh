@@ -30,6 +30,12 @@ s["redis"].update(user="joker_game", password=os.environ["CI_GAME_REDIS_PASSWORD
 s["mongodb"].update(user="mongo_ci", password=os.environ["CI_MONGO_PASSWORD"])
 with open("panel.ini", "w") as f: s.write(f)
 PYCONFIG
+# Verify that the published native image can initialize 1Panel settings without network access.
+PANEL_INI="$(cat panel.ini)" docker run --rm --network none --user 0:0 --tmpfs /settings \
+  -e PANEL_INI --entrypoint sh "$PREFIX-native:$TAG" -ec '
+    python3 /opt/joker/panel/prepare.py
+    test -s /settings/runtime/api.properties && test -s /settings/runtime/hall-server.xml
+  '
 python3 tools/configure.py
 cp runtime/gold-example.xml runtime/gold.xml
 cat > local.yml <<'YAML'

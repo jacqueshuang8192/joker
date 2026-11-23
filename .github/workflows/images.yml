@@ -42,9 +42,9 @@ jobs:
           tag="sha-${GITHUB_SHA}"
           echo "PREFIX=$prefix" >> "$GITHUB_ENV"
           echo "TAG=$tag" >> "$GITHUB_ENV"
-          for kind in api native; do
-            docker build --platform linux/amd64 --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" --label "org.opencontainers.image.revision=$GITHUB_SHA" -t "$prefix-$kind:$tag" "backend/$kind"
-          done
+          build=(docker build --platform linux/amd64 --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" --label "org.opencontainers.image.revision=$GITHUB_SHA")
+          "${build[@]}" -t "$prefix-api:$tag" backend/api
+          "${build[@]}" -f backend/native/Dockerfile -t "$prefix-native:$tag" .
           docker run --rm --entrypoint java "$prefix-api:$tag" -version
       - name: Smoke test the stack on a fresh database
         run: bash backend/tests/smoke.sh
@@ -72,7 +72,7 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           sed -i -e "s|^image_prefix = .*|image_prefix = $PREFIX|" -e "s/^tag = main$/tag = $TAG/" panel.ini.example
-          sed -i 's/${IMAGE_TAG:?填写支持Redis直连的发布标签}/'"$TAG"'/g' deploy/1panel/docker-compose.yml
+          sed -i 's/${IMAGE_TAG:?填写内置初始化脚本的发布标签}/'"$TAG"'/g' deploy/1panel/docker-compose.yml
           tar czf 1panel-deploy.tar.gz docker-compose.yml deploy/1panel/docker-compose.yml panel.ini.example config tools/configure.py tools/check-schema.sql README.md AUDIT.md DEPLOYMENT.md
       - uses: actions/upload-artifact@v7.0.2
         if: github.event_name != 'pull_request'

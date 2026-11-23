@@ -1,0 +1,10 @@
+**
+!backend/native/
+!backend/native/**
+!config/
+!config/*.in
+!tools/
+!tools/configure.py
+!tools/prepare.py
+**/.DS_Store
+**/__pycache__/

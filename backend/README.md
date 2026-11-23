@@ -15,6 +15,10 @@
 | 后端联调 | [tests](tests/) 在独立的 Compose 环境中检查迁移、登录、JSP 和游戏服务 |
 | 历史源码 | [archive/java](archive/java/) 保存停用的 Java 文件，[archive/examples](archive/examples/) 保存旧 Jetty 启动与调试示例 |
 
+## 本地构建原生镜像
+
+在仓库根目录执行 `docker build --platform linux/amd64 -f backend/native/Dockerfile -t joker-native:local .`。构建使用同一提交的 C++ 代码、`config/*.in` 模板和面板配置生成脚本。
+
 ## 本地运行 Java API
 
 使用 JDK 23 和 Maven，在仓库根目录执行下列命令。先准备好 `runtime/api.properties`（生成方式见[部署手册](../DEPLOYMENT.md)），并确保配置中的 MySQL、Redis 和其他业务服务可达。Spring Boot 启动时会校验历史记录并执行 JAR 内待应用的 Flyway 迁移。
