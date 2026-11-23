@@ -1,24 +1,29 @@
+; 用户服务旧版文件日志配置：依次为日志目录、保留文件数、单文件大小（字节）和日志级别。
 [LOG]
 LOGDIR=../log
 LOGNUM=10
 LOGSIZE=10485760
 LOGLEVEL=7
 
+; 用户服务的随机计数参数。RANDCOUNT 为随机数取模上限，应大于零；ADDCOUNT 为附加计数。
 [LEVELCOUNT]
 RANDCOUNT=200
 ADDCOUNT=0
 
+; 统计服务的主机和端口。SWITCH 为开关，0 表示关闭；INTEVAL 为旧版间隔字段，保留原拼写。
 [TJSvr]
 HOST=127.0.0.1
 PORT=6500
 SWITCH=0
 INTEVAL=60
 
+; 用户服务的 Redis 兼容配置。1Panel 运行时由 redis.json 提供实际地址、用户名及密码。
 [RedisServer]
 HOST=127.0.0.1
 PORT=6379
 PASSWORD=
 
+; 缓存用户服务按服务编号选择对应段。下面十组均配置同一内部端点，默认编排中没有单独的 7700 服务。
 [CcacheUserSvr_0]
 HOST=127.0.0.1
 PORT=7700
@@ -59,16 +64,19 @@ PORT=7700
 HOST=127.0.0.1
 PORT=7700
 
+; 广播服务的内部端点；SWITCH 为 0 时关闭广播连接。
 [BROADCASTSERVER]
 HOST=127.0.0.1
 PORT=9002
 SWITCH=0
 
+; 服务缓存和在线状态缓存分别使用下方两个地址，默认共用面板的 Memcached 实例。
 [MEMCACHED]
 SERVER_MC=@MEMCACHED_HOST@:@MEMCACHED_PORT@
 ONLINE_MC=@MEMCACHED_HOST@:@MEMCACHED_PORT@
 
 
+; 场次编号清单。COUNT 是条目数，其后的编号从 1 起连续排列。
 [LEVELINFO]
 COUNT=8
 LEVEL1=21
@@ -80,6 +88,7 @@ LEVEL6=16
 LEVEL7=40
 LEVEL8=41
 
+; 场次分组。COUNT 是分组数，TYPE 为类型编号，每组的 COUNT 和 LEVEL 条目列出该类型包含的场次。
 [LEVELTYPE]
 COUNT=2
 

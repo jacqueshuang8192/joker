@@ -1,8 +1,10 @@
+; 房间分配服务使用的 GameServer.ini。下方是用户服务的内部主机和端口。
 [UserSvr]
 
 HOST=127.0.0.1
 
 PORT=7500
+; 数据服务路由。ServerCount 指定地址条目数，后缀从 0 开始；默认十条路由共用 data 的 6001 端口。
 [MemDataServer]
 ServerCount=10
 MemDataServer_0=127.0.0.1:6001
@@ -19,6 +21,7 @@ MemDataServer_9=127.0.0.1:6001
 
 
 
+; 关闭私人房时请求 Java API。URL 和 PORT 为内部主机与端口，REQUEST 中的 %s 会替换为房间邀请码。
 [BackStageServer]
 URL=127.0.0.1
 REQUEST=/hbiInterface/closeFreeGame?inviteCode=%s

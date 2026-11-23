@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 可选的金币更新服务样例。核对游戏编号、数据库和更新周期后，另存为运行目录下的 gold.xml，再启用 gold。 -->
 <SYSTEM>
+  <!-- GameID 和 ServerType 标识游戏与服务类型。MemServerIP、MemServerPort 和 password 为 Redis 兼容连接参数。 -->
+  <!-- 更新间隔 UpdateInteval 以秒为单位，保留程序读取的原拼写。面板 Redis 的连接信息来自 redis.json。 -->
   <GAME GameID="0" ServerType="0" MemServerIP="127.0.0.1" MemServerPort="6379" UpdateInteval="60" password="">
+    <!-- 金币更新服务的日志级别。 -->
     <Log level="1"/>
+    <!-- MySQL 连接参数由面板生成。dbName 为库名，tableName 为游戏数据表名，dbNum、tableNum 为库数和表数配置。 -->
     <DBList>
       <DB ip="@DB_HOST@" port="@DB_PORT@" user="@DB_USER@" pwd="@DB_PASSWORD@" tableName="bullfight_gameinfo" dbName="@DB_NAME@" dbNum="1" tableNum="10"/>
     </DBList>

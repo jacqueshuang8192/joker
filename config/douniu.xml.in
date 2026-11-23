@@ -1,20 +1,31 @@
 <?xml version='1.0' encoding='utf-8'?>
+<!-- 预编译牛牛进程的 server.xml，服务间地址使用容器共享的回环网络。 -->
 <SYSTEM>
+    <!-- 游戏服务本地地址、用户操作日志开关、日志目录和同 IP 限制参数。 -->
     <GameServer ip="127.0.0.1" nEnableLogUserOp="1" logdir="../log/" nSameIPLimit="0" />
+    <!-- redisId 为逻辑连接编号。牛牛通过本进程的本地转接访问面板 Redis，此处应保留回环地址。 -->
     <RedisList>
         <Redis redisId="0" ip="127.0.0.1" port="6379" />
         <Redis redisId="1" ip="127.0.0.1" port="6379" />
         <Redis redisId="2" ip="127.0.0.1" port="6379" />
     </RedisList>
+    <!-- 广播服务的内部端点，默认编排未提供独立广播进程。 -->
     <BCastServer ip="127.0.0.1" port="9002" />
+    <!-- 数据服务的内部端点，对应 data 的 6001 端口。 -->
     <CMDataServer ip="127.0.0.1" port="6001" />
+    <!-- 道具服务的内部端点，启用相关业务时需有对应服务。 -->
     <CPropServer ip="127.0.0.1" port="6101" />
+    <!-- 日志服务的内部端点，与道具端点分别配置。 -->
     <LogServer ip="127.0.0.1" port="6101" />
+    <!-- MySQL 连接参数由面板生成。dbName 为库名，tableName 为游戏数据表名，dbNum、tableNum 为库数和表数配置。 -->
     <DB ip="@DB_HOST@" port="@DB_PORT@" user="@DB_USER@" pwd="@DB_PASSWORD@" tableName="bullfight_gameinfo" dbName="@DB_NAME@" dbNum="1" tableNum="10" />
+    <!-- RegionID 为游戏通信协议中的区域编号。 -->
     <PROTO RegionID="0" />
+    <!-- Level 为牛牛场次编号，AllocServer 指向负责该场次的分配服务。 -->
     <ROOM>
         <Level value="302" />
         <AllocServer ip="127.0.0.1" port="11603" />
     </ROOM>
+    <!-- 房间玩家人数上限参数。 -->
     <MaxPlayerCount value="3" />
 </SYSTEM>

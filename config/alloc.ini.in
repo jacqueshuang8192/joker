@@ -1,3 +1,4 @@
+; 房间分配服务使用的用户服务地址表。ServerCount 对应编号 0 至 9 的条目数，目前都指向同一个 user 进程。
 [UserServer]
 ServerCount=10
 UserServer_0=127.0.0.1:7500
@@ -11,13 +12,16 @@ UserServer_7=127.0.0.1:7500
 UserServer_8=127.0.0.1:7500
 UserServer_9=127.0.0.1:7500
 
+; 服务缓存地址由 1Panel 的 Memcached 主机和端口生成。
 [MEMCACHED]
 SERVER_MC=@MEMCACHED_HOST@:@MEMCACHED_PORT@
 
+; 原生程序的 Redis 兼容地址。面板部署时，启动器从 redis.json 传入实际地址和认证信息。
 [SERVER_REDIS]
 HOST=127.0.0.1
 PORT=6379
 
+; 私人房服务编号映射。COUNT 为映射对数，相同后缀的 SID 与 SID_MAPPED 分别为原编号和映射后的编号。
 [PRIVATEROOM_SID_MAP]
 COUNT=11
 SID1=1001
@@ -43,6 +47,7 @@ SID_MAPPED10=30
 SID11=31001
 SID_MAPPED11=621
 
+; 私人房可选底注。COUNT 为档位数，从 BASECHIP1 起依次列出。
 [PRIVATEROOM_BASECHIP]
 COUNT=5
 BASECHIP1=100
@@ -51,6 +56,7 @@ BASECHIP3=500
 BASECHIP4=1000
 BASECHIP5=5000
 
+; 双倍底注模式的独立档位列表，按 COUNT 读取。
 [PRIVATEROOM_DOUBLE_BASECHIP]
 COUNT=4
 BASECHIP1=10000
@@ -59,10 +65,13 @@ BASECHIP3=100000
 BASECHIP4=200000
 
 
+; 房间列表的数量上限。COUNT 用于普通私人房，LOVEGIRL_COUNT 用于旧版 LOVEGIRL 房间列表。
 [PRIVATEROOM_MAX_LIST]
 COUNT=10
 LOVEGIRL_COUNT=50
 
+; 私人房收费与门槛。COUNT 为档位数，同一数字后缀的字段属于同一档。
+; 按原生结构定义，BASE_CHIP 为底注，LOW_MONEY 为出局金币数，TABLE_COST 为台费，OUT_MONEY 为最低入场金币数。
 [PRIVATEROOM]
 COUNT=4
 BASE_CHIP_1=100

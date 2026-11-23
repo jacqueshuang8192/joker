@@ -1,10 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
+<!-- 大厅运行配置。LogDir 为日志目录，LogLevel 为级别，AccessLog 控制访问日志。 -->
+<!-- MaxFdCount 为轮询的文件描述符上限，MaxListenCount 为监听队列长度；WebTimeout 和 HelperTimeout 分别用于客户端及内部服务连接。 -->
+<!-- HARedisServer 和 HARedisPort 用于登记大厅地址。面板部署使用 redis.json 的连接信息；KEY 与 API 的 protocol.mtKey 配套。 -->
 <SYSTEM LogDir="../log/" LogLevel="0" AccessLog="0" MaxFdCount="10000" WebTimeout="60" HelperTimeout="5" MaxListenCount="1000" HARedisServer="127.0.0.1" HARedisPort="6379" KEY="@MT_KEY@">
+    <!-- ip 由面板 ADVERTISE_IP 填入，须让玩家可达；port 为大厅端口，MaxClient 为模板中的客户端数量上限。 -->
     <ServerInfo>
         <ip>@ADVERTISE_IP@</ip>
         <port>4700</port>
         <MaxClient>1000</MaxClient>
     </ServerInfo>
+    <!-- 大厅的数据库连接信息由面板填写，依次为主机、端口、账号、密码和库名。 -->
     <DBInfo>
         <ip>@DB_HOST@</ip>
         <port>@DB_PORT@</port>
@@ -12,6 +17,7 @@
         <password>@DB_PASSWORD@</password>
         <database>@DB_NAME@</database>
     </DBInfo>
+    <!-- 旧日志服务的内部地址与端口。 -->
     <LogServer>
         <ip>127.0.0.1</ip>
         <port>6101</port>

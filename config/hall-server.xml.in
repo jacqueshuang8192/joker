@@ -1,13 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
+<!-- 大厅的游戏路由与内部服务清单。 -->
 <SYSTEM>
+    <!-- GameID 标识游戏节点，ServerList 列出该节点对应的后端服务。 -->
     <Node>
         <GameID gameID="1" />
         <ServerList>
+              <!-- svid 为服务编号，level 为场次编号；ip 和 port 指向房间分配服务。 -->
               <Server svid="1" level="302" ip="127.0.0.1" port="11603" />
         </ServerList>
     </Node>
+    <!-- 广播服务的内部端点，默认编排未提供独立广播进程。 -->
     <BroadCastServer ip="127.0.0.1" port="9002" />
+    <!-- 数据服务的内部端点，对应 data 的 6001 端口。 -->
     <CMDataServer ip="127.0.0.1" port="6001" />
+    <!-- 道具服务的内部端点，启用相关业务时需有对应服务。 -->
     <CPropServer ip="127.0.0.1" port="6101" />
+    <!-- 日志服务的内部端点，与道具端点分别配置。 -->
     <LogServer ip="127.0.0.1" port="6101" />
 </SYSTEM>

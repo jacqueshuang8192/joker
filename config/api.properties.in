@@ -1,68 +1,99 @@
+# Java API 业务库及 Flyway 使用的 JDBC 连接。主机、端口、库名及下方账号密码由面板参数生成。
 jdbc.url=jdbc:mysql://@DB_HOST@:@DB_PORT@/@DB_NAME@?useUnicode=true&characterEncoding=UTF-8&useSSL=false
 jdbc.user=@DB_USER@
 jdbc.password=@DB_PASSWORD@
+# Redis 兼容连接参数。port、port1、port3 分别供不同业务客户端使用；1Panel 部署优先读取 redis.json。
 redis.ip=127.0.0.1
 redis.port=6379
 redis.port1=6379
 redis.port3=6379
 redis.password=
+# 支付渠道选择，可用值包括 qilin、shanyun、mazhifu、junfutong。启用哪个渠道，就填写其对应参数。
 payChannel=
+# 骏付通渠道的应用编号和商户密钥。
 jft.pay.yingyongnum=
 jft.pay.key=
+# 闪云渠道：商户编号、买方参数（byuer 为原键名）、异步通知地址、页面返回地址、签名密钥及下单地址。
 shanyun.merchantId=
 shanyun.byuer=
 shanyun.notifyUrl=
 shanyun.returnUrl=
 shanyun.secretKey=
 shanyun.postUrl=
+# 码支付渠道：令牌、支付账号、异步通知地址、页面返回地址及通信密钥。
 mazhifu.token=
 mazhifu.codepayId=
 mazhifu.notify_url=
 mazhifu.return_url=
 mazhifu.tongxunkey=
+# 麒麟渠道：商户账号、异步通知地址、页面返回地址及令牌。
 qilin.uid=
 qilin.notify_url=
 qilin.return_url=
 qilin.Token=
+# 对象存储服务端点和访问凭据。accessExpiration 为授权有效期配置，bucketName.replay 为回放存储桶，domain 为资源访问域名。
 oss.endpoint=
 oss.accessKeyId=
 oss.accessKeySecret=
 oss.accessExpiration=
 oss.bucketName.replay=
 oss.domain=
+# 战绩处理流程的 OSS 上传开关。设为 yes 时启用，默认 0 表示关闭。
 isupload2OSS=0
+# 邀请二维码的链接前缀；domain 是返回给俱乐部客户端的域名。
 mlink=
 domain=
+# 房卡充值佣金处理模式。设为 1 时写入 Redis 供后台处理。
 commission.type=1
+# 联盟房间的会员检查。设为 1 时，非该联盟的会员无法加入。
 feiqunchengyuanjiaru=1
+# 群主房卡扣费选项，设为 1 时相关房卡流程按群主处理。
 curGroupMasterRoomCard=1
+# 机器人玩法编号列表（逗号分隔）及桌数配置。
 robotGames=302,303,304,305,368,360
 robotTables=1
+# 俱乐部游戏配置数量上限。
 maxGameConfigCount=8
+# 使用默认玩法开桌的百人场场次清单。对应配置键由 BanRenGamesConfig 加场次编号组成。
 BanRenGames=373
+# 场次 373 的默认开桌参数；round 为局数，baseChip 为底注，json 中为该玩法的详细规则。
 BanRenGamesConfig373={"baseChip":1,"gameId":373,"gameType":113,"json":{"maxSeatCount":"100","readyPoint":50000,"joinGamePoint":200000,"oneOrAll":2,"rateOrConstant":1,"round":10,"cardCount":0,"additionalPoint":0,"profitLimit":0,"profit":2,"profitType":0,"baseChip":1},"level":373,"name":"\u7EC4\u5C40","others":0,"round":10}
+# MySQL JDBC 驱动的 Java 类名。
 jdbc.driverClass=com.mysql.cj.jdbc.Driver
+# IP 地区与经纬度查询使用的本地数据文件路径；my.baidu.ak 为百度地图接口密钥。
 IPFILE=/srv/geo/ip.txt
 JWDFILE=/srv/geo/GeoLiteCity.dat
 my.baidu.ak=
+# 上传文件在容器中的目录、图片后缀，以及图片对外访问地址。
 upload.src=/srv/uploads
 upload.image.suffix=.png
 image.http=
+# MongoDB 连接串由面板生成，包含业务库、认证库及配置的账号信息。
 mongodb.uri=@MONGO_URI@
+# 业务缓存实现及兼容的连接地址、端口。当前缓存实现为 redis。
 cache.type=redis
 cache.url=127.0.0.1
 cache.port=6379
+# Java 调用原生数据服务的内部 TCP 地址和端口。
 game.ip=127.0.0.1
 game.port=6001
+# Java 调用大厅的内部 TCP 地址和端口。
 hall.ip=127.0.0.1
 hall.port=4700
+# 调度服务的 HTTP 主机地址，用于更新动态任务。
 schedule.ip=127.0.0.1
+# 玩家登录令牌的有效时间，单位为秒。
 tokenExpireTime=3600
+# 分布式 ID 生成器的工作节点编号。
 idGenerator.no=1
+# 下发大厅地址时使用的轮询数量。当前只部署一个大厅，取 1。
 game.round=1
+# 财富榜刷新计划的 Cron 配置，表达式表示每半小时一次。
 goldranking.update.time=0 0/30 * * * ?
+# 排行榜数据来源。模式 1 从 Redis 读取金币；模式 2 按数据库积分排名，rankNum 控制查询条数。
 rankType=1
 rankNum=10
+# 内部用户服务地址。port0 至 port9 是十个路由端口配置，默认共用同一实例的 7500 端口。
 userServer.ip=127.0.0.1
 userServer.port0=7500
 userServer.port1=7500
@@ -74,20 +105,30 @@ userServer.port6=7500
 userServer.port7=7500
 userServer.port8=7500
 userServer.port9=7500
+# 房卡任务的 Cron 配置，当前表达式为每天 11 时 22 分。
 Scheduled.cardRepart=0 22 11 * * ?
+# 业务签名使用的密钥，由初始化程序生成。
 mySign=@SIGN_KEY@
+# 旧短信渠道的账号、密码与验证码有效期配置。
 sms.id=
 sms.pwd=
 sms.effectiveTime=
+# 个推消息推送服务地址。
 getui.url=
+# 微信应用的 AppID 和密钥。
 weixin.AppId=
 weixin.appsecret=
+# 微信小程序的 AppID 和密钥。
 WXXCX.AppId=
 WXXCX.appsecret=
+# 短信发送接口的模板编号和应用密钥。
 sms.tpl_id=
 sms.APPKEY=
+# 客户端与服务端协议凭据。初始化时生成，接入已有客户端时须与配套版本一致；mtKey 同时用于大厅。
 protocol.defaultKey=@DEFAULT_KEY@
 protocol.aesKey=@AES_KEY@
 protocol.mtKey=@MT_KEY@
+# 系统访问密码，由初始化程序生成。
 system.password=@SYSTEM_PASSWORD@
+# 旧代理开户流程使用的初始密码，由初始化程序生成。
 agent.initialPassword=@AGENT_PASSWORD@

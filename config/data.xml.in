@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 数据服务 data 使用的配置，可按游戏组织 Redis 和 MySQL 连接。 -->
 <SYSTEM>
+  <!-- GameID 标识游戏，ServerType 标识服务类型。 -->
   <GAME GameID="0" ServerType="0">
+    <!-- 数据服务的日志级别。 -->
     <Log level="1"/>
+    <!-- svid 标识 Redis 配置条目。1Panel 部署通过 redis.json 指定实际连接。 -->
     <RedisList>
       <Redis svid="1" ip="127.0.0.1" port="6379"/>
     </RedisList>
+    <!-- MySQL 连接参数由面板生成。dbName 为库名，tableName 为游戏数据表名，dbNum、tableNum 为库数和表数配置。 -->
     <DBList>
       <DB ip="@DB_HOST@" port="@DB_PORT@" user="@DB_USER@" pwd="@DB_PASSWORD@" dbName="@DB_NAME@" tableName="bullfight_gameinfo" dbNum="1" tableNum="10"/>
     </DBList>
