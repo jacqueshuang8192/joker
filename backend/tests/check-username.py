@@ -41,3 +41,20 @@ assert hall["data"]["mtKey"] and int(hall["data"]["hall"]["port"]) == 4700
 catalog = post("/gold/getGameTypeByRoomType", identity, form=True)
 assert catalog["returnCode"] == "0" and isinstance(catalog["data"], dict)
 print("Verified unique registration, credentials, player session and hall bootstrap")
+
+assert len(hall["data"]["douniuKey"]) == 64
+routes = [
+    ("/goods/queryGoodsList", {"type": "1"}, lambda data: isinstance(data["list"], list)),
+    ("/goods/queryExchangeHistory", {}, lambda data: isinstance(data, list)),
+    ("/task/getTaskList", {}, lambda data: isinstance(data, dict)),
+    ("/gold/getGoldRanking", {}, lambda data: isinstance(json.loads(data), list)),
+]
+for path, params, shape in routes:
+    response = post(path, {**identity, **params}, form=True)
+    assert response["returnCode"] == "0" and shape(response["data"]), path
+    assert post(path, {**identity, **params, "XYToken": "expired"}, form=True)["returnCode"] != "0"
+rounds = "/freeGame/querRoundsByActivityId"
+assert post(rounds, {**identity, "activityId": 851}, form=True)["returnCode"] != "0"
+own = post(rounds, {"XYUid": 851, "XYToken": "ci-rounds", "activityId": 851}, form=True)
+assert own["returnCode"] == "0" and own["data"][0]["content"] == "ci-round"
+print("Verified five authenticated hall reads, response shapes and private round visibility")

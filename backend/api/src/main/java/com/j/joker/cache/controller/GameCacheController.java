@@ -747,6 +747,21 @@ public class GameCacheController {
                 cache.hset(key, s.getId().toString(), JSON.toJSONString(s));
             }
         }
+        if (list.isEmpty()) {
+            // 首装时读取 hall 以 ADVERTISE_IP 发布的地址，不缓存到静态服务器名单。
+            for (String registration : cache.hgetAll("HALLSERVER").values()) {
+                var entry = JSON.parseObject(registration);
+                var hall = new TGameServer();
+                hall.setId(entry.getLong("SVID"));
+                hall.setIp(entry.getString("IP"));
+                hall.setPort(entry.getString("PORT"));
+                hall.setStatus(1);
+                if (hall.getId() != null && StringUtils.isNotBlank(hall.getIp())
+                        && entry.getIntValue("PORT") > 0 && entry.getIntValue("PORT") <= 65535) list.add(hall);
+            }
+            if (list.isEmpty()) throw new IllegalStateException("大厅尚未注册地址");
+        }
+        list.sort(java.util.Comparator.comparing(TGameServer::getId));
         return list;
     }
 

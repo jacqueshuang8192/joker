@@ -365,8 +365,8 @@ function SocketService:buildHeart()
     buf:writeStringBytes("BY")-- 魔数
     buf:writeUShort(1)-- 版本号
     buf:writeInt(0x110)                    -- 命令字
-    buf:writeUShort(1)                            -- gameid
-    buf:writeUShort(1)                            -- 业务id
+    buf:writeUShort(JAVA_DOUNIU and 0 or 1)                            -- gameid
+    buf:writeUShort(JAVA_DOUNIU and 0 or 1)                            -- 业务id
     buf:writeByte(0)                              --平台ID
     buf:writeByte(0)                              --平台ID
     buf:writeInt(HEART_BEAT_TID or 0)                 -----tid

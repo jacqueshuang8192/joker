@@ -220,4 +220,18 @@ function SocketTCP:_reconnect(__immediately)
 	self.reconnectScheduler = scheduler.performWithDelayGlobal(__doReConnect, SOCKET_RECONNECT_TIME)
 end
 
+-- Optional secure transport for the two published game listeners.
+local createSocket = SocketTCP.new
+local routes = {[4700] = "/ws/hall", [13600] = "/ws/douniu"}
+function SocketTCP.new(host, port, retry)
+    local instance = createSocket(host, port, retry)
+    local route = routes[tonumber(port)]
+    local endpoint = rawget(_G, "GAME_WSS_URL")
+    if route and endpoint and endpoint ~= "" then
+        assert(endpoint:match("^wss://[^/]+/*$"), "GAME_WSS_URL requires a wss:// origin")
+        require("framework.cc.net.WebSocketTransport")(instance, SocketTCP, endpoint:gsub("/+$", "") .. route)
+    end
+    return instance
+end
+
 return SocketTCP

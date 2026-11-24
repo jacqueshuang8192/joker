@@ -134,8 +134,8 @@ function PacketBuilder:build(flag)
     buf:writeStringBytes("BY")-- 魔数
     buf:writeUShort(1)-- 版本号
     buf:writeInt(tonumber(self.cmd_))                    -- 命令字
-    buf:writeUShort(1)                            -- gameid
-    buf:writeUShort(1)                            -- 业务id
+    buf:writeUShort(JAVA_DOUNIU and 0 or 1)       -- 与大厅回包使用同一路由
+    buf:writeUShort(JAVA_DOUNIU and 0 or 1)       -- 业务编号
     buf:writeByte(0)                              --平台ID
     buf:writeByte(0)                              --平台ID
     --lenght 15

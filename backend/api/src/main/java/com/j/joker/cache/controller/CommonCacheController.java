@@ -310,6 +310,7 @@ public class CommonCacheController {
         CacheGameActivity activityResult = new CacheGameActivity();
         activityResult.setLevel(activity.getLevel());
         activityResult.setTableId(activity.getTableId());
+        activityResult.setInviteCode(inviteCode);
         activityResult.setGameActivityId(activity.getGameActivityId());
 
         return activityResult;

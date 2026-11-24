@@ -349,7 +349,7 @@ public class GoldService {
             }
 
 
-            JSONArray objects = JSONObject.parseArray(s);
+            JSONArray objects = StringUtil.isEmpty(s) ? new JSONArray() : JSONObject.parseArray(s);
             JSONArray ranking = new JSONArray();
             //获取营商的排行
             String myRanking = cache.get(GOLDRANKING + "ME");

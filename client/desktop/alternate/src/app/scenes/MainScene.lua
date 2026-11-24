@@ -26,7 +26,7 @@ function MainScene:initData()
     --获取接口链接
     if device.platform ~= "windows" then
         local sigs = "Ljava/lang/String;"
-        HttpAddr = cct.getDateForApp("getHttpAddr",{},sigs)
+        HttpAddr = resolveGameApiAddress(cct.getDateForApp("getHttpAddr",{},sigs))
         HttpInterFace = interfaceAddress(HttpAddr)
     end
 

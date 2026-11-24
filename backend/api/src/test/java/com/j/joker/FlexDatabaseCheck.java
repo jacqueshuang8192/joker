@@ -61,6 +61,7 @@ public class FlexDatabaseCheck {
                 checkEntityMigration(context);
                 checkScoreCache(context);
                 checkGameConfig(games, filter);
+                checkHallQueries(context);
                 checkRankings(context.getBean(TFreeGameTotalMapper.class));
                 checkOrders(context.getBean(ImsTpOrdersMapper.class));
                 checkCompositeKey(context.getBean(TConfigMapper.class));
@@ -188,6 +189,33 @@ public class FlexDatabaseCheck {
         games.update(patch, false);
         stored = games.selectOneById(first.getId());
         require("".equals(stored.getName()) && stored.getGameType() == null, "full update");
+    }
+
+    private static void checkHallQueries(ClassPathXmlApplicationContext context) {
+        var db = new org.springframework.jdbc.core.JdbcTemplate(context.getBean("flexDataSource", javax.sql.DataSource.class));
+        db.update("INSERT INTO t_user(userid,nick_name) VALUES (851,'A'),(852,'B'),(853,'C')");
+        db.update("INSERT INTO t_free_game_singleresult(user_id,date,total) VALUES "
+                + "(851,'2020-01-02',2),(851,'2020-01-03',3),(852,'2020-01-02',5),(853,'2020-01-02',6)");
+        var results = context.getBean(com.j.joker.mapper.TFreeGameSingleresultMapper.class);
+        String start = "2020-01-01", end = "2020-01-03";
+        var top = results.querySingleResult(2L, start, end);
+        require(top.size() == 2 && top.get(0).getUserId() == 853 && top.get(1).getUserId() == 851
+                && top.get(1).getTotal() == 5 && top.get(1).getRank() == 2, "ordered aggregate and tie");
+        require(results.queryGeRenSingleResult(852L, start, end).getRank() == 3, "personal rank");
+        require(results.queryGeRenSingleResult2(852L, start, end).getRank() == 0, "unranked entry");
+        db.update("INSERT INTO t_game_type(id) VALUES (851)");
+        db.update("INSERT INTO t_game_config(id,level,content) VALUES (851,1,'first'),(852,1,'second')");
+        db.update("INSERT INTO t_game_type_game(id,game_type_id,game_level,game_name,agent_id) VALUES "
+                + "(850,851,999,'no config',851),(851,851,1,'matched',851),(852,851,1,'later',851)");
+        db.update("INSERT INTO t_game_province(province_id,default_agent) VALUES (851,851)");
+        db.update("INSERT INTO t_province_agent(province_id,agent_id) VALUES (851,851)");
+        var options = context.getBean(com.j.joker.mapper.TGameTypeGameMapper.class).selectByAgent(851L);
+        require(options.size() == 1 && "matched".equals(options.getFirst().getName())
+                && "first".equals(options.getFirst().getContent()), "agent representative config");
+        db.update("INSERT INTO t_sec_user(userId) VALUES (851)");
+        var users = context.getBean(com.j.joker.mapper.TSecUserMapper.class);
+        require(users.increaseSecondLayerSellCount(851L, 3L) == 1
+                && users.selectOneById(851L).getSecondLayerSellCount() == 3, "nullable sales counter");
     }
 
     private static void checkRankings(TFreeGameTotalMapper rankings) {

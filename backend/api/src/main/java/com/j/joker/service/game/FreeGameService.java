@@ -49,6 +49,8 @@ import java.util.*;
  */
 @Service
 public class FreeGameService {
+	@Autowired
+	private com.j.joker.rooms.application.DouniuRoomPasswordService douniuPasswords;
 	private static Logger log = Logger.getLogger(FreeGameService.class);
 
 	@Autowired
@@ -1154,6 +1156,8 @@ public class FreeGameService {
 			gameConfig.put("others",others);
 			gameConfig.put("baseChip",baseChip);
 			gameConfig.put("groupId",groupId);
+			String roomPasswordHash = douniuPasswords.forNewRoom(level, password, extendActivityId);
+			if (roomPasswordHash != null) password = "";
 			gameConfig.put("password",password);
 			gameConfig.put("configId",configId);
 
@@ -1210,6 +1214,12 @@ public class FreeGameService {
 					}
 				}
 				json = gameJ.toJSONString();
+			}
+			if (Integer.valueOf(302).equals(level)) {
+				JSONObject rules = JSONObject.parseObject(json);
+				rules.remove("douniuPasswordRequired");
+				if (roomPasswordHash != null) rules.put("douniuPasswordRequired", 1);
+				json = rules.toJSONString();
 			}
 			gameConfig.put("json",json);
 
@@ -1364,6 +1374,7 @@ public class FreeGameService {
 			}
 
 			activityMapper.insertActivity(t);
+			if (roomPasswordHash != null) douniuPasswords.save(t.getActivityId(), roomPasswordHash);
 
 			TFreeGameActivity m = new TFreeGameActivity();
 			m.setActivityId(t.getActivityId());
@@ -1467,7 +1478,7 @@ public class FreeGameService {
 				if (others == 1 ) {
 					//以后如果有代开列表的时候删除  房卡场的房卡场用
 					if(StringUtil.isNotEmpty(roomType) && roomType==2) {
-						String s = level + "_" + freeGameActivityByOthers.getTableId();
+						String s = level + "_" + tid + "_" + t.getActivityId();
 						cache.hset(Constants.USER_GAME_STATUS,userId,s);
 					}
 				}

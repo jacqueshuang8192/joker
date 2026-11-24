@@ -583,12 +583,13 @@ public class BaseChargeService {
             out.write(packet);
             out.flush();
 
-            byte[] b = new byte[1024];
-            in.read(b);
-            System.out.println(Arrays.toString(b));
-            Boolean result = b[21] <= 0 ? true : false;
-
-            return result;
+            var reply = new java.io.DataInputStream(in);
+            int length = reply.readInt();
+            if (length < 18 || length > 65536) return false;
+            byte[] body = new byte[length];
+            reply.readFully(body);
+            var frame = java.nio.ByteBuffer.wrap(body);
+            return frame.getShort(0) == 0x4259 && frame.getInt(14) <= 0;
         } catch (Exception e) {
 //			throw e;
             throw new InfServerException(Constants.RETURN_CODE_FAIL, e.getMessage());

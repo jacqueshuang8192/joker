@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface TActivityMapper extends EntityMapper<TActivity> {
 	
+	Integer watchingClub(@Param("uid") Long uid, @Param("activityId") Long activityId);
+
+	boolean canReadRounds(@Param("uid") Long uid, @Param("activityId") Long activityId);
+
 	Long insertActivity(TActivity activity);
 	Long selectActivityIdByuserId(@Param("userId") Long userId);
 	Integer selectcardSumByuserId(@Param("userId") Long userId);

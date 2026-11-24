@@ -1,0 +1,20 @@
+# 将本文件粘贴为第二个 1Panel 编排，连接已启动的千玺服务。面板网站负责 HTTPS。
+services:
+  joker-gateway:
+    image: ghcr.io/jacqueshuang8192/joker-game-java:${IMAGE_TAG:?填写含 Java 游戏服务的发布标签}
+    platform: linux/amd64
+    restart: unless-stopped
+    networks: [panel]
+    ports:
+      # OpenResty 使用宿主机网络时，把 /ws/ 反向代理到这一端口。
+      - "127.0.0.1:${GATEWAY_PORT:-8090}:8090"
+    environment:
+      GAME_ROLE: gateway
+      # 大厅和牛牛与 api 共用网络。如果面板网络上有多套部署，请填写目标 API 的容器名。
+      HALL_HOST: ${GAME_HOST:-api}
+      DOUNIU_HOST: ${GAME_HOST:-api}
+
+networks:
+  panel:
+    external: true
+    name: ${PANEL_NETWORK:-1panel-network}

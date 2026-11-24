@@ -458,7 +458,7 @@ public class GameService extends BaseService<TGame> {
 			cache = CacheManager.getCache();
 			List<TGameServer> serverList = gameCacheController.queryGameServerList(cache);
 			int index = gameCacheController.queryCurGameServerRound(cache);
-			return serverList.get(index);
+			return serverList.get(Math.floorMod(index, serverList.size()));
 		} catch (Exception e) {
 			throw e;
 		} finally {

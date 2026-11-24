@@ -519,7 +519,10 @@ public class CocosCaller {
     
     public static String getHttpAddr() {
         Log.d(TAG, "getHttpAddr()");
-        return "http://127.0.0.1";
+        Context context = Cocos2dxActivity.getContext();
+        if (context == null) return "";
+        int id = context.getResources().getIdentifier("joker_api_url", "string", context.getPackageName());
+        return id == 0 ? "" : context.getString(id);
     }
     
     public static void copyToClipboard(String text) {

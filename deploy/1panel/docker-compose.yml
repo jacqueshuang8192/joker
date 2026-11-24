@@ -71,6 +71,8 @@ services:
     environment:
       JOKER_REDIS_CONFIG: /srv/redis.json
       JOKER_CONFIG: /srv/config/api.properties
+      # 与牛牛房间共用运行模式，使 API 在 Java 部署中启用密码房。
+      JOKER_DOUNIU_RUNTIME: ${DOUNIU_RUNTIME:-native}
       JAVA_TOOL_OPTIONS: "-Xms128m -Xmx768m"
     image: ghcr.io/jacqueshuang8192/joker-api:${IMAGE_TAG:?填写内置初始化脚本的发布标签}
     # prepare 退出码为 0 后才启动 API。初始化失败时，从 1Panel 查看 prepare 的日志。
@@ -103,6 +105,9 @@ services:
   # 游戏数据服务，内部端口 6001。
   data:
     <<: *native
+    # 原生版用 native。切换为 Java 时在面板环境变量中填 DATA_GOLD_RUNTIME=game-java。
+    image: ghcr.io/jacqueshuang8192/joker-${DATA_GOLD_RUNTIME:-native}:${IMAGE_TAG:?填写内置初始化脚本的发布标签}
+    environment: {JOKER_REDIS_CONFIG: /srv/redis.json, GAME_ROLE: data, GAME_BIND_ADDRESS: 127.0.0.1}
     command: [data, -h, 127.0.0.1, -p, "6001", -s, "0"]
     volumes:
       - *redis-settings
@@ -119,6 +124,15 @@ services:
   # 牛牛游戏进程，玩家通过 TCP 13600 连接。
   douniu:
     <<: *native
+    # 联调 Java 牛牛时两项均设为 game-java：DOUNIU_RUNTIME 和 DATA_GOLD_RUNTIME。
+    image: ghcr.io/jacqueshuang8192/joker-${DOUNIU_RUNTIME:-native}:${IMAGE_TAG:?填写内置初始化脚本的发布标签}
+    environment:
+      GAME_ROLE: douniu
+      JOKER_REDIS_CONFIG: /srv/redis.json
+      # data、alloc 共用 api 网络空间。对玩家公布面板中配置的 IPv4。
+      DATA_HOST: 127.0.0.1
+      ALLOC_HOST: 127.0.0.1
+      ADVERTISE_IP: ${ADVERTISE_IP:?填写玩家可达的IPv4地址}
     depends_on:
       alloc: {condition: service_healthy}
     command: [douniu, -p, "13600", -s, "1802", -l, "302", -d]
@@ -128,6 +142,9 @@ services:
   # 可选金币更新服务，默认关闭。启用 gold profile 前须准备 runtime/gold.xml。
   gold:
     <<: *native
+    # 原生版用 native。切换为 Java 时在面板环境变量中填 DATA_GOLD_RUNTIME=game-java。
+    image: ghcr.io/jacqueshuang8192/joker-${DATA_GOLD_RUNTIME:-native}:${IMAGE_TAG:?填写内置初始化脚本的发布标签}
+    environment: {JOKER_REDIS_CONFIG: /srv/redis.json, GAME_ROLE: gold, GAME_BIND_ADDRESS: 127.0.0.1}
     profiles: [gold]
     command: [gold, -h, 127.0.0.1, -p, "6005", -s, "0"]
     volumes:

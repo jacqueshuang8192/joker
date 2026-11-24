@@ -15,6 +15,20 @@
 		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 
+    <select id="watchingClub" resultType="java.lang.Integer">
+        SELECT a.group_id FROM t_activity a
+        JOIN t_group_player g ON g.group_id = a.group_id
+        WHERE a.activity_id = #{activityId} AND a.level = 302 AND a.status IN (0,1) AND g.ower_id = #{uid}
+    </select>
+
+    <select id="canReadRounds" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM t_activity WHERE activity_id = #{activityId} AND owner_id = #{uid})
+            OR EXISTS(SELECT 1 FROM t_activity_user WHERE activity_id = #{activityId} AND userid = #{uid})
+            OR EXISTS(SELECT 1 FROM t_free_game_round
+                      WHERE activity_id = #{activityId} AND douniu_round_id IS NOT NULL
+                        AND JSON_CONTAINS(content, JSON_OBJECT('uid', CAST(#{uid} AS UNSIGNED)), '$.userinfos'))
+    </select>
+
 	<insert id="insertActivity" parameterType="com.j.joker.model.TActivity"
 		useGeneratedKeys="true" keyProperty="activityId">
 		INSERT INTO t_activity (

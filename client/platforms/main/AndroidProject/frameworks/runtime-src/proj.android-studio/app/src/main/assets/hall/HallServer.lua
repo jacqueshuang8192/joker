@@ -161,7 +161,7 @@ function HallServer:LoginHall()
     builder:setParameter("uid", UID)
     builder:setParameter("storeId", 1)
     builder:setParameter("kind", 1)
-    builder:setParameter("userInfo", USER_INFO["user_info"])
+    builder:setParameter("userInfo", PURE_JAVA_HALL and json.encode({roomKey = DOUNIU_ROOM_KEY}) or USER_INFO["user_info"])
     
     local ok2, pack = pcall(builder.build, builder)
     if not ok2 then

@@ -96,20 +96,10 @@ public class FreeGameCacheController {
     }
 
     public List<TFreeGameRound> querRoundsByActivityId(Long activityId, ICache cache) {
-        String key = FREE_GAME_ROUND_KEY + activityId;
-        List<TFreeGameRound> list = new ArrayList<TFreeGameRound>();
-        if (cache.exist(key)) {
-            Map<String, String> map = cache.hgetAll(key);
-            Set<String> keySet = map.keySet();
-            for (String roundIndex : keySet) {
-                list.add(JSONObject.parseObject(map.get(roundIndex), TFreeGameRound.class));
-            }
-        } else {
-            list = freeGameCacheLoader.querRoundsByActivityId(activityId);
-            for (TFreeGameRound round : list) {
-                cache.hset(key, round.getRoundIndex().toString(), JSON.toJSONString(round));
-            }
-        }
+        // Java data 在结算事务中写战绩。单局查询缓存可能只含部分局数。
+        List<TFreeGameRound> list = freeGameCacheLoader.querRoundsByActivityId(activityId);
+        list.sort(java.util.Comparator.comparing(TFreeGameRound::getRoundIndex,
+                java.util.Comparator.nullsLast(java.util.Comparator.naturalOrder())));
         return list;
     }
     

@@ -107,7 +107,7 @@
 		UPDATE
 		t_sec_user
 		SET
-		second_layer_sell_count = second_layer_sell_count+#{secondLayerSellCount}
+		secondLayerSellCount = COALESCE(secondLayerSellCount, 0) + #{secondLayerSellCount}
 		WHERE
 		userid = #{userId}
 	</update>

@@ -41,6 +41,9 @@ import java.util.logging.Logger;
 
 @Service
 public class PlayerService {
+    @org.springframework.beans.factory.annotation.Value("${JOKER_PURE_JAVA:false}")
+    private boolean pureJavaHall;
+
     @Autowired
     private TUserMapper userMapper;
     @Autowired
@@ -558,6 +561,14 @@ public class PlayerService {
 //            user.setFirstLogin(0);
             userMapper.updateSelective(user);
             authInfo.setHall(server);
+            String sessionToken = request.getParameter("XYToken");
+            if (sessionToken != null && !sessionToken.isBlank()) {
+                var hash = java.security.MessageDigest.getInstance("SHA-256");
+                byte[] key = ("joker/douniu/" + userId + "/" + sessionToken)
+                        .getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                authInfo.setPureJavaHall(pureJavaHall);
+                authInfo.setDouniuKey(java.util.HexFormat.of().formatHex(hash.digest(key)));
+            }
             authInfo.setMtKey(ConfigUtil.get("protocol.mtKey"));
             authInfo.setAnnouncement(baseDataService.queryAnnouncementByType(AnnounceConstants.ANNOUNCE_TYPE_ZOUMADENG));
 

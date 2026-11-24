@@ -1396,11 +1396,13 @@ function FamilyMainLayer:onClickEnterRoom(event)
         game_data = game_data
     }
     local FamilyClickEnterRoom = require("hall.familyCircle.FamilyClickEnterRoom")
+    param.roleType = self.roleType
     FamilyClickEnterRoom.new(param, self, self.owerId):addTo(self)
 end
 
 function FamilyMainLayer:CreateGameTable(flag, data, total_data, isWatch, isGengXin)
-    if data.config.isFlag == 1 then
+    local watching = JAVA_DOUNIU and tonumber(data.config.level) == 302 and isWatch == 0
+    if data.config.isFlag == 1 and not watching then
         viewMgr:showTip({text = "房间人数已满!"})
         return
     end
@@ -1481,7 +1483,7 @@ function FamilyMainLayer:CreateGameTable(flag, data, total_data, isWatch, isGeng
                 --加入房间
                 -- local table_info = json.decode(data.config.table_info)
                 local table_info = data.config.table_info or {}
-                if data.config.isFlag == 1 then
+                if data.config.isFlag == 1 and not watching then
                     viewMgr:showTip({text = "房间人数已满!"})
                     return
                 end

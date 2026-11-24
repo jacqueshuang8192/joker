@@ -4,6 +4,8 @@ SELECT expected.table_name AS missing_table
 FROM (
   SELECT 'bullfight_gameinfo' AS table_name
   UNION ALL
+  SELECT 'joker_douniu_room_password' AS table_name
+  UNION ALL
   SELECT 'ims_msg' AS table_name
   UNION ALL
   SELECT 'ims_tpagentgoldreport' AS table_name

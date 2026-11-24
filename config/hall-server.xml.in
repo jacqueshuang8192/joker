@@ -9,6 +9,13 @@
               <Server svid="1" level="302" ip="127.0.0.1" port="11603" />
         </ServerList>
     </Node>
+    <!-- Java 版客户端使用路由 0，与原生 alloc 回包的区域编号对应。 -->
+    <Node>
+        <GameID gameID="0" />
+        <ServerList>
+            <Server svid="1" level="302" ip="127.0.0.1" port="11603" />
+        </ServerList>
+    </Node>
     <!-- 广播服务的内部端点，默认编排未提供独立广播进程。 -->
     <BroadCastServer ip="127.0.0.1" port="9002" />
     <!-- 数据服务的内部端点，对应 data 的 6001 端口。 -->

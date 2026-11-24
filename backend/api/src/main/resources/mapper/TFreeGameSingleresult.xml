@@ -15,118 +15,26 @@
 		<result column="lose" property="lose" jdbcType="BIGINT" />
 		<result column="level" property="level" jdbcType="INTEGER" />
 	</resultMap>
-	<select id="querySingleResult" resultType="com.j.joker.model.TFreeGameSingleresult">
-		SELECT
-		*,
-		(@rank :=@rank + 1) AS rank
-		FROM
-		(SELECT
-		*
-		FROM
-		(
-		SELECT
-
-		f.user_id AS userId,
-		SUM(win) AS win,
-		SUM(lose) AS lose,
-		SUM(draw) AS draw,
-		SUM(total) AS total,
-		u.nick_name AS nickName,
-		u.small_icon AS samllIcon,f.date
-		FROM
-		t_free_game_singleresult f
-		JOIN
-		t_user u ON f.user_id = u.userid
-		WHERE
-		date BETWEEN #{startTime}
-		AND #{endTime}
-		GROUP BY
-		user_id
-		) u
-		GROUP BY userId
-		ORDER BY SUM(total)DESC)t,
-		(SELECT @rank := 0) AS it
-		where total > 0
-		LIMIT 0,#{rankcount}
-
-
-	</select>
-	<select id="queryGeRenSingleResult" resultType="com.j.joker.model.TFreeGameSingleresult">
-		SELECT
-		*
-		FROM
-		(SELECT
-		*,
-		(@rank :=@rank + 1) AS rank
-		FROM
-		(SELECT
-		*
-		FROM
-		(
-		SELECT
-
-		f.user_id AS userId,
-		SUM(win) AS win,
-		SUM(lose) AS lose,
-		SUM(draw) AS draw,
-		SUM(total) AS total,
-		u.nick_name AS nickName,
-		u.small_icon AS samllIcon,f.date
-		FROM
-		t_free_game_singleresult f
-		JOIN
-		t_user u ON f.user_id = u.userid
-		WHERE
-		date BETWEEN #{startTime}
-		AND
-		#{endTime}
-		GROUP BY
-		user_id
-		) u
-		GROUP BY userId
-		ORDER BY SUM(total)DESC)t,
-		(SELECT @rank := 0) AS it) a WHERE
-		userId=#{userId}
-
-	</select>
-	<select id="queryGeRenSingleResult2" resultType="com.j.joker.model.TFreeGameSingleresult">
-		SELECT
-		*
-		FROM
-		(SELECT
-		*,
-		(@rank :=@rank ) AS rank
-		FROM
-		(SELECT
-		*
-		FROM
-		(
-		SELECT
-
-		f.user_id AS userId,
-		SUM(win) AS win,
-		SUM(lose) AS lose,
-		SUM(draw) AS draw,
-		SUM(total) AS total,
-		u.nick_name AS nickName,
-		u.small_icon AS samllIcon,f.date
-		FROM
-		t_free_game_singleresult f
-		JOIN
-		t_user u ON f.user_id = u.userid
-		WHERE
-		date BETWEEN #{startTime}
-		AND
-		#{endTime}
-		GROUP BY
-		user_id
-		) u
-		GROUP BY userId
-		ORDER BY SUM(total)DESC)t,
-		(SELECT @rank := 0) AS it) a WHERE
-		userId=#{userId}
-
-	</select>
+    <sql id="playerTotals">
+        SELECT f.user_id AS userId, SUM(f.win) AS win, SUM(f.lose) AS lose,
+               SUM(f.draw) AS draw, SUM(f.total) AS total, MAX(f.date) AS date,
+               u.nick_name AS nickName, u.small_icon AS smallIcon
+        FROM t_free_game_singleresult f JOIN t_user u ON u.userid = f.user_id
+        WHERE f.date BETWEEN #{startTime} AND #{endTime}
+        GROUP BY f.user_id, u.nick_name, u.small_icon
+    </sql>
+    <select id="listTopPlayers" resultType="com.j.joker.model.TFreeGameSingleresult">
+        <include refid="playerTotals"/>
+        HAVING total > 0 ORDER BY total DESC, userId LIMIT #{rankcount}
+    </select>
+    <select id="queryGeRenSingleResult" resultType="com.j.joker.model.TFreeGameSingleresult">
+        SELECT me.*, 1 + (SELECT COUNT(*) FROM (<include refid="playerTotals"/>) other
+            WHERE other.total > me.total OR (other.total = me.total AND other.userId &lt; me.userId)) AS `rank`
+        FROM (<include refid="playerTotals"/>) me WHERE me.userId = #{userId}
+    </select>
+    <select id="queryGeRenSingleResult2" resultType="com.j.joker.model.TFreeGameSingleresult">
+        SELECT me.*, 0 AS `rank` FROM (<include refid="playerTotals"/>) me WHERE me.userId = #{userId}
+    </select>
 	<select id="queryTotalByUserId" resultType="Long">
 		SELECT
 		SUM(f.total)

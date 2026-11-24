@@ -60,7 +60,6 @@ function GroupSetting:create(time,baseChip,coin,level,parameter,clubId, password
     tbl.password = password
     tbl.interfaceType = "J"
 
-    dump(tbl, "-----自开创建组局请求入参-----")
     require("hall.groudgamemanager"):createfreegame(USER_INFO["uid"], tbl)
 
 end
@@ -331,7 +330,6 @@ function GroupSetting:create_agent(time, baseChip, coin, level, parameter, clubI
     if parameter["id"] then
         tbl.configId = tonumber(parameter["id"])
     end
-    dump(tbl, "-----代开创建组局请求入参-----")
 
     require("hall.groudgamemanager"):createAgentGame(tbl, callback)
 

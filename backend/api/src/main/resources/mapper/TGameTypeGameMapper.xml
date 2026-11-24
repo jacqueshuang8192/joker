@@ -25,38 +25,24 @@
 		AND agent_id = #{agentId}
 	</select>
 	<select id="selectByAgent" resultType="com.j.joker.vo.response.user.GameTypeGameVo">
-		SELECT
-		t_game_type_game.game_type_id AS gameTypeId,
-		t_game_config.content AS
-		content,
-		t_game_type_game.game_name AS name,
-		t_game_type.is_show AS
-		Isshow,
-		t_game_type.game_type AS gameType
-		FROM
-		t_game_config,
-		t_game_type,
-		t_game_type_game
-		WHERE
-		t_game_config.level =
-		t_game_type_game.game_level
-		AND t_game_type.id
-		=
-		t_game_type_game.game_type_id
-		AND agent_id in(SELECT
-		default_agent
-		FROM
-		t_game_province
-		WHERE
-		province_id IN (
-		SELECT
-		province_id
-		FROM
-		t_province_agent
-		WHERE
-		agent_id = #{agentId}
-		))GROUP BY game_type_id
-	</select>
+        SELECT g.game_type_id AS gameTypeId, c.content, g.game_name AS name,
+               t.is_show AS Isshow, t.game_type AS gameType
+        FROM t_game_type_game g
+        JOIN t_game_type t ON t.id = g.game_type_id
+        JOIN t_game_config c ON c.id = (
+            SELECT MIN(gc.id) FROM t_game_config gc WHERE gc.level = g.game_level
+        )
+        WHERE g.id IN (
+            SELECT MIN(candidate.id) FROM t_game_type_game candidate
+            JOIN t_game_config gc ON gc.level = candidate.game_level
+            WHERE candidate.agent_id IN (
+                SELECT gp.default_agent FROM t_game_province gp
+                JOIN t_province_agent pa ON pa.province_id = gp.province_id WHERE pa.agent_id = #{agentId}
+            )
+            GROUP BY candidate.game_type_id
+        )
+        ORDER BY g.game_type_id
+    </select>
 
 	<select id="selectGameTypeByParentId" resultType="com.j.joker.model.TGameType">
 		SELECT

@@ -1,6 +1,30 @@
 # Joker 后端 · 1Panel 部署手册
 
-本手册适用于由 1Panel 管理 MySQL、MongoDB、Redis 和 Memcached 的单机部署。GitHub Actions 构建 Java 23 的 `joker-api` 和 C++ 的 `joker-native` 两张镜像，服务器拉取镜像，无需安装 JDK 或编译器。下面统一使用部署目录 `/opt/joker`、编排名 `shenshou`。
+## 纯 Java 牛牛部署
+
+这套编排使用 Java 23 的 API、大厅、分桌、在线查询、牛牛房间和数据服务。常驻容器为 `api`、`rooms`、`data`，使用 `joker-api` 和 `joker-game-java` 两种镜像。以下步骤适用于单机 Linux amd64 的 302 普通牛牛。[纯 Java 单文件编排](deploy/1panel/pure-java.yml)
+
+1. 在 1Panel 安装 MySQL、Redis、MongoDB 和 Memcached。为游戏单独建一个 MySQL 库和有建表、迁移、读写权限的账号。让这四项服务通过同一面板网络或内网地址可达，启用 Redis 持久化。网络和权限示例见本文第 2 节。
+2. 在对应提交的 GitHub Actions 下载 `1panel-pure-java`，解压得到预填镜像标签的 `docker-compose.yml`。在 **容器 → 编排 → 创建编排 → 编辑** 粘贴全文。也可以直接粘贴上面的源码文件，填写该次发布的 `IMAGE_TAG=java-sha-完整提交号`。main 分支另有 `java-main` 跟踪标签。这些标签在提交推送并通过纯 Java 发布检查后生成。
+3. 设置下表的环境变量，然后创建编排。`prepare` 成功退出后，`api` 启动并执行 JAR 内的 Flyway 迁移。确认 `api`、`data`、`rooms` 均为 healthy。玩家 HTTP 入口为 `/hbiInterface/`，默认反向代理到宿主机 `127.0.0.1:8080`。普通 TCP 客户端需要能连到 `4700` 和 `13600`。使用域名和 WSS 时可另开同一 Java 标签的网关。[WSS 配置](deploy/java/README.md)
+4. 发布包含本次大厅登录改动的客户端资源，设置 `JAVA_DOUNIU = true` 和实际的 `HttpAddr`。重新登录后，API 下发 `pureJavaHall` 及当前会话的游戏凭据。用两个账号创建和加入同一张普通牛牛桌，完成一局，再从大厅核对战绩。[客户端部署说明](client/README.md)
+
+| 环境变量 | 如何填写 |
+|---|---|
+| `ADVERTISE_IP` | 玩家可达的 IPv4。旧客户端选桌协议要求 IPv4，WSS 域名填在客户端的 `GAME_WSS_URL`。 |
+| `PANEL_NETWORK` | 实际 Docker 网络名，默认 `1panel-network`。 |
+| `MYSQL_HOST`、`MYSQL_DATABASE`、`MYSQL_USER`、`MYSQL_PASSWORD` | MySQL 内网主机、专用库、账号、密码。 |
+| `REDIS_HOST`、`REDIS_USER`、`REDIS_PASSWORD` | 游戏专用 Redis 的地址和认证信息。使用默认用户时可留空用户名。 |
+| `MONGO_HOST`、`MONGO_USER`、`MONGO_PASSWORD`、`MONGO_AUTH_DATABASE` | MongoDB 内网地址、账号、密码、认证库。业务库为 `douyoudb`。 |
+| `MEMCACHED_HOST` | Memcached 的内网主机。上述四项服务使用自定义端口时，填写编排中各自的 `*_PORT`。 |
+
+`prepare` 从游戏镜像自带模板生成独立的 `settings/runtime-java`，沿用同一卷的 `keys.json`。API 的 `hall.port=4701` 用于同一编排内的通知，玩家仍连 4700。配置中的玩家数据 6001、在线查询 7500、分桌 11603 也走容器回环。可选 `gold` 用于旧金币落库任务，普通牛牛的单局筹码由 `data` 写入。
+
+**从原生或混合版切换**时，先停止新开房，等旧桌结清，备份四项基础服务中需要保留的数据、`settings`（包含 `keys.json` 和运行配置）及 `uploads`。停止旧游戏和数据写入进程，再启动纯 Java 编排。使用旧数据时复核业务密钥、外部服务参数、数据库里的静态大厅路由和客户端版本。首次切换及模板或连接参数发生变化时，初始化会重新生成运行配置，需将自定义的短信、微信、支付等参数从备份合入 `runtime-java/api.properties`并重建相关容器。保留原编排和对应镜像 SHA 以便退回。两套环境同时做对照时，分别使用独立的数据库、Redis、卷和宿主机端口。
+
+## 原生与混合部署
+
+以下章节使用 `joker-api` 和 `joker-native`，并介绍可选的 Java 数据或牛牛服务。示例部署目录为 `/opt/joker`，编排名为 `shenshou`。[Java 混合部署与回退](deploy/java/README.md)
 
 ## 在 1Panel 直接粘贴已发布版本的编排
 
@@ -89,7 +113,7 @@ docker compose -p shenshou pull
 docker compose -p shenshou up -d
 ```
 
-Flyway 先执行待应用的迁移。空库依次执行 V1 至 V4，得到 **163 张业务表**及 `flyway_schema_history`。V3 库只需执行 V4。迁移提供表结构，真实玩法、房间、商品、版本记录和第三方渠道参数仍需从匹配的业务备份恢复或由运营方配置。原始历史 SQL 含删表语句，恢复时先在独立库核验。
+Flyway 先执行待应用的迁移。空库依次执行 V1 至 V9，得到 **165 张业务表**及 `flyway_schema_history`，并写入 302 牛牛目录和开房选项。已有 V3 的库继续执行 V4 至 V9。其他玩法、商品、版本记录和第三方渠道参数请从匹配的业务备份恢复或由运营方配置。原始历史 SQL 含删表语句，恢复时先在独立库核验。
 
 可选的 `gold` 服务默认关闭。需要金币更新功能时，根据实际游戏编号和更新间隔核对 `runtime/gold-example.xml`，将确认好的配置保存为 `runtime/gold.xml`，再运行 `docker compose -p shenshou --profile gold up -d`。启用后在后续更新中沿用该 profile。
 
@@ -105,7 +129,7 @@ curl -fsS 'http://127.0.0.1:8080/hbiInterface/version/queryVersion?type=2&interf
 
 - 在 `api` 日志中检查 Flyway 成功应用迁移或确认数据库已是最新版本。`api`、`user`、`data`、`alloc`、`douniu` 和 `hall-4700` 应进入健康状态。
 - 首页预期 HTTP `200`。如果改过 `API_BIND` 或 `API_PORT`，替换上面两个 URL 的地址和端口。版本接口应有业务响应；要核对版本号，库中须有有效的大厅版本记录。
-- 在 1Panel 的 MySQL 管理工具中选中游戏库，执行下列 SQL。新建空库的记录应包含版本 `1` 至 `4`，且 `success` 均为 `1`。还可在同一库执行部署包的 `tools/check-schema.sql`，两个结果集都为空表示清单中的表和筹码列齐全。
+- 在 1Panel 的 MySQL 管理工具中选中游戏库，执行下列 SQL。新建空库的记录应包含版本 `1` 至 `6`，且 `success` 均为 `1`。还可在同一库执行部署包的 `tools/check-schema.sql`，两个结果集都为空表示清单中的表和筹码列齐全。
 
 ```sql
 SELECT version, description, success
@@ -150,6 +174,15 @@ docker compose -p shenshou up -d --force-recreate
 
 ### 启用千玺账号登录
 
-部署内含 V4 迁移的新版 API 镜像，确认 Flyway 成功，然后分发新版客户端。主版桌面的接口地址在 `client/desktop/main/src/config.lua` 的 `HttpAddr`，移动端使用原生桥接返回的地址。设置为自己的 `https://域名/hbiInterface`。仅本机测试支持通过 HTTP 访问 localhost 或 127.0.0.1。
+部署内含 V4 迁移的新版 API 镜像，确认 Flyway 成功，然后分发新版客户端。主版桌面的接口地址在 `client/desktop/main/src/config.lua` 的 `HttpAddr`，Android 默认读取打包资源 `config.lua` 中的 `HttpAddr`，可用 Android 字符串资源 `joker_api_url` 覆盖。iOS 继续使用原生桥返回的地址。设置为自己的 `https://域名/hbiInterface`。仅本机测试支持通过 HTTP 访问 localhost 或 127.0.0.1。
 
-登录页提供微信和账号两种入口。蓝色按钮左侧的“账号登录”同时接受已有手机号或用户名，右侧“注册”支持使用其中任一种账号注册。手机号为11位大陆手机号，沿用既有手机号接口。手机号注册可选填昵称、头像等资料。填写账号和密码后点击“注册并登录”。账号创建成功后客户端会自动登录并进入大厅。如果注册成功后登录连接中断，点击“登录游戏”即可重试。用户名为 3 至 20 位，以英文字母开头，支持英文字母、数字及下划线，大小写视为同名。用户名密码区分大小写，长度为 8 至 64 个 UTF-8 字节。手机号注册密码至少 6 位。新玩家沿用现有的初始资源配置。进入大厅还需要在 `t_game_server` 配置客户端可达的大厅地址和端口。
+登录页提供微信和账号两种入口。蓝色按钮左侧的“账号登录”同时接受已有手机号或用户名，右侧“注册”支持使用其中任一种账号注册。手机号为11位大陆手机号，沿用既有手机号接口。手机号注册可选填昵称、头像等资料。填写账号和密码后点击“注册并登录”。账号创建成功后客户端会自动登录并进入大厅。如果注册成功后登录连接中断，点击“登录游戏”即可重试。用户名为 3 至 20 位，以英文字母开头，支持英文字母、数字及下划线，大小写视为同名。用户名密码区分大小写，长度为 8 至 64 个 UTF-8 字节。手机号注册密码至少 6 位。新玩家沿用现有的初始资源配置。进入大厅时，客户端需要能连接服务器下发的地址和端口。首装的大厅地址取自原生大厅在 Redis 中的注册记录，已有静态配置时优先使用 `t_game_server`。
+
+
+### 新装时的牛牛目录与升级
+
+API 会执行尚未应用的 Flyway 迁移，当前版本为 V9。V5 新建 `joker_douniu_settlement` 用于 Java 牛牛整局核账。V6 仅在 `t_game`、`t_game_config`、`t_game_type` 和 `t_group_game` 均为空时导入原档 302 牛牛的目录和开房选项。开房端点使用当前编排共享网络内的 `127.0.0.1:11603`。已有玩法数据的库跳过这次目录初始化。V7 扩充牛牛战绩字段并按唯一局号防重。V8 按玩家编号补齐缺行的十个游戏分表，已有分表余额优先。V9 创建 Java 牛牛的房间密码校验表。
+
+`t_game_server` 为空时，API 从 Redis 的 `HALLSERVER` 读取原生大厅注册的地址和端口。首装先确认 hall-4700 健康，并核对 ADVERTISE_IP。默认部署仍运行 C++ 牛牛，客户端保持 `JAVA_DOUNIU = false`。在 1Panel 测试 Java 牛牛时，同时设置 `DATA_GOLD_RUNTIME=game-java` 和 `DOUNIU_RUNTIME=game-java`，客户端启用 `JAVA_DOUNIU` 后重新登录。切换步骤见 [Java 混合部署](deploy/java/README.md)，账务回执见 [Java 游戏服务说明](backend/game-java/README.md)。
+
+Java 牛牛重启续局复用面板 Redis。保留游戏专用 Redis 的持久化数据和原服务编号。首次升级到支持快照的镜像前，先结束旧版的对局。恢复步骤见 [房间进程重启后的恢复](backend/game-java/README.md#房间进程重启后的恢复)。

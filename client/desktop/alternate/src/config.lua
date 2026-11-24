@@ -1,3 +1,13 @@
+-- GAME_WSS_URL = "wss://game.example.com"  -- 启用游戏网关时取消注释，填写自己的域名。
+-- 测试 Java 牛牛时设为 true，原生牛牛使用 false。
+JAVA_DOUNIU = false
+
+function resolveGameApiAddress(nativeAddress)
+    if type(nativeAddress) == "string" and nativeAddress:match("^https?://") then
+        return nativeAddress
+    end
+    return HttpAddr
+end
 
 -- 0 - disable debug info, 1 - less debug info, 2 - verbose debug info
 DEBUG = 1

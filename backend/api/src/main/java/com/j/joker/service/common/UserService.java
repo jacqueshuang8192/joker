@@ -36,6 +36,9 @@ import java.util.*;
 
 @Service
 public class UserService extends BaseService<TUser> {
+    @org.springframework.beans.factory.annotation.Value("${JOKER_PURE_JAVA:false}")
+    private boolean pureJavaHall;
+
 
     private static final String USER_HAS_PAYPASSWORD = "payPassword";
     private static final String GAME_TYPE_KEY = "USERPLAY_TYPE_";
@@ -568,6 +571,10 @@ public class UserService extends BaseService<TUser> {
                 throw new InfServerException(Constants.RETURN_CODE_OBJECT_NOT_FOUND_ERROR, "组局不存在");
             }
 
+            boolean niuniu = Integer.valueOf(302).equals(activity.getLevel());
+            if (niuniu && !Integer.valueOf(1).equals(isWatch) && !Integer.valueOf(0).equals(isWatch)) {
+                throw new InfServerException(Constants.RETURN_CODE_FAIL, "入房身份无效");
+            }
             //非群内会员不允许加入
             String groupId = cache.hget(GAME_ROUND_KEY + activity.getGameActivityId(), "groupId");
             boolean flag = true;
@@ -650,6 +657,24 @@ public class UserService extends BaseService<TUser> {
             activity.setActivityDiscription(discription);
             activity.setLevel(activity.getLevel());
             activity.setPassWord(password);
+            if (niuniu) {
+                String session = "TOKEN_" + userId;
+                String mode = "douniuWatch:" + activity.getGameActivityId();
+                if (Integer.valueOf(0).equals(isWatch)) {
+                    Integer club = activityMapper.watchingClub(Long.valueOf(userId), Long.valueOf(activity.getGameActivityId()));
+                    if (club == null || club <= 0) {
+                        throw new InfServerException(Constants.RETURN_CODE_FAIL, "只有本联盟的盟主可以观战");
+                    }
+                    cache.hset(session, mode, club.toString());
+                } else {
+                    cache.hdel(session, mode);
+                }
+                if (pureJavaHall) {
+                    String token = cache.hget(session, "token");
+                    if (token != null) cache.hset(session, "douniuJoin:" + activity.getGameActivityId(),
+                            token + ":" + activity.getTableId());
+                }
+            }
             activity.setIsWatch(isWatch);
             return activity;
         } catch (Exception e) {

@@ -20,8 +20,14 @@
 		mid = #{playerId}
 	</select>
 
-	<insert id="createUser">
+	<insert id="insertRegistration">
 		INSERT INTO bullfight_gameinfo (mid, sid, money, bycoins, freezemoney, exp, score, wintimes, losetimes, chip)
 		VALUES (#{bullfight_gameinfo.mid}, 1, #{bullfight_gameinfo.money}, 0, 0, 0, 0, 0, 0, 0)
 	</insert>
+    <insert id="initializeShard">
+        INSERT INTO bullfight_gameinfo${shard} (mid, sid, money, bycoins, freezemoney, exp, score, wintimes, losetimes, chip)
+        SELECT mid, sid, money, bycoins, freezemoney, exp, score, wintimes, losetimes, chip
+        FROM bullfight_gameinfo WHERE mid = #{bullfight_gameinfo.mid}
+        ON DUPLICATE KEY UPDATE mid = VALUES(mid)
+    </insert>
 </mapper>

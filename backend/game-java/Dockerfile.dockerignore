@@ -1,0 +1,7 @@
+**
+!backend/
+!backend/game-java/
+!backend/game-java/target/
+!backend/game-java/target/joker-game-java.jar
+!config/
+!config/*.in

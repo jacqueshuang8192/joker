@@ -418,7 +418,6 @@ end
 --请求创建组局
 function GroudGameManager:FreeGame(tbl)
 
-	dump(tbl,"------请求创建组局FreeGame------")
 
 	cct.createHttRq({
        	-- url = HttpAddr .. "/freeGame/createFreeGame",
@@ -480,7 +479,6 @@ end
 function GroudGameManager:createAgentGame(create_agentgame_tbl, joinCallback)
 	--代开组局
 
-	dump(create_agentgame_tbl,"------请求代开组局------")
 	cct.createHttRq({
        	url = HttpAddr .. "/freeGame/createFreeGameByOthers",
        	date = create_agentgame_tbl,

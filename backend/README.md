@@ -1,6 +1,8 @@
 # Joker 服务端
 
-以下路径相对于 `backend/`。Java 提供登录、账号和房间等 HTTP 接口，C++ 服务处理大厅连接、房间分配和游戏消息。
+[`game-java/`](game-java/) 是可独立构建的 Java 23 游戏工程。纯 Java 编排将大厅、分桌、在线查询和牛牛牌桌放在 `rooms` 进程，`data` 负责玩家账务。需要与旧游戏服务互通时可单独运行 `douniu`，另有 `gold` 和 `gateway` 可选。[DDD 代码结构](game-java/README.md#ddd-代码结构) · [纯 Java 部署](../DEPLOYMENT.md#纯-java-牛牛部署)
+
+以下路径相对于 `backend/`。
 
 | 要修改的内容 | 源码位置 |
 |---|---|

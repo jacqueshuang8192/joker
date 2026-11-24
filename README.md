@@ -4,7 +4,9 @@
 |---|---|
 | 修改玩家客户端的登录页、大厅、玩法或打移动包 | [客户端源码与平台入口](client/README.md) |
 | 修改 Java API、C++ 游戏服务或 Flyway 建表脚本 | [服务端源码与本地构建](backend/README.md) |
-| 在 1Panel 安装或升级 | [部署手册](DEPLOYMENT.md)、[可直接粘贴的 Compose](deploy/1panel/docker-compose.yml) |
+| 在 1Panel 部署纯 Java 普通牛牛 | [纯 Java 编排](deploy/1panel/pure-java.yml)、[安装和切换步骤](DEPLOYMENT.md#纯-java-牛牛部署) |
+| 在 1Panel 安装或升级原生版 | [部署手册](DEPLOYMENT.md)、[可直接粘贴的 Compose](deploy/1panel/docker-compose.yml) |
+| 切换 Java 游戏数据、金币服务或启用 WSS 游戏网关 | [Java 混合部署与回退](deploy/java/README.md) |
 | 核对数据库覆盖情况和已有游戏服务 | [后端检查报告](AUDIT.md) |
 
 1Panel 部署包只包含编排、模板、数据库脚本、部署工具和说明。查看或修改业务代码时，请打开完整源码仓库。
@@ -13,16 +15,19 @@
 
 推送 `main` 或 `v*` 版本标签会触发本仓库的后端发布流程。镜像名前缀是 `ghcr.io/jacqueshuang8192/joker`。
 
-Actions 工作流会用 JDK 23 从源码生成 Spring Boot 可执行 JAR，在 Linux 上构建两张镜像，并在隔离网络中用空数据卷启动 Compose。自动检查包括 Flyway 建表、MyBatis-Flex 主键回填和分页、XML 分表读写、Spring 事务回滚、JSP 渲染、游戏服务端口和版本查询接口。检查通过后，推送到 GHCR。PR 执行构建和检查，发布由推送 main 或 v 开头的版本标签触发。手动运行会发布该提交的 SHA 标签。
+Actions 工作流会用 JDK 23 从源码生成 Spring Boot 可执行 JAR，在 Linux 上构建三张镜像，并在隔离网络中用空数据卷启动 Compose。自动检查包括 Flyway 建表、MyBatis-Flex 主键回填和分页、XML 分表读写、Spring 事务回滚、JSP 渲染、游戏服务端口和版本查询接口。检查通过后，推送到 GHCR。PR 执行构建和检查，发布由推送 main 或 v 开头的版本标签触发。手动运行会发布该提交的 SHA 标签。
 
 | 镜像 | 标签 |
 |---|---|
 | `ghcr.io/owner/repo-api` | `sha-<完整提交 SHA>`、`main` 或推送的版本标签 |
 | `ghcr.io/owner/repo-native` | 同一次提交的同名标签 |
+| `ghcr.io/owner/repo-game-java` | 同一次提交的同名标签，供 Java 数据、金币服务和游戏网关使用 |
+
+纯 Java 发布额外提供两张镜像的 `java-sha-<完整提交 SHA>` 标签，main 同步更新 `java-main`。空库、双桌隔离和进程重启续局检查通过后，Actions 发布这套标签并提供预填 SHA 的 `1panel-pure-java` 编排。原生、混合标签继续执行原有整栈检查。[工作流](.github/workflows/images.yml)
 
 仓库需要启用 Actions 并允许工作流写入 Packages。工作流使用 GitHub 自动签发的 `GITHUB_TOKEN`。若组织限制发布权限，或已有同名包，需要管理员给该仓库授予包写入权限。[GitHub 镜像发布说明](https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/publishing-docker-images)
 
-## 首次部署到 1Panel
+## 首次部署原生版到 1Panel
 
 部署包提供[可直接粘贴到 1Panel 的独立编排](deploy/1panel/docker-compose.yml)，适合新建实例。选用同次发布的两张镜像。`joker-native` 自带初始化脚本和模板，`prepare` 在本地生成配置并写入 `settings` 卷，随后由 `joker-api` 执行 Flyway 迁移。直接使用源码中的独立编排时须填写该次发布的 `IMAGE_TAG`。仓库根目录的编排用于与源码同次发布的部署包。
 
@@ -34,9 +39,9 @@ Actions 工作流会用 JDK 23 从源码生成 Spring Boot 可执行 JAR，在 L
 
 ## 业务数据与客户端配置
 
-构建 API 时，Maven 将 `backend/api/src/main/resources/db/migration/` 中的 SQL 原样打入 JAR。Spring Boot 使用业务库连接执行待应用的迁移。API 健康后，Compose 再启动原生游戏服务。空库依次执行 V1 至 V4，创建 163 张业务表。V1 提供 86 张原始表，V2 补建 62 张兼容表，V3 补建 14 张通用 Mapper 引用的表，并为赛事玩家记录补齐两个筹码列。V4 新增用户名登录凭据表。Flyway 通过 `flyway_schema_history` 记录版本和校验和。在 `api` 日志中查看迁移结果。
+构建 API 时，Maven 将 `backend/api/src/main/resources/db/migration/` 中的 SQL 原样打入 JAR。Spring Boot 使用业务库连接执行待应用的迁移。API 健康后，Compose 再启动原生游戏服务。空库依次执行 V1 至 V9，创建 165 张业务表。V1 提供 86 张原始表，V2 补建 62 张兼容表，V3 补建 14 张通用 Mapper 引用的表，并为赛事玩家记录补齐两个筹码列。V4 新增用户名登录凭据表，V5 新增 Java 牛牛结算回执表。V6 在四张玩法目录表均为空时写入 302 牛牛配置。V7 增加单局战绩的唯一局号并扩充明细字段。V8 为仅有总表记录的玩家补建游戏分表记录，保留分表现有余额。V9 创建 Java 牛牛的房间密码校验表。Flyway 通过 `flyway_schema_history` 记录版本和校验和。在 `api` 日志中查看迁移结果。
 
-旧版编排升级时，先备份数据库并保留原编排名与数据卷。已有业务表且尚无迁移历史的库会以版本 0 接入，再执行待应用的迁移。已有 V2 的库执行 V3 和 V4。V3 按列检查 `t_activity_user`，只添加缺少的 `bring_chip` 和 `present_chip`。已有同名表的结构和索引需要与业务库核对。以后使用新的版本文件记录结构变更。更新时部署同次发布的镜像和编排。每次启动 API 都会校验迁移历史。
+旧版编排升级时，先备份数据库并保留原编排名与数据卷。已有业务表且尚无迁移历史的库会以版本 0 接入，再执行待应用的迁移。已有 V2 的库继续执行 V3 至 V9。V3 按列检查 `t_activity_user`，只添加缺少的 `bring_chip` 和 `present_chip`。已有同名表的结构和索引需要与业务库核对。以后使用新的版本文件记录结构变更。更新时部署同次发布的镜像和编排。每次启动 API 都会校验迁移历史。
 
 V2 覆盖代理、充值、订单、联盟、任务和战绩等代码所用的表。字段来自实体及查询，类型、长度和索引按可见读写行为选取。佣金比例、商品、任务规则等业务数据需要从匹配版本的备份恢复或按实际业务配置。分表按真实后缀检查，核对命令和已知查询限制见 [数据库核验记录](AUDIT.md#数据库完整性)。
 

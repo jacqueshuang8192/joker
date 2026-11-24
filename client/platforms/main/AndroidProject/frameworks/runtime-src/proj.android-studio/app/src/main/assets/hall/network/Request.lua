@@ -341,10 +341,8 @@ function Request:userLogin(uid)
         requestMsg = "",
         callBack = function(data)
             print("=== 原始返回 ===")
-            print(tostring(data.netData))
             local responseData = json.decode(data.netData)
             local responseData = json.decode(data.netData)
-            dump(responseData,"-----请求登录验证返回-----")
 
             --登录失败,弹出登录界面
             if  responseData == nil then
@@ -389,6 +387,8 @@ function Request:userLogin(uid)
                 end
 
                 --记录用户信息
+                DOUNIU_ROOM_KEY = responseData["data"]["douniuKey"]
+                PURE_JAVA_HALL = responseData["data"]["pureJavaHall"] == true
                 USER_INFO["nick"] = data["nickName"]
                 USER_INFO["msgCount"] = data["msgCount"]
                 USER_INFO["sex"] = tonumber(data["sex"]) or 1

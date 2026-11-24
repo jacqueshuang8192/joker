@@ -79,9 +79,9 @@ public class scheduleCloseGameService {
 
                             if (!result) {
                                 ru.hset(WAIT_CLOSE_GROUP_EXCEPTION,key,closeGroup.get(key));
-                                ru.del(WAIT_CLOSE_GROUP,key);
+                                ru.hdel(WAIT_CLOSE_GROUP,key);
                             }else {
-                                ru.del(WAIT_CLOSE_GROUP,key);
+                                ru.hdel(WAIT_CLOSE_GROUP,key);
                             }
                         }
                     }

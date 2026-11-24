@@ -84,7 +84,7 @@
         UPDATE
             t_player_group
         SET
-            player_type=#{playerType},bonus = ${bonus},invite_code = #{inviteCode}
+            player_type = #{playerType}, bonus = #{bonus,jdbcType=DOUBLE}, invite_code = #{inviteCode}
         WHERE
             group_id=#{groupId}
         AND

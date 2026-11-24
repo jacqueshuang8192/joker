@@ -90,6 +90,7 @@ function NiuNiuSendHandle:LoginRoom(tid,seatId,activityId)
         ["addres"] = USER_INFO.addres,
         ["ip"] = USER_INFO.ip,
     }
+    if JAVA_DOUNIU then otherInfoTable.roomKey = DOUNIU_ROOM_KEY end
     local otherInfo = json.encode(otherInfoTable)
 
     local activityId = activityId or USER_INFO["activity_id"]
@@ -97,6 +98,7 @@ function NiuNiuSendHandle:LoginRoom(tid,seatId,activityId)
     local pack = bm.server:createPacketBuilder(PROTOCOL.CLI_LOGIN_ROOM)
         :setParameter("tid", tid)
         :setParameter("uid", USER_INFO["uid"])
+        :setParameter("mtkey", JAVA_DOUNIU and DOUNIU_ROOM_KEY or nil)
 
         :setParameter("seat_id",seatId)
         :setParameter("sex",USER_INFO["sex"])
@@ -192,7 +194,7 @@ function NiuNiuSendHandle:sitDown(seatId)
     dump("", "-----用户发送退出房间1031-----")
 
     local pack = bm.server:createPacketBuilder(PROTOCOL.CLI_SIT_DOWN)
-        :setParameter("seatId", seatId)
+        :setParameter("seat_id", seatId)
         :build()
     bm.server:send(pack)
 

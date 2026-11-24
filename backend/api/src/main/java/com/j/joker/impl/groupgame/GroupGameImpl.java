@@ -8,7 +8,9 @@ import org.apache.log4j.Logger;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Arrays;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
@@ -109,14 +111,14 @@ public class GroupGameImpl extends Protocol implements IGroupGame {
 
         try {
             List<Byte> fields = super.initPacketHead(protocolNo);
-            writeInt(fields, activityId.intValue());
+            // PerfromB2ARemoveGroup 按桌号查询对应活动。
             writeInt(fields, tid);
             out.write(finishPacket(fields));
             out.flush();
 
-            byte[] b = new byte[1024];
-            in.read(b);
-            int returnCode = b[25];
+            ByteBuffer reply = readReply(in, 26);
+            if (reply.getInt(8) != 0x361) throw new IOException("解散房间响应命令错误");
+            int returnCode = reply.getInt(22);
             logger.info("dissolve result" + returnCode);
             return returnCode;
         } catch (Exception e) {
@@ -144,9 +146,8 @@ public class GroupGameImpl extends Protocol implements IGroupGame {
             out.write(finishPacket(fields));
             out.flush();
 
-            byte[] b = new byte[1024];
-            in.read(b);
-            int returnCode = b[21] <= 0 ? b[21] : -99;
+            int code = readReply(in, 22).getInt(18);
+            int returnCode = code <= 0 ? code : -99;
 
             logger.info("exitFreeGameByDbDateAndGame result" + returnCode);
             return returnCode;
@@ -191,21 +192,25 @@ public class GroupGameImpl extends Protocol implements IGroupGame {
     }
 
     private int readCreatedTable(InputStream in, String logPrefix) throws java.io.IOException {
-        byte[] response = new byte[1024];
-        in.read(response);
-        int returnCode = response[25] <= 0 ? response[25] : -99;
-        logger.error("table returnCode" + returnCode);
-        if (returnCode != 0) {
-            return returnCode;
-        }
-        byte[] tableBytes = Arrays.copyOfRange(response, 30, 34);
-        logger.info(logPrefix + tableBytes);
-        int tableId = 0;
-        for (int i = 0; i < tableBytes.length; i++) {
-            tableId += (tableBytes[i] & 0xff) * Math.pow(256, tableBytes.length - 1 - i);
-        }
-        logger.error("table tid" + tableId);
-        return tableId;
+        ByteBuffer reply = readReply(in, 34);
+        if (reply.getInt(8) != 0x360) throw new IOException("房间分配响应命令错误");
+        int status = reply.getInt(22);
+        if (status != 0) return status < 0 ? status : -99;
+        int table = reply.getInt(30);
+        if (table <= 0) throw new IOException("房间分配没有返回有效桌号");
+        logger.info(logPrefix + table);
+        return table;
+    }
+
+    private static ByteBuffer readReply(InputStream stream, int minimumSize) throws IOException {
+        DataInputStream input = new DataInputStream(stream);
+        int length = input.readInt();
+        if (length < minimumSize - 4 || length > 65536) throw new IOException("房间分配响应长度错误");
+        byte[] packet = new byte[length + 4];
+        input.readFully(packet, 4, length);
+        ByteBuffer reply = ByteBuffer.wrap(packet);
+        if (reply.getShort(4) != 0x4259) throw new IOException("房间分配响应头错误");
+        return reply;
     }
 
     public static void main(String s[]) throws Exception {

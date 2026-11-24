@@ -1,0 +1,109 @@
+# 1Panel 纯 Java 编排。API 与游戏使用同一次发布的标签，MySQL、Redis、MongoDB、Memcached 使用面板已有服务。
+# 在环境变量填写 IMAGE_TAG、ADVERTISE_IP、MYSQL_PASSWORD，并按下方 prepare 核对基础服务地址。
+x-game-image: &game-image ${IMAGE_PREFIX:-ghcr.io/jacqueshuang8192/joker}-game-java:${IMAGE_TAG:?填写内置初始化脚本的发布标签}
+x-settings-file: &settings-file {type: volume, source: settings, read_only: true}
+x-redis-settings: &redis-settings {<<: *settings-file, target: /srv/redis.json, volume: {nocopy: true, subpath: runtime-java/redis.json}}
+x-game: &game
+  image: *game-image
+  platform: linux/amd64
+  restart: unless-stopped
+  network_mode: service:api
+  security_opt: [no-new-privileges:true]
+services:
+  # 首次运行写入 settings/runtime-java；同卷的 keys.json 保存业务密钥，原生版读取单独的 runtime 目录。
+  prepare:
+    image: *game-image
+    platform: linux/amd64
+    # 以 UID 0、GID 0 初始化卷，创建配置文件并设置文件权限。
+    user: "0:0"
+    network_mode: none
+    # 把 settings 持久卷挂到 /settings。prepare 可写，业务服务按需只读挂载其中的文件。
+    volumes: [settings:/settings]
+    entrypoint: [java, -Dloader.main=com.j.joker.game.deployment.PanelSettings, -cp, /srv/joker/joker-game-java.jar, org.springframework.boot.loader.launch.PropertiesLauncher]
+    environment:
+      # 填 1Panel 各数据库的容器名、内网端口及凭据。
+      MYSQL_HOST: ${MYSQL_HOST:-mysql}
+      MYSQL_PORT: ${MYSQL_PORT:-3306}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-shenshou_game}
+      MYSQL_USER: ${MYSQL_USER:-shenshou_game}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?填写游戏库密码}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_USER: ${REDIS_USER:-}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      MONGO_HOST: ${MONGO_HOST:-mongo}
+      MONGO_PORT: ${MONGO_PORT:-27017}
+      MONGO_USER: ${MONGO_USER:-}
+      MONGO_PASSWORD: ${MONGO_PASSWORD:-}
+      MONGO_AUTH_DATABASE: ${MONGO_AUTH_DATABASE:-admin}
+      MEMCACHED_HOST: ${MEMCACHED_HOST:-memcached}
+      MEMCACHED_PORT: ${MEMCACHED_PORT:-11211}
+
+  # Java HTTP 服务：处理客户端登录与业务请求，启动时由内置 Flyway 在游戏库内建表、升级。
+  api:
+    platform: linux/amd64
+    restart: unless-stopped
+    networks: [panel]
+    environment:
+      JOKER_REDIS_CONFIG: /srv/redis.json
+      JOKER_CONFIG: /srv/config/api.properties
+      # 与牛牛房间共用运行模式，使 API 在 Java 部署中启用密码房。
+      JOKER_DOUNIU_RUNTIME: game-java
+      JOKER_PURE_JAVA: "true"
+      JAVA_TOOL_OPTIONS: "-Xms128m -Xmx768m"
+    image: ${IMAGE_PREFIX:-ghcr.io/jacqueshuang8192/joker}-api:${IMAGE_TAG:?填写内置初始化脚本的发布标签}
+    # prepare 退出码为 0 后才启动 API。初始化失败时，从 1Panel 查看 prepare 的日志。
+    depends_on: {prepare: {condition: service_completed_successfully}}
+    ports:
+      # HTTP 接口默认只绑定宿主机回环地址，供宿主机反向代理转发 /hbiInterface/。
+      - "${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080"
+      # 以下两个游戏 TCP 端口默认绑定所有网卡，对外提供游戏时需在防火墙和安全组放行。
+      - "${GAME_BIND:-0.0.0.0}:4700:4700"
+      - "${GAME_BIND:-0.0.0.0}:13600:13600"
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/config/api.properties, volume: {nocopy: true, subpath: runtime-java/api.properties}}
+      - uploads:/srv/uploads
+    # 首页能正常响应后，Compose 才启动依赖 API 健康状态的游戏服务。
+    healthcheck:
+      test: [CMD, wget, -qO, /dev/null, http://127.0.0.1:8080/hbiInterface/index.html]
+      interval: 20s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+
+  # 玩家数据与结算账本仅供本编排内调用。
+  data:
+    <<: *game
+    depends_on: {api: {condition: service_healthy}}
+    environment: {GAME_ROLE: data, GAME_BIND_ADDRESS: 127.0.0.1, JOKER_REDIS_CONFIG: /srv/redis.json}
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/data/bin/config.xml, volume: {nocopy: true, subpath: runtime-java/data.xml}}
+
+  # 一个游戏进程承载大厅 4700、牛牛 13600，以及仅回环可达的内部通知 4701、分桌 11603 和在线查询 7500。
+  rooms:
+    <<: *game
+    depends_on: {data: {condition: service_healthy}}
+    environment:
+      GAME_ROLE: rooms
+      DATA_HOST: 127.0.0.1
+      ADVERTISE_IP: ${ADVERTISE_IP:?填写玩家可达的IPv4地址}
+      JOKER_REDIS_CONFIG: /srv/redis.json
+    volumes: [*redis-settings]
+
+  # 可选旧金币定时任务，启用 gold profile 后读取挂载的金币配置。
+  gold:
+    <<: *game
+    profiles: [gold]
+    depends_on: {data: {condition: service_healthy}}
+    environment: {GAME_ROLE: gold, GAME_BIND_ADDRESS: 127.0.0.1, JOKER_REDIS_CONFIG: /srv/redis.json}
+    volumes:
+      - *redis-settings
+      - {<<: *settings-file, target: /srv/gold/bin/config.xml, volume: {nocopy: true, subpath: runtime-java/gold-example.xml}}
+
+networks:
+  panel: {external: true, name: "${PANEL_NETWORK:-1panel-network}"}
+volumes:
+  settings:
+  uploads:

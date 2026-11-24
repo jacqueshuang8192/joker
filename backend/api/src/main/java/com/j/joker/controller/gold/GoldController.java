@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.j.joker.rooms.interfaces.DouniuRoomOptions;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ public class GoldController {
 
     @Autowired
     private GoldService goldService;
+    @Autowired
+    private DouniuRoomOptions roomOptions;
 
 //    @ResponseBody
 //    @RequestMapping(value = "getPlayerCountByPlayerBind", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json; charset=utf-8")
@@ -248,6 +251,7 @@ public class GoldController {
         Response response = new Response();
         try {
             response = goldService.getGameConfigByLevel(level);
+            if (response.getData() instanceof String catalog) response.setData(roomOptions.forClient(level, catalog));
         } catch (InfServerException ie) {
             LOGGER.error("获取用户信息：", ie);
             response.setReturnCode(ie.getErrorCode());

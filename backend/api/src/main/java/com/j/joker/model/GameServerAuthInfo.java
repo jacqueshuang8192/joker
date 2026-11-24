@@ -13,6 +13,14 @@ public class  GameServerAuthInfo {
     private TGameServer hall;
 
     private String mtKey;
+    private String douniuKey;
+
+    private boolean pureJavaHall;
+    public boolean isPureJavaHall() { return pureJavaHall; }
+    public void setPureJavaHall(boolean enabled) { pureJavaHall = enabled; }
+
+    public String getDouniuKey() { return douniuKey; }
+    public void setDouniuKey(String key) { this.douniuKey = key; }
 
     private Integer everydayLoginSendCard;
 

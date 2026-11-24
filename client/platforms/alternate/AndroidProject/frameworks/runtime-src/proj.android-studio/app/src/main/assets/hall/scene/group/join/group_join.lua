@@ -8,7 +8,7 @@ function groupJoin:showInputPasswordScene(typ, ... )
 
     local level = 0
 
-    local doFunc = ...
+    local doFunc, onCancel = ...
     local tip_1
     local tip_2
 
@@ -107,7 +107,6 @@ function groupJoin:showInputPasswordScene(typ, ... )
     local numPos = 0
     local str = 1
     local function reFresh()
-        dump(tbNumber, "tbNumber")
         for i = 1,6 do
             str = "num_box_"..tostring(i)
             local txt = layerEnter:getChildByName(str):getChildByName("Text_1")
@@ -128,6 +127,7 @@ function groupJoin:showInputPasswordScene(typ, ... )
             if event == TOUCH_EVENT_ENDED then
                 
                 self:removeInputPasswordScene()
+                if onCancel then onCancel() end
 
             end
 
@@ -172,7 +172,6 @@ function groupJoin:showInputPasswordScene(typ, ... )
                             end
 
                             if typ == nil or typ == "join" then
-                                print("inviteCode1:",strCode)
                                 doFunc(strCode)
                             end
                         end
@@ -202,6 +201,7 @@ function groupJoin:showInputPasswordScene(typ, ... )
             if sender == btn_exit then
                 
                 self:removeInputPasswordScene()
+                if onCancel then onCancel() end
             end
 
         end
@@ -219,6 +219,33 @@ function groupJoin:showInputPasswordScene(typ, ... )
     btn_del:addTouchEventListener(touchButtonEvent)
     btn_exit:addTouchEventListener(touchButtonEvent)
 
+end
+
+-- 玩家先在大厅取得桌号，再由已登录的 HTTP 会话验证房间密码。
+function groupJoin:unlockDouniuRoom(tid, activity, onUnlocked)
+    require(NetworkLoadingView_filePath):removeView(888)
+    local scene = SCENENOW.scene
+    self:showInputPasswordScene("join", function(pin)
+        local panel = scene:getChildByName("enter_encrypt_room")
+        cct.createHttRq({
+            url = HttpAddr .. "/freeGame/unlockDouniuRoom",
+            type_ = "POST",
+            date = {activityId = activity, password = pin},
+            callBack = function(event)
+                if SCENENOW.scene ~= scene or tolua.isnull(panel) or scene:getChildByName("enter_encrypt_room") ~= panel
+                    or USER_INFO.tid ~= tid or USER_INFO.activity_id ~= activity then return end
+                local reply = json.decode(event.netData) or {}
+                if tostring(reply.returnCode) == "0" then
+                    self:removeInputPasswordScene()
+                    onUnlocked()
+                else
+                    require("hall.GameTips"):showTips("提示", "", 3, reply.error or "房间密码验证失败，请重输")
+                end
+            end
+        })
+    end, function()
+        require("hall.GameCommon"):gExitGroupGame(USER_INFO.enter_mode)
+    end)
 end
 
 function groupJoin:removeInputPasswordScene()

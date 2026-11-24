@@ -209,6 +209,13 @@ end
 
 --进入房间失败 1005
 function NiuNiuReceiveHandle:SVR_LOGIN_ROOM_FAIL(pack)
+    if JAVA_DOUNIU and tonumber(pack.errorCode) == 16 then
+        local tid, activity = USER_INFO.tid, USER_INFO.activity_id
+        require(JoinGroup_filePath):unlockDouniuRoom(tid, activity, function()
+            NiuNiuSendHandle:LoginRoom(tid, USER_INFO.seat_id, activity)
+        end)
+        return
+    end
     dump(pack, '-----进入房间失败-----')
 
     local tbErrorCode = {
@@ -572,7 +579,7 @@ function NiuNiuReceiveHandle:SVR_LOGIN_ROOM(pack)
         NiuNiuReceiveHandle:SVR_SEND_USER_CARD(pack_tmp)
         local pack_tmp = {}
         pack_tmp.time = pack.less_time
-        pack_tmp.selects_base = pack.can_selects_base --2.0BUG，pack.selects_base
+        pack_tmp.selects_base = JAVA_DOUNIU and pack.selects_base or pack.can_selects_base --2.0BUG，pack.selects_base
         pack_tmp.can_selects_base = pack.can_selects_base
         NiuNiuReceiveHandle:SVR_SEND_BASES_TO_USER_BROADCAST(pack_tmp)
         if pack.user_status == 6 then
@@ -1234,7 +1241,12 @@ function NiuNiuReceiveHandle:SVR_BEGIN_QIANFGZHUANG_BROADCAST(pack)
             uid = data
             if USER_INFO['uid'] == uid then
                 --当前自己已经抢庄
-                canGrabDealer = pack.can_grab_times
+                if JAVA_DOUNIU then
+                    my_can_grab_times = pack.can_grab_times
+                    canGrabDealer = pack.canGrabDealer
+                else
+                    canGrabDealer = pack.can_grab_times
+                end
                 exsits = true
             end
         end
@@ -1244,7 +1256,7 @@ function NiuNiuReceiveHandle:SVR_BEGIN_QIANFGZHUANG_BROADCAST(pack)
         if my_can_grab_times then
             table.insert(pack.grab_times, 1, 0)
             table.insert(my_can_grab_times, 1, 0)
-            GamePlaneOperator:loadGrabBankerButtons(pack.grab_times, pack.can_grab_times, canGrabDealer)
+            GamePlaneOperator:loadGrabBankerButtons(pack.grab_times, JAVA_DOUNIU and my_can_grab_times or pack.can_grab_times, canGrabDealer)
         else
             local grab_times = {0, 1}
             local can_grab_times

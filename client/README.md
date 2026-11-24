@@ -8,7 +8,7 @@
 |---|---|
 | 登录与注册界面 | [hall/login](desktop/main/hall/login/) |
 | 启动流程 | [main.lua](desktop/main/src/main.lua)、[MainScene.lua](desktop/main/src/app/scenes/MainScene.lua) |
-| 登录 API 域名 | Windows 改 [config.lua](desktop/main/src/config.lua) 的 `HttpAddr`，Android 改 [CocosCaller.java](platforms/main/AndroidProject/frameworks/runtime-src/proj.android-studio/libcocos2dx/java/src/org/cocos2dx/lib/CocosCaller.java) 的 `getHttpAddr()` |
+| 登录 API 域名 | Windows 修改[桌面配置](desktop/main/src/config.lua)中的 `HttpAddr`。Android 修改[打包资源](platforms/main/AndroidProject/frameworks/runtime-src/proj.android-studio/app/src/main/assets/config.lua)中的 `HttpAddr`，也可用 Android 字符串资源 `joker_api_url` 覆盖。 |
 | 游戏玩法与公共资源 | [games](desktop/main/games/)、[assets](desktop/main/assets/) |
 | 客户端网络回归测试 | [tests](tests/) |
 
@@ -30,3 +30,5 @@ python3 client/tools/export_desktop.py --variant main build/main/ClientHall
 Windows 运行还需要从本地配套运行包补入 EXE、DLL，并使用自己的测试账号配置。仓库含启动批处理，历史账号、用户设置、签名材料、日志、APK 和本机编译输出保存在仓库之外。发布副本中以 `LOCAL_` 开头的历史第三方凭据替代值须按自己的服务配置；涉及服务端密钥的流程应由自己的后端提供。
 
 移动工程各自使用自己的资源集。Android 可通过 `COCOS2DX_ROOT` 指定完整引擎位置，旧项目还依赖包含 GNU STL 的相应 NDK。iOS 工程需适配部署目标、接入匹配的引擎、游戏资源及业务桥接后再签名打包。GitHub Actions 构建的是后端 Java 和 C++ 镜像。
+
+Java 普通牛牛客户端需要在实际打包使用的 `config.lua` 设置 `JAVA_DOUNIU = true`，填写 `HttpAddr`，重新导出资源或打包并登录。该开关影响入房凭据、大厅路由编号和准备操作。纯 Java 部署由 API 的 `pureJavaHall` 指示大厅登录时携带会话凭据，需同时发布本次 `Request.lua` 和 `HallServer.lua`。原生牛牛的 `JAVA_DOUNIU` 默认值为 `false`。[纯 Java 部署](../DEPLOYMENT.md#纯-java-牛牛部署) · [混合版切换](../deploy/java/README.md#在测试环境切换牛牛房间)

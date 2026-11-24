@@ -92,7 +92,7 @@
     <update id="updateClubOwnerId">
         update t_group_player set
             ower_id = #{assignor}
-        where group_id = #{groupId}
+        where group_id = #{groupId} and ower_id = #{ownerId}
     </update>
 
     <!--<insert id="insertGroup" parameterType="com.j.joker.model.TGroupPlayer">-->

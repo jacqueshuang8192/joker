@@ -1,6 +1,6 @@
 package com.j.joker.impl.protocol;
 
-import org.apache.commons.lang.StringUtils;
+import java.nio.charset.StandardCharsets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,19 +73,9 @@ public abstract class Protocol {
         if (str == null) {
             str = "";
         }
-        byte[] intVal = intToBytes(1 + str.getBytes().length);
-        for (byte b : intVal) {
-            packet.add(b);
-        }
-
-        if (StringUtils.isNotBlank(str)) {
-            byte[] b = str.getBytes();
-            for (byte c : b) {
-                packet.add(c);
-            }
-            addZeros(1, packet);
-        } else {
-            addZeros(1, packet);
-        }
+        byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
+        writeInt(packet, bytes.length + 1);
+        for (byte value : bytes) packet.add(value);
+        packet.add((byte) 0);
     }
 }

@@ -56,7 +56,8 @@ public interface TGroupPlayerMapper extends EntityMapper<TGroupPlayer> {
     Integer updateCluProfitCount(@Param("groupId") Integer groupId, @Param("profitCount") Integer profitCount, @Param("profitClubCount") Integer profitClubCount,
                                  @Param("pointPool") Integer pointPool);
 
-    void updateClubOwnerId(@Param("groupId") Integer groupId, @Param("assignor") Integer assignor);
+    int updateClubOwnerId(@Param("groupId") Integer groupId, @Param("ownerId") Integer ownerId,
+                          @Param("assignor") Integer assignor);
 
     List<TGroupPlayer> selectAllClub();
 }

@@ -181,7 +181,10 @@ public class TGroupPlayerService {
                 throw new InfServerException(Constants.RETURN_CODE_FAIL, "被转让人不存在...");
             }
 
-            groupPlayerMapper.updateClubOwnerId(groupId, assignor);
+            if (ownerId.equals(assignor)) return;
+            if (groupPlayerMapper.updateClubOwnerId(groupId, ownerId, assignor) != 1) {
+                throw new InfServerException(Constants.RETURN_CODE_FAIL, "盟主已变更，请刷新联盟信息");
+            }
 
             //修改自身的角色
             playerGroupMapper.updateRepositoryPoint(groupId, ownerId, 0);
@@ -220,7 +223,7 @@ public class TGroupPlayerService {
                 cache.hset(Constants.GROUP_PLAYER, String.valueOf (groupId), groupInfoJson.toJSONString());
 
                 JSONArray players = groupInfoJson.getJSONArray("players");
-                for (int i = 0; i < players.size(); i++) {
+                for (int i = 0; players != null && i < players.size(); i++) {
                     JSONObject player = players.getJSONObject(i);
                     if (!StringUtil.isEmpty(player)) {
                         Integer uid = player.getInteger("userId");

@@ -373,7 +373,7 @@ function GameSetting:regBridgeHandler()
                                         bm.netdisConnect = true
                                         if device.platform ~= "windows" and IS_TONGC_DUN == 1 then
                                             local sigs = "Ljava/lang/String;"
-                                            HttpAddr = cct.getDateForApp("getHttpAddr",{},sigs)
+                                            HttpAddr = resolveGameApiAddress(cct.getDateForApp("getHttpAddr",{},sigs))
                                         end
                                         bm.server:reloginFunc()
                                     end
@@ -811,7 +811,7 @@ function GameSetting:regBridgeHandlerForDict()
                             bm.netdisConnect = true
                             if device.platform ~= "windows" and IS_TONGC_DUN == 1 then
                                 local sigs = "Ljava/lang/String;"
-                                HttpAddr = cct.getDateForApp("getHttpAddr",{},sigs)
+                                HttpAddr = resolveGameApiAddress(cct.getDateForApp("getHttpAddr",{},sigs))
                             end
                             bm.server:reloginFunc()
                         end

@@ -23,6 +23,7 @@ public class TSecUser {
     @Column("sell_count")
     private Long sellCount;
 
+    @Column("secondLayerSellCount")
     private Long secondLayerSellCount;
 
     @Column("invitation_code")
@@ -39,6 +40,7 @@ public class TSecUser {
      */
     private Short status;
 
+    @Column("grandfatherId")
     private Long grandfatherId;
 
     @Column("parent_id")
@@ -50,6 +52,7 @@ public class TSecUser {
     @Column("room_card_num")
     private Integer roomCardNum;
 
+    @Column("createDate")
     private Date createDate;
 
     public Long getSellCount() {

@@ -1,0 +1,2431 @@
+{
+ "CLI_HEART": {
+  "cmd": "0x110",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "tid",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_REQUEST_CHECK_XIAZHU": {
+  "cmd": "0x1039",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1
+  }
+ },
+ "CLI_REQUEST_BET": {
+  "cmd": "0x1040",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "seat_id",
+     "type": "INT"
+    },
+    {
+     "name": "betChip",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_REQUEST_GRAB_BANKER": {
+  "cmd": "0x1041",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "seat_id",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_REQUEST_LUZHI": {
+  "cmd": "0x1035",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1
+  }
+ },
+ "CLI_AUTO_PLAY": {
+  "cmd": "0x1034",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "isOpenAuto",
+     "type": "BYTE"
+    },
+    {
+     "name": "grab_times",
+     "type": "BYTE"
+    },
+    {
+     "name": "bet_times",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "CLI_QUIT_ROOM": {
+  "cmd": "0x1033",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1
+  }
+ },
+ "CLI_SIT_DOWN": {
+  "cmd": "0x1031",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "seat_id",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_STAND_UP": {
+  "cmd": "0x1032",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1
+  }
+ },
+ "CLIENT_CMD_FORWARD_MESSAGE": {
+  "cmd": "0x165",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "level",
+     "type": "SHORT"
+    },
+    {
+     "name": "msg",
+     "type": "STRING"
+    }
+   ]
+  }
+ },
+ "CLIENT_CMD_SEND_MSG_TO_SERVER": {
+  "cmd": "0x801",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "level",
+     "type": "SHORT"
+    },
+    {
+     "name": "msg",
+     "type": "STRING"
+    }
+   ]
+  }
+ },
+ "CLI_READYNOW_ROOM": {
+  "cmd": "0x2001",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "readyState",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_LOGIN_ROOM": {
+  "cmd": "0x1001",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "tid",
+     "type": "INT"
+    },
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "mtkey",
+     "type": "STRING"
+    },
+    {
+     "name": "strinfo",
+     "type": "STRING"
+    }
+   ]
+  }
+ },
+ "CLIENT_COMMAND_START_GAME": {
+  "cmd": "0x2002",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1
+  }
+ },
+ "CLI_USER_BASES": {
+  "cmd": "0x2008",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "bases",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_QIANGZHUANG": {
+  "cmd": "0x2007",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "if_qiang",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_PLAY_CARD": {
+  "cmd": "0x2003",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "cards",
+     "type": "ARRAY",
+     "fixedLengthParser": "mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "card",
+       "type": "BYTE"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "CLI_LOGIN": {
+  "cmd": "0x0116",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "storeId",
+     "type": "INT"
+    },
+    {
+     "name": "kind",
+     "type": "INT"
+    },
+    {
+     "name": "userInfo",
+     "type": "STRING"
+    }
+   ]
+  }
+ },
+ "C2G_CMD_DISSOLVE_ROOM": {
+  "cmd": "0x808",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1
+  }
+ },
+ "C2G_CMD_REPLY_DISSOLVE_ROOM": {
+  "cmd": "0x809",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "agree",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_CMD_REQ_YAZHU_INFO": {
+  "cmd": "0x1106",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1
+  }
+ },
+ "CLI_PLAYER_SELECT_CARD": {
+  "cmd": "0x1201",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "Cardcount",
+     "type": "BYTE"
+    },
+    {
+     "name": "Cardbuf",
+     "type": "ARRAY",
+     "fixedLengthParser": "Cardcount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "card",
+       "type": "BYTE"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "CLI_CMD_REQ_YAZHU_DETAILS": {
+  "cmd": "0x1107",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "seatId",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_GET_CHIP": {
+  "cmd": "0x806",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_CHANGE_CHIP": {
+  "cmd": "0x805",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "chip",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_COMMAND_REQ_WAIWEI_RESULT": {
+  "cmd": "0x110B",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1
+  }
+ },
+ "CLI_COMMAND_GRAB_WW_DEALER": {
+  "cmd": "0x110A",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1
+  }
+ },
+ "CLI_MSG_FACE": {
+  "cmd": "0x1104",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "type",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLI_SEND_TEST_CARD": {
+  "cmd": "0x1110",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "cards",
+     "type": "ARRAY",
+     "fixedLengthParser": "mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "card",
+       "type": "BYTE"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "CLI_SEND_UP_BANK": {
+  "cmd": "0x2014",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "opt",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "CLI_SEND_DOWN_BANK": {
+  "cmd": "0x2015",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "opt",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "CLI_COMMAND_GAMERESULT_RECORD": {
+  "cmd": "0x1050",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "resultIndex",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_HEART": {
+  "cmd": "0x110",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1
+  }
+ },
+ "SERVER_CMD_BONUS_RECORD": {
+  "cmd": "0x1039",
+  "ver": 1,
+  "SERVER": {
+   "fmt": {
+    "ver": 1
+   }
+  }
+ },
+ "BROADCAST_SENDCARD_REMAINDTIME": {
+  "cmd": "0x1041",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "time",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "BROADCAST_USER_BET": {
+  "cmd": "0x1040",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "bet_uid",
+     "type": "INT"
+    },
+    {
+     "name": "bet_player_chip",
+     "type": "INT"
+    },
+    {
+     "name": "costCoins",
+     "type": "INT"
+    },
+    {
+     "name": "total_bet_count",
+     "type": "INT"
+    },
+    {
+     "name": "my_bet_count",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SERVER_CMD_RECORD_PAPER": {
+  "cmd": "0x1035",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "record_paper_size",
+     "type": "BYTE"
+    },
+    {
+     "name": "record_paper",
+     "type": "ARRAY",
+     "fixedLengthParser": "record_paper_size",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "single_record_paper_size",
+       "type": "BYTE"
+      },
+      {
+       "name": "single_record_paper",
+       "type": "ARRAY",
+       "fixedLengthParser": "single_record_paper_size",
+       "fixedLength": 0,
+       "fmt": [
+        {
+         "name": "balance",
+         "type": "INT"
+        },
+        {
+         "name": "niuType",
+         "type": "BYTE"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "BROADCAST_USER_AUTO_PLAY": {
+  "cmd": "0x1034",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "isOpenAuto",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "BROADCAST_USER_QUIT_ROOM": {
+  "cmd": "0x1033",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "BROADCAST_USER_SIT_DOWN": {
+  "cmd": "0x1031",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "seat_id",
+     "type": "INT"
+    },
+    {
+     "name": "sex",
+     "type": "BYTE"
+    },
+    {
+     "name": "nickName",
+     "type": "STRING"
+    },
+    {
+     "name": "portrait",
+     "type": "STRING"
+    },
+    {
+     "name": "gold",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "BROADCAST_USER_STAND_UP": {
+  "cmd": "0x1032",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_BROADCAST_WAIT_START": {
+  "cmd": "0x1100",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "time",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "SVR_COMMAND_WAITING_USERINFOS": {
+  "cmd": "0x110D",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "playerCount",
+     "type": "BYTE"
+    },
+    {
+     "name": "wait_players",
+     "type": "ARRAY",
+     "fixedLengthParser": "playerCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "seat_id",
+       "type": "INT"
+      },
+      {
+       "name": "sex",
+       "type": "BYTE"
+      },
+      {
+       "name": "nickName",
+       "type": "STRING"
+      },
+      {
+       "name": "portrait",
+       "type": "STRING"
+      },
+      {
+       "name": "latitude",
+       "type": "STRING"
+      },
+      {
+       "name": "longitude",
+       "type": "STRING"
+      },
+      {
+       "name": "otherInfo",
+       "type": "STRING"
+      },
+      {
+       "name": "ip",
+       "type": "STRING"
+      },
+      {
+       "name": "gold",
+       "type": "INT"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_REMAID_4WW": {
+  "cmd": "0x110E",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "typ",
+     "type": "BYTE"
+    },
+    {
+     "name": "value",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_CMD_REQ_YAZHU_INFO": {
+  "cmd": "0x1106",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "waiwei_banker_uid",
+     "type": "INT"
+    },
+    {
+     "name": "remainTime",
+     "type": "BYTE"
+    },
+    {
+     "name": "playerCount",
+     "type": "BYTE"
+    },
+    {
+     "name": "players_bet_situation",
+     "type": "ARRAY",
+     "fixedLengthParser": "playerCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "seatId",
+       "type": "INT"
+      },
+      {
+       "name": "total_bet_count",
+       "type": "INT"
+      },
+      {
+       "name": "my_bet_count",
+       "type": "INT"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_CMD_REQ_YAZHU_DETAILS": {
+  "cmd": "0x1107",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "seatId",
+     "type": "INT"
+    },
+    {
+     "name": "recordCount",
+     "type": "BYTE"
+    },
+    {
+     "name": "players_bet_situation",
+     "type": "ARRAY",
+     "fixedLengthParser": "recordCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "bet_uid",
+       "type": "INT"
+      },
+      {
+       "name": "bet_count",
+       "type": "INT"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_BROADCAST_BEGIN_GRAB_WW_DEALER": {
+  "cmd": "0x110C",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "waiwei_grab_time",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "BROADCAST_WAIWEI_RESULT": {
+  "cmd": "0x110B",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "bet_playercount",
+     "type": "INT"
+    },
+    {
+     "name": "betResult",
+     "type": "ARRAY",
+     "fixedLengthParser": "bet_playercount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "bet_uid",
+       "type": "INT"
+      },
+      {
+       "name": "score",
+       "type": "INT"
+      },
+      {
+       "name": "chip",
+       "type": "INT"
+      },
+      {
+       "name": "playercount",
+       "type": "BYTE"
+      },
+      {
+       "name": "betDetailResult",
+       "type": "ARRAY",
+       "fixedLengthParser": "playercount",
+       "fixedLength": 0,
+       "fmt": [
+        {
+         "name": "seatId",
+         "type": "INT"
+        },
+        {
+         "name": "detail_score",
+         "type": "INT"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_BROADCAST_GRAB_WW_DEALER": {
+  "cmd": "0x110A",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "waiwei_banker_uid",
+     "type": "INT"
+    },
+    {
+     "name": "waiwei_bet_time",
+     "type": "BYTE"
+    },
+    {
+     "name": "waiwei_bet_limit_times",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "BROADCAST_ERROR_TIPS": {
+  "cmd": "0x5001",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "errorCode",
+     "type": "SHORT"
+    }
+   ]
+  }
+ },
+ "BROADCAST_USER_IP": {
+  "cmd": "0x106A",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "playercount",
+     "type": "INT"
+    },
+    {
+     "name": "playeripdata",
+     "type": "ARRAY",
+     "fixedLengthParser": "playercount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "ip",
+       "type": "STRING"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_LOGIN_OK": {
+  "cmd": "0x0201",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "ver",
+     "type": "INT"
+    },
+    {
+     "name": "levelCount",
+     "type": "INT"
+    },
+    {
+     "name": "usercount",
+     "type": "ARRAY",
+     "fixedLengthParser": "levelCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "INT"
+      }
+     ]
+    },
+    {
+     "name": "friends",
+     "type": "INT"
+    },
+    {
+     "name": "tid",
+     "type": "INT"
+    },
+    {
+     "name": "ip",
+     "type": "STRING"
+    },
+    {
+     "name": "port",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_QUIT_ROOM": {
+  "cmd": "0x100E",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_NO_GOLD": {
+  "cmd": "0x700A",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "type",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_BROADCAST_COUNT_DOWN": {
+  "cmd": "0x100F",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "time",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "SVR_BRANKRUPT": {
+  "cmd": "0x7002",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "type",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SERVER_COMMAND_KICK_OUT_ROOM": {
+  "cmd": "0x7007",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "type",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_USER_QIANFGZHUANG_RESULT_BROADCAST": {
+  "cmd": "0x6013",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "if_qiang",
+     "type": "INT"
+    },
+    {
+     "name": "isShowHandleView",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "SVR_USER_BASES_RESULT_BROADCAST": {
+  "cmd": "0x6014",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "base",
+     "type": "INT"
+    },
+    {
+     "name": "isShowHandleView",
+     "type": "BYTE"
+    },
+    {
+     "name": "tuizhu",
+     "type": "BYTE"
+    },
+    {
+     "name": "isSheMen",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "SVR_USER_PLAYED_CARDS_BROADCAST": {
+  "cmd": "0x6005",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "card",
+     "type": "BYTE"
+    },
+    {
+     "name": "kind",
+     "type": "BYTE"
+    },
+    {
+     "name": "mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "cards",
+     "type": "ARRAY",
+     "fixedLengthParser": "mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "times",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "SVR_CHIP_CHANGE_BROADCAST": {
+  "cmd": "0x4800",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "user_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "userinfo",
+     "type": "ARRAY",
+     "fixedLengthParser": "user_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "change_chip",
+       "type": "INT"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_PLAY_CARD_BROADCAST": {
+  "cmd": "0x6004",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "time",
+     "type": "INT"
+    },
+    {
+     "name": "isShowHandleView",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "SVR_READY_BROADCAST": {
+  "cmd": "0x6001",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "readyState",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "SVR_COST_TAI": {
+  "cmd": "0x6017",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "tai",
+     "type": "INT"
+    },
+    {
+     "name": "money",
+     "type": "INT"
+    },
+    {
+     "name": "lmoney",
+     "type": "INT64"
+    }
+   ]
+  }
+ },
+ "SVR_BRANK_BROADCAST": {
+  "cmd": "0x6003",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "guodi",
+     "type": "INT"
+    },
+    {
+     "name": "isShowHandleView",
+     "type": "BYTE"
+    }
+   ]
+  }
+ },
+ "SVR_SEND_USED_CARDS": {
+  "cmd": "0x11111",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "mount",
+     "type": "SHORT"
+    },
+    {
+     "name": "cards",
+     "type": "ARRAY",
+     "fixedLengthParser": "mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_SEND_USER_CARD": {
+  "cmd": "0x4001",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "mount",
+     "type": "SHORT"
+    },
+    {
+     "name": "cards",
+     "type": "ARRAY",
+     "fixedLengthParser": "mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "userMount",
+     "type": "BYTE"
+    },
+    {
+     "name": "users",
+     "type": "ARRAY",
+     "fixedLengthParser": "userMount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "seat_id",
+       "type": "BYTE"
+      },
+      {
+       "name": "mount",
+       "type": "BYTE"
+      },
+      {
+       "name": "cards",
+       "type": "ARRAY",
+       "fixedLengthParser": "mount",
+       "fixedLength": 0,
+       "fmt": [
+        {
+         "type": "BYTE"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SERVER_COMMAND_REMAID_START_GAME": {
+  "cmd": "0x4009",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1
+  }
+ },
+ "SERVER_COMMAND_REMAID_START_GAME_FAIL": {
+  "cmd": "0x400A",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1
+  }
+ },
+ "SVR_BROADCAST_GAME_START": {
+  "cmd": "0x6002",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "send_card_num",
+     "type": "BYTE"
+    },
+    {
+     "name": "playerCount",
+     "type": "BYTE"
+    },
+    {
+     "name": "user_datas",
+     "type": "ARRAY",
+     "fixedLengthParser": "playerCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "seatId",
+       "type": "BYTE"
+      },
+      {
+       "name": "mount",
+       "type": "BYTE"
+      },
+      {
+       "name": "cards",
+       "type": "ARRAY",
+       "fixedLengthParser": "mount",
+       "fixedLength": 0,
+       "fmt": [
+        {
+         "type": "BYTE"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "hasLeper",
+     "type": "BYTE"
+    },
+    {
+     "name": "leperCount",
+     "type": "BYTE"
+    },
+    {
+     "name": "lepers",
+     "type": "ARRAY",
+     "fixedLengthParser": "leperCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "card",
+       "type": "BYTE"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_LOGIN_ROOM_FAIL": {
+  "cmd": "0x1005",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "errorCode",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_OPEN_CARDS_BROADCAST": {
+  "cmd": "0x1043",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "openCardTime",
+     "type": "BYTE"
+    },
+    {
+     "name": "user_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "user_cards",
+     "type": "ARRAY",
+     "fixedLengthParser": "user_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "handCardCount",
+       "type": "BYTE"
+      },
+      {
+       "name": "handCards",
+       "type": "ARRAY",
+       "fixedLengthParser": "handCardCount",
+       "fixedLength": 0,
+       "fmt": [
+        {
+         "type": "BYTE"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_SETTLEMENT_BROADCAST": {
+  "cmd": "0x6008",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "bonusPool",
+     "type": "INT"
+    },
+    {
+     "name": "user_mount",
+     "type": "INT"
+    },
+    {
+     "name": "userinfo",
+     "type": "ARRAY",
+     "fixedLengthParser": "user_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "win_times",
+       "type": "INT"
+      },
+      {
+       "name": "win_chip",
+       "type": "INT"
+      },
+      {
+       "name": "chips",
+       "type": "INT"
+      },
+      {
+       "name": "handCardCount",
+       "type": "BYTE"
+      },
+      {
+       "name": "handCards",
+       "type": "ARRAY",
+       "fixedLengthParser": "handCardCount",
+       "fixedLength": 0,
+       "fmt": [
+        {
+         "type": "BYTE"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "banker_uid",
+     "type": "INT"
+    },
+    {
+     "name": "banker_win_times",
+     "type": "INT"
+    },
+    {
+     "name": "banker_win_chip",
+     "type": "INT"
+    },
+    {
+     "name": "banker_chips",
+     "type": "INT"
+    },
+    {
+     "name": "time",
+     "type": "INT"
+    },
+    {
+     "name": "round",
+     "type": "INT"
+    },
+    {
+     "name": "handCardCount",
+     "type": "BYTE"
+    },
+    {
+     "name": "handCards",
+     "type": "ARRAY",
+     "fixedLengthParser": "handCardCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "guodi",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_BEGIN_QIANFGZHUANG_BROADCAST": {
+  "cmd": "0x6015",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "grab_times_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "grab_times",
+     "type": "ARRAY",
+     "fixedLengthParser": "grab_times_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "ids",
+     "type": "ARRAY",
+     "fixedLengthParser": "mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "can_grab_times_mount",
+       "type": "BYTE"
+      },
+      {
+       "name": "can_grab_times",
+       "type": "ARRAY",
+       "fixedLengthParser": "can_grab_times_mount",
+       "fixedLength": 0,
+       "fmt": [
+        {
+         "name": "times",
+         "type": "BYTE"
+        }
+       ]
+      },
+      {
+       "name": "canGrabDealer",
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "time",
+     "type": "INT"
+    },
+    {
+     "name": "isShowHandleView",
+     "type": "BYTE"
+    },
+    {
+     "name": "canTuizhuCount",
+     "type": "BYTE"
+    },
+    {
+     "name": "canTuizhu",
+     "type": "ARRAY",
+     "fixedLengthParser": "canTuizhuCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "max_tuizhu",
+       "type": "INT"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_GROUP_TIME": {
+  "cmd": "0x5101",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "time",
+     "type": "INT"
+    },
+    {
+     "name": "round",
+     "type": "INT"
+    },
+    {
+     "name": "round_total",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_LOGIN_ROOM_BROADCAST": {
+  "cmd": "0x100D",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "seat_id",
+     "type": "INT"
+    },
+    {
+     "name": "sex",
+     "type": "BYTE"
+    },
+    {
+     "name": "nickName",
+     "type": "STRING"
+    },
+    {
+     "name": "portrait",
+     "type": "STRING"
+    },
+    {
+     "name": "latitude",
+     "type": "STRING"
+    },
+    {
+     "name": "longitude",
+     "type": "STRING"
+    },
+    {
+     "name": "otherInfo",
+     "type": "STRING"
+    },
+    {
+     "name": "ip",
+     "type": "STRING"
+    },
+    {
+     "name": "gold",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_LOGIN_ROOM": {
+  "cmd": "0x1007",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "activityId",
+     "type": "INT"
+    },
+    {
+     "name": "isWatch",
+     "type": "INT"
+    },
+    {
+     "name": "club_id",
+     "type": "INT"
+    },
+    {
+     "name": "inviteCode",
+     "type": "STRING"
+    },
+    {
+     "name": "bonusPool",
+     "type": "INT"
+    },
+    {
+     "name": "start_id",
+     "type": "INT"
+    },
+    {
+     "name": "gameType",
+     "type": "BYTE"
+    },
+    {
+     "name": "initialChip",
+     "type": "INT"
+    },
+    {
+     "name": "maxPlyaerNum",
+     "type": "BYTE"
+    },
+    {
+     "name": "allUsersReadyStatus",
+     "type": "BYTE"
+    },
+    {
+     "name": "base",
+     "type": "INT"
+    },
+    {
+     "name": "table_kind",
+     "type": "SHORT"
+    },
+    {
+     "name": "seat_id",
+     "type": "INT"
+    },
+    {
+     "name": "gold",
+     "type": "INT"
+    },
+    {
+     "name": "win",
+     "type": "INT"
+    },
+    {
+     "name": "lost",
+     "type": "INT"
+    },
+    {
+     "name": "table_status",
+     "type": "BYTE"
+    },
+    {
+     "name": "bank_uid",
+     "type": "INT"
+    },
+    {
+     "name": "less_time",
+     "type": "INT"
+    },
+    {
+     "name": "user_status",
+     "type": "BYTE"
+    },
+    {
+     "name": "card_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "cards",
+     "type": "ARRAY",
+     "fixedLengthParser": "card_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "grab_times_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "grab_times",
+     "type": "ARRAY",
+     "fixedLengthParser": "grab_times_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "can_grab_times_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "can_grab_times",
+     "type": "ARRAY",
+     "fixedLengthParser": "can_grab_times_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "canGrabDealer",
+     "type": "BYTE"
+    },
+    {
+     "name": "selects_base_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "selects_base",
+     "type": "ARRAY",
+     "fixedLengthParser": "selects_base_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "INT"
+      }
+     ]
+    },
+    {
+     "name": "can_selects_base_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "can_selects_base",
+     "type": "ARRAY",
+     "fixedLengthParser": "can_selects_base_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "INT"
+      }
+     ]
+    },
+    {
+     "name": "user_base_calltime",
+     "type": "INT"
+    },
+    {
+     "name": "user_base_waitplay",
+     "type": "INT"
+    },
+    {
+     "name": "user_base_waitplay_cards_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "user_base_waitplay_cards",
+     "type": "ARRAY",
+     "fixedLengthParser": "user_base_waitplay_cards_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "user_base_out",
+     "type": "INT"
+    },
+    {
+     "name": "user_base_out_card_kind",
+     "type": "BYTE"
+    },
+    {
+     "name": "user_base_out_cards_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "user_base_out_cards",
+     "type": "ARRAY",
+     "fixedLengthParser": "user_base_out_cards_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "user_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "users_infos",
+     "type": "ARRAY",
+     "fixedLengthParser": "user_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "seat_id",
+       "type": "INT"
+      },
+      {
+       "name": "sex",
+       "type": "BYTE"
+      },
+      {
+       "name": "nickName",
+       "type": "STRING"
+      },
+      {
+       "name": "portrait",
+       "type": "STRING"
+      },
+      {
+       "name": "latitude",
+       "type": "STRING"
+      },
+      {
+       "name": "longitude",
+       "type": "STRING"
+      },
+      {
+       "name": "otherInfo",
+       "type": "STRING"
+      },
+      {
+       "name": "ip",
+       "type": "STRING"
+      },
+      {
+       "name": "gold",
+       "type": "INT"
+      },
+      {
+       "name": "win",
+       "type": "INT"
+      },
+      {
+       "name": "lost",
+       "type": "INT"
+      },
+      {
+       "name": "user_status",
+       "type": "BYTE"
+      },
+      {
+       "name": "user_base_calltime",
+       "type": "INT"
+      },
+      {
+       "name": "tuizhu",
+       "type": "BYTE"
+      },
+      {
+       "name": "keTuizhu",
+       "type": "INT"
+      },
+      {
+       "name": "user_base_waitplay",
+       "type": "INT"
+      },
+      {
+       "name": "user_base_waitplay_cards_mount",
+       "type": "BYTE"
+      },
+      {
+       "name": "user_base_out",
+       "type": "INT"
+      },
+      {
+       "name": "user_base_out_cards_cardkind",
+       "type": "BYTE"
+      },
+      {
+       "name": "user_base_out_cards_mount",
+       "type": "BYTE"
+      },
+      {
+       "name": "user_base_out_cards",
+       "type": "ARRAY",
+       "fixedLengthParser": "user_base_out_cards_mount",
+       "fixedLength": 0,
+       "fmt": [
+        {
+         "type": "BYTE"
+        }
+       ]
+      },
+      {
+       "name": "user_if_outline",
+       "type": "BYTE"
+      },
+      {
+       "name": "user_if_auto",
+       "type": "BYTE"
+      }
+     ]
+    },
+    {
+     "name": "isGoldGame",
+     "type": "BYTE"
+    },
+    {
+     "name": "gameConfig",
+     "type": "STRING"
+    },
+    {
+     "name": "waiweibet_count",
+     "type": "BYTE"
+    },
+    {
+     "name": "waiweibet_chips",
+     "type": "ARRAY",
+     "fixedLengthParser": "waiweibet_count",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "INT"
+      }
+     ]
+    },
+    {
+     "name": "m_guodi",
+     "type": "INT"
+    },
+    {
+     "name": "m_curGuoJuSize",
+     "type": "INT"
+    },
+    {
+     "name": "bankerOptState",
+     "type": "INT"
+    },
+    {
+     "name": "m_nGuoCount",
+     "type": "INT"
+    },
+    {
+     "name": "hasLeper",
+     "type": "BYTE"
+    },
+    {
+     "name": "leperCount",
+     "type": "BYTE"
+    },
+    {
+     "name": "lepers",
+     "type": "ARRAY",
+     "fixedLengthParser": "leperCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "card",
+       "type": "BYTE"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_SEND_BASES_TO_USER_BROADCAST": {
+  "cmd": "0x7001",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "selects_base_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "selects_base",
+     "type": "ARRAY",
+     "fixedLengthParser": "selects_base_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "type": "INT"
+      }
+     ]
+    },
+    {
+     "name": "can_selects_base_mount",
+     "type": "BYTE"
+    },
+    {
+     "name": "can_selects_base",
+     "type": "ARRAY",
+     "fixedLengthParser": "can_selects_base_mount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "times",
+       "type": "INT"
+      }
+     ]
+    },
+    {
+     "name": "time",
+     "type": "INT"
+    },
+    {
+     "name": "isShowHandleView",
+     "type": "BYTE"
+    },
+    {
+     "name": "tuiZhuBase",
+     "type": "INT"
+    },
+    {
+     "name": "canTuizhuCount",
+     "type": "BYTE"
+    },
+    {
+     "name": "canTuizhu",
+     "type": "ARRAY",
+     "fixedLengthParser": "canTuizhuCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "max_tuizhu",
+       "type": "INT"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SVR_GROUP_BILLBOARD": {
+  "cmd": "0x5100",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "playercount",
+     "type": "BYTE"
+    },
+    {
+     "name": "playerlist",
+     "type": "ARRAY",
+     "fixedLengthParser": "playercount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "sex",
+       "type": "BYTE"
+      },
+      {
+       "name": "nickName",
+       "type": "STRING"
+      },
+      {
+       "name": "portrait",
+       "type": "STRING"
+      },
+      {
+       "name": "chips",
+       "type": "INT"
+      }
+     ]
+    },
+    {
+     "name": "game_amount",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SERVER_CMD_FORWARD_MESSAGE": {
+  "cmd": "0x0213",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "msgCount",
+     "type": "INT"
+    },
+    {
+     "name": "msgList",
+     "type": "ARRAY",
+     "fixedLengthParser": "msgCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "msg",
+       "type": "STRING"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SERVER_CMD_MESSAGE": {
+  "cmd": "0x801",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "msg",
+     "type": "STRING"
+    }
+   ]
+  }
+ },
+ "SERVER_COMMAND_GAMERESULT_RECORD": {
+  "cmd": "0x1050",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "resultIndex",
+     "type": "INT"
+    },
+    {
+     "name": "resultCount",
+     "type": "INT"
+    },
+    {
+     "name": "gameResultCount",
+     "type": "INT"
+    },
+    {
+     "name": "gameResult",
+     "type": "ARRAY",
+     "fixedLengthParser": "gameResultCount",
+     "fixedLength": 0,
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      },
+      {
+       "name": "smallPhoto",
+       "type": "STRING"
+      },
+      {
+       "name": "nickName",
+       "type": "STRING"
+      },
+      {
+       "name": "isZhuang",
+       "type": "BYTE"
+      },
+      {
+       "name": "card_mount",
+       "type": "BYTE"
+      },
+      {
+       "name": "cards",
+       "type": "ARRAY",
+       "fixedLengthParser": "card_mount",
+       "fixedLength": 0,
+       "fmt": [
+        {
+         "type": "BYTE"
+        }
+       ]
+      },
+      {
+       "name": "cardType",
+       "type": "INT"
+      },
+      {
+       "name": "grab",
+       "type": "INT"
+      },
+      {
+       "name": "xiazhu",
+       "type": "INT"
+      },
+      {
+       "name": "changeChip",
+       "type": "INT"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "G2H_CMD_DISSOLVE_FAILED": {
+  "cmd": "0x908",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": []
+  }
+ },
+ "G2H_CMD_REFRESH_DISSOLVE_LIST": {
+  "cmd": "0x909",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "applyId",
+     "type": "INT"
+    },
+    {
+     "name": "agreeNum",
+     "type": "INT"
+    },
+    {
+     "name": "agreeMember_arr",
+     "type": "ARRAY",
+     "fixedLengthParser": "agreeNum",
+     "fmt": [
+      {
+       "name": "uid",
+       "type": "INT"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "SERVER_BROADCAST_REQUEST_DISSOLVE_GROUP": {
+  "cmd": "0x102a",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "applyId",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SERVER_BROADCAST_DISSOLVE_GROUP": {
+  "cmd": "0x103a",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": []
+  }
+ },
+ "SERVER_BROADCAST_FORBIT_DISSOLVE_GROUP": {
+  "cmd": "0x104a",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "rejectId",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "SVR_MSG_FACE": {
+  "cmd": "0x1104",
+  "ver": 1,
+  "SERVER": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "uid",
+     "type": "INT"
+    },
+    {
+     "name": "type",
+     "type": "INT"
+    }
+   ]
+  }
+ },
+ "CLIENT_CMD_SEND_MSG_LEGACY": {
+  "cmd": "0x166",
+  "ver": 1,
+  "CLIENT": {
+   "ver": 1,
+   "fmt": [
+    {
+     "name": "level",
+     "type": "SHORT"
+    },
+    {
+     "name": "msg",
+     "type": "STRING"
+    }
+   ]
+  }
+ }
+}

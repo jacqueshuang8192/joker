@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.PrintWriter;
+import org.springframework.web.method.HandlerMethod;
+import com.j.joker.controller.common.HallReadController;
+import com.j.joker.rooms.interfaces.DouniuRoomPasswordController;
 
 @Service
 public class TokenInterceptor implements HandlerInterceptor{
@@ -54,34 +56,19 @@ public class TokenInterceptor implements HandlerInterceptor{
 		ICache cache = null;
 		try {
 			cache = CacheManager.getCache();
-			String debug = cache.hget(SYSCONFIG, DEBUG);
-			//调试模式,全部通过
-			if ("1".equals(debug) ) {
-				return true;
-			} else {
+            String uid = req.getParameter(XYUid);
+            boolean requiresPlayerSession = arg2 instanceof HandlerMethod handler
+                    && (HallReadController.class.isAssignableFrom(handler.getBeanType())
+                    || DouniuRoomPasswordController.class.isAssignableFrom(handler.getBeanType()));
+            if (!requiresPlayerSession && ("1".equals(cache.hget(SYSCONFIG, DEBUG))
+                    || (uid != null && Boolean.TRUE.equals(cache.sismember(SYSCONFIGUSERS, uid))))) return true;
 
-				String token = req.getParameter(XYToken);
-				String uid = req.getParameter(XYUid);
-
-				Boolean isSet = cache.sismember(SYSCONFIGUSERS, uid);
-				//如果调试用户,直接通过
-				if (isSet ) {
-					return true;
-				}
-
-				//如果不是调试模式,做token校验
-				boolean flag = loginCacheController.isTokenValid(cache, uid, token);
-				if (flag ) {
-					return true;
-				}
-
-				PrintWriter writer = res.getWriter();
-				Response response = new Response();
-				response.setReturnCode(Constants.RETURN_CODE_TOKEN_INVALID);
-				writer.write(JSON.toJSONString(response));
-				writer.close();
-				return false;
-			}
+            if (loginCacheController.isTokenValid(cache, uid, req.getParameter(XYToken))) return true;
+            Response invalid = new Response();
+            invalid.setReturnCode(Constants.RETURN_CODE_TOKEN_INVALID);
+            res.setContentType("application/json;charset=UTF-8");
+            res.getWriter().write(JSON.toJSONString(invalid));
+            return false;
 		}catch (Exception e ) {
 			return false;
 		}finally {

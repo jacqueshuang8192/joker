@@ -69,7 +69,7 @@ CLIENT[P.CLI_QUIT_ROOM] = {
 P.CLI_SIT_DOWN = 0x1031 --坐下
 CLIENT[P.CLI_SIT_DOWN] = {
     ver = 1,
-    {name = 'seat_id', type = T.INT} --座位id
+    fmt = JAVA_DOUNIU and {{name = 'seat_id', type = T.INT}} or nil --座位id
 }
 
 P.CLI_STAND_UP = 0x1032 --站起
@@ -99,7 +99,7 @@ if GROUP_MODE == 2 then
     P.CLI_READYNOW_ROOM = 0x2001 --用户发送准备
     CLIENT[P.CLI_READYNOW_ROOM] = {
         ver = 1,
-        {name = 'readyState', type = T.INT} -- 0是取消准备，1是准备
+        fmt = JAVA_DOUNIU and {{name = 'readyState', type = T.INT}} or nil -- 0是取消准备，1是准备
     }
 
     P.CLI_LOGIN_ROOM = 0x1001 --登录房间
