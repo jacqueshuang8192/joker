@@ -10,10 +10,10 @@ runs:
         cache: maven
     - name: Compile the API from source
       shell: bash
-      run: mvn -B -f backend/api/pom.xml clean package
+      run: mvn -B -s "$GITHUB_ACTION_PATH/maven-settings.xml" -f backend/api/pom.xml clean package
     - name: Compile the Java game services
       shell: bash
-      run: mvn -B -f backend/game-java/pom.xml clean package
+      run: mvn -B -s "$GITHUB_ACTION_PATH/maven-settings.xml" -f backend/game-java/pom.xml clean package
     - name: Build API and game images
       shell: bash
       run: |
