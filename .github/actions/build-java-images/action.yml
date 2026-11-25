@@ -1,0 +1,28 @@
+name: Build Java 23 Docker images
+description: Compile both JARs and build the API and game images for 1Panel
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-java@v6.3.0
+      with:
+        distribution: temurin
+        java-version: '23'
+        cache: maven
+    - name: Compile the API from source
+      shell: bash
+      run: mvn -B -f backend/api/pom.xml clean package
+    - name: Compile the Java game services
+      shell: bash
+      run: mvn -B -f backend/game-java/pom.xml clean package
+    - name: Build API and game images
+      shell: bash
+      run: |
+        set -euo pipefail
+        prefix="ghcr.io/${GITHUB_REPOSITORY,,}"
+        tag="sha-${GITHUB_SHA}"
+        echo "PREFIX=$prefix" >> "$GITHUB_ENV"
+        echo "TAG=$tag" >> "$GITHUB_ENV"
+        build=(docker build --platform linux/amd64 --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" --label "org.opencontainers.image.revision=$GITHUB_SHA")
+        "${build[@]}" -t "$prefix-api:$tag" backend/api
+        "${build[@]}" -t "$prefix-game-java:$tag" -f backend/game-java/Dockerfile .
+        docker run --rm --entrypoint java "$prefix-api:$tag" -version

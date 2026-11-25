@@ -26,8 +26,7 @@ public final class CardController {
         presets.put(seat, List.copyOf(cards));
     }
 
-    List<List<Card>> deal(List<Player> players) {
-        Deck deck = Deck.forConfig(cfg);
+    List<List<Card>> deal(List<Player> players, Deck deck) {
         Collections.shuffle(deck.cards(), random);
         for (Player player : players) {
             for (Card card : presets.getOrDefault(player.seatId(), List.of())) {

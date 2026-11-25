@@ -1,22 +1,17 @@
 package com.j.joker.rooms.application;
 
+import lombok.RequiredArgsConstructor;
 import com.j.joker.constants.Constants;
 import com.j.joker.rooms.domain.RoomPin;
 import com.j.joker.utils.InfServerException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@RequiredArgsConstructor
 public class DouniuRoomPasswordService {
     private final RoomPasswords passwords;
     private final RoomUnlocks unlocks;
-    private final boolean javaRooms;
     private final PasswordEncoder encoder;
-
-    public DouniuRoomPasswordService(RoomPasswords passwords, RoomUnlocks unlocks, PasswordEncoder encoder, boolean javaRooms) {
-        this.passwords = passwords;
-        this.unlocks = unlocks;
-        this.encoder = encoder;
-        this.javaRooms = javaRooms;
-    }
+    private final boolean javaRooms;
 
     public String forNewRoom(Integer level, String password, Long previousActivity) throws InfServerException {
         if (!Integer.valueOf(302).equals(level)) return null;

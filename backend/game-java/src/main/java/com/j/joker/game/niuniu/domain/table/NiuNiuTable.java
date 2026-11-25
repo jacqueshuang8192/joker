@@ -1,6 +1,7 @@
 package com.j.joker.game.niuniu.domain.table;
 
 import com.j.joker.game.niuniu.domain.card.Card;
+import com.j.joker.game.niuniu.domain.card.Deck;
 import com.j.joker.game.niuniu.domain.card.CardLogic;
 import com.j.joker.game.niuniu.domain.card.CardType;
 import com.j.joker.game.niuniu.domain.card.HandResult;
@@ -44,13 +45,135 @@ public final class NiuNiuTable {
     private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> phaseTimer;
 
-    private GameState state = GameState.RESET_TABLE;
+    private volatile GameState state = GameState.RESET_TABLE;
     private int roundNo;
     private UUID roundId;
+    private List<Integer> lepers = List.of();
+
+    public List<Integer> lepers() { return lepers; }
     private Settlement.Result pendingSettlement;
     private Player banker;
     private int lastBankerSeat = -1;
     private int niuBankerSeat;
+    // 锅底以整积分展示，只限定本庄赔付；实际筹码仍随每局回执入账。
+    public record Pot(long owner, int points, int number, int rounds, int raises, int tenure) {}
+    public record TableCharge(UUID id, int round, String kind, int uid, int before, int amount) {}
+    private final List<TableCharge> charges = new ArrayList<>();
+    private final Set<Long> paidStart = new HashSet<>();
+    private long bankerProfit;
+    private long bankerBalance;
+
+    public List<TableCharge> pendingCharges() { return List.copyOf(charges); }
+    public void acknowledgeCharges() { charges.clear(); }
+
+    private void charge(String kind, long uid, long before, long amount) {
+        if (amount <= 0) return;
+        var player = byUid(uid);
+        if (player != null) player.addChips(-amount);
+        charges.add(new TableCharge(UUID.randomUUID(), roundNo, kind, Math.toIntExact(uid),
+                Math.toIntExact(before), Math.toIntExact(amount)));
+    }
+
+    public void endTenure() {
+        if (pot.owner() == 0) return;
+        var player = byUid(pot.owner());
+        long before = player == null ? bankerBalance : player.chips();
+        long amount = Math.min(before, Math.max(0, bankerProfit) * cfg.clubFee().downRate() / 100);
+        charge("DOWN", pot.owner(), before, amount);
+        bankerProfit = 0;
+    }
+
+    private SideBets side = new SideBets();
+    private SideBets.Posting lastSide;
+    public SideBets side() { return side; }
+    public SideBets.Posting lastSide() { return lastSide; }
+    public boolean playingSide(long uid) { return inRound() && side.hasOutside(uid); }
+    public UUID roundId() { return roundId; }
+
+    public long sideDealerMinimum() { return sideLimit() * (players().size() - 1); }
+
+    public synchronized void sideDealer(long uid, long chips) {
+        if (state != GameState.SIDE_GRAB || byUid(uid) != null || chips < sideDealerMinimum()) throw new IllegalArgumentException("不能抢外围庄");
+        side.claim(uid, chips);
+        startSideBets();
+    }
+    public synchronized void startSideBets() {
+        if (state != GameState.SIDE_GRAB) return;
+        cancelTimer();
+        changeState(GameState.SIDE_BET);
+        sideDeadline();
+    }
+    private void sideDeadline() {
+        boolean grab = state == GameState.SIDE_GRAB;
+        long ms = grab ? 5000 : 20000;
+        fire(l -> l.onPhaseDeadline(this, state, ms));
+        schedule(ms, grab ? this::startSideBets : this::openAndSettle);
+    }
+    public synchronized void sideBet(long uid, int seat, int amount) {
+        sideBet(byUid(uid), seat, amount);
+    }
+    public void validateSideBet(Player buyer, int seat, int amount) {
+        if (state != GameState.SIDE_BET || bySeat(seat) == null || bySeat(seat) == banker)
+            throw new IllegalArgumentException("无效外围阶段或座位");
+        side.validate(buyer, seat, amount, sideLimit());
+    }
+    public synchronized void sideBet(Player buyer, int seat, int amount) {
+        validateSideBet(buyer, seat, amount);
+        side.bet(buyer, seat, amount, sideLimit());
+    }
+    public long sideLimit() { return Math.min(Integer.MAX_VALUE, (long)cfg.baseChip() * cfg.sideLimitTimes()); }
+
+    private Pot pot = new Pot(0, 0, 0, 0, 0, 0);
+    public Pot pot() { return pot; }
+    public int potPoints() { return cfg.gongNiu() ? pot.points() : cfg.guodi(); }
+    public int bankerOptions() {
+        if (!cfg.gongNiu() || banker == null) return 0;
+        int base = cfg.openingPot();
+        boolean low = pot.points() < (long)(pot.raises() + 1) * base / 10;
+        boolean forced = cfg.upBankGuodiTimes() > 0 && pot.points() >= (long)base * cfg.upBankGuodiTimes();
+        boolean raise = cfg.linkBankPattern() == 1 && pot.raises() < cfg.upBankTimes()
+                && banker.chips() / 100 >= ((long)base << (pot.raises() + 1));
+        int mask = (pot.tenure() >= 4 || 10L * pot.points() < base ? 1 : 0) | (low ? 0 : 2) | (raise ? 4 : 0);
+        boolean replacement = players().stream().anyMatch(p -> p.chips()/100 >= base);
+        if (!replacement && pot.points() > 0) return 2;
+        return forced || mask == 0 ? 1 : mask;
+    }
+
+    public synchronized void bankerAction(long uid, int action) {
+        if (state != GameState.BANKER_OPTION || banker == null || banker.uid() != uid ||
+                (action != 1 && action != 2 && action != 4) || (bankerOptions() & action) == 0)
+            throw new IllegalArgumentException("当前不能执行该庄家操作");
+        cancelTimer();
+        Player chosen = banker;
+        if (action == 1) {
+            chosen = nextPotBanker();
+            openPot(chosen);
+        } else if (action == 4) {
+            int raised = Math.toIntExact((long)cfg.openingPot() << (pot.raises() + 1));
+            pot = new Pot(uid, raised, pot.number() + 1, 0, pot.raises() + 1, pot.tenure());
+        }
+        startBetting(chosen, action);
+    }
+
+    private Player nextPotBanker() {
+        return players().stream().filter(p -> p.chips() / 100 >= cfg.openingPot())
+                .min(Comparator.comparingInt(p -> Math.floorMod(p.seatId() - lastBankerSeat - 1, cfg.maxSeatCount())))
+                .orElseThrow(() -> new IllegalStateException("无玩家可承担锅底"));
+    }
+
+    private void openPot(Player p) {
+        endTenure();
+        pot = new Pot(p.uid(), cfg.openingPot(), pot.number() + 1, 0, 0, 0);
+        long amount = (long)cfg.clubFee().upRate() * pot.points();
+        if (amount > 0) charge("UP", p.uid(), p.chips(), p.chips() - pot.points() <= amount ? p.chips() : amount);
+        bankerBalance = p.chips();
+    }
+
+    private void bankerDeadline() {
+        fire(l -> l.onPhaseDeadline(this, state, GRAB_DEADLINE_MS));
+        schedule(GRAB_DEADLINE_MS, () -> bankerAction(banker.uid(), (bankerOptions() & 2) != 0 ? 2 : 1));
+    }
+
     private long totalBetThisRound;
     private volatile boolean running;
     private boolean reconnectWindow;
@@ -89,7 +212,13 @@ public final class NiuNiuTable {
 
     public synchronized void standUp(long uid) {
         Player p = byUid(uid);
-        if (p != null && !inRound()) {
+        if (inRound()) return;
+        // 空闲阶段重启后牌座尚未重建，原庄家仍可退桌并结清任期。
+        if (cfg.clubFee().downRate() > 0 && uid == pot.owner()) {
+            endTenure();
+            pot = new Pot(0, 0, pot.number(), 0, 0, 0);
+        }
+        if (p != null) {
             seats.remove(p.seatId());
             if (banker == p) banker = null;
             fire(l -> l.onSeatChange(this, p));
@@ -98,7 +227,7 @@ public final class NiuNiuTable {
 
     public boolean inRound() {
         return switch (state) {
-            case SEND_CARD, GRAB_DEALER, CALL_TIMES, OPEN_CARD, SETTLE -> true;
+            case SIDE_GRAB, SIDE_BET, BANKER_OPTION, SEND_CARD, GRAB_DEALER, CALL_TIMES, OPEN_CARD, SETTLE -> true;
             default -> false;
         };
     }
@@ -106,6 +235,7 @@ public final class NiuNiuTable {
     public int userStatus(Player player) {
         return switch (state) {
             case GRAB_DEALER -> !grabDecided.contains(player.uid()) ? 2 : player.grabTimes() == 0 ? 3 : 4;
+            case SIDE_GRAB, SIDE_BET -> 6;
             case CALL_TIMES -> betDecided.contains(player.uid()) ? 6 : 5;
             case OPEN_CARD -> revealed.contains(player.uid()) ? 8 : 7;
             case SETTLE -> 8;
@@ -182,14 +312,23 @@ public final class NiuNiuTable {
 
     // ---------------------------------------------------------------- 一局
 
+    private long openingCost(Player player) {
+        return cfg.clubFee().firstOnly() && paidStart.contains(player.uid()) ? 0
+                : Math.min(player.chips(), cfg.clubFee().startCost());
+    }
+
     public synchronized void beginRound() {
-        if (seats.size() < 2) {
+        if (inRound() || state == GameState.STOP_GAME || seats.size() < 2) {
             return;
         }
+        if (cfg.gongNiu() && players().stream().noneMatch(p -> (p.chips() - openingCost(p)) / 100 >= cfg.openingPot())
+                && (byUid(pot.owner()) == null || pot.points() <= 0))
+            throw new IllegalStateException("本桌筹码不足以开锅");
         banker = null;
         returningPush.clear(); // 离座错过一局即中断连续推注。
         roundNo++;
         roundId = UUID.randomUUID();
+        side = new SideBets();
         totalBetThisRound = 0;
         grabDecided.clear();
         betDecided.clear();
@@ -198,9 +337,20 @@ public final class NiuNiuTable {
             p.resetForRound();
             p.setBetTimes(1);
         }
+        for (Player p : seats.values()) {
+            long cost = openingCost(p);
+            if (cost > 0) {
+                charge("START", p.uid(), p.chips(), cost);
+                if (cfg.clubFee().firstOnly()) paidStart.add(p.uid());
+            }
+        }
         dealCards();
         changeState(GameState.SEND_CARD);
-        for (Player player : seats.values()) fire(l -> l.onDeal(this, player));
+        if (!cfg.gongNiu()) for (Player player : seats.values()) fire(l -> l.onDeal(this, player));
+        if (cfg.gongNiu() && roundNo > 1) {
+            continuePot();
+            return;
+        }
         changeState(GameState.GRAB_DEALER);
         if (automaticBanker()) {
             finishGrab();
@@ -215,9 +365,25 @@ public final class NiuNiuTable {
         autoPlayBotsGrab();
     }
 
+    private void continuePot() {
+        banker = byUid(pot.owner());
+        if (banker != null && pot.points() <= 0 && players().stream().noneMatch(p -> p.chips()/100 >= cfg.openingPot()))
+            throw new IllegalStateException("筹码不足以开新锅");
+        if (banker == null) {
+            Player next = nextPotBanker();
+            openPot(next);
+            startBetting(next);
+        } else {
+            banker.setBanker(true);
+            changeState(GameState.BANKER_OPTION);
+            bankerDeadline();
+        }
+    }
+
     private void dealCards() {
         List<Player> list = new ArrayList<>(seats.values());
-        var hands = cardController.deal(list);
+        lepers = Deck.chooseLepers(cfg, random);
+        var hands = cardController.deal(list, Deck.forRound(cfg, lepers));
         for (int i = 0; i < list.size(); i++) {
             Player p = list.get(i);
             p.cards().addAll(hands.get(i));
@@ -236,7 +402,7 @@ public final class NiuNiuTable {
 
     public boolean canGrab(Player player) {
         // 房规使用整积分，data 的筹码单位是百分之一积分。
-        return !automaticBanker() && player.chips() >= 100L * cfg.grabDealerChips();
+        return (!cfg.gongNiu() || player.chips() / 100 >= cfg.openingPot()) && !automaticBanker() && player.chips() >= 100L * cfg.grabDealerChips();
     }
 
     public synchronized void grabBanker(long uid, int times) {
@@ -311,13 +477,28 @@ public final class NiuNiuTable {
         reconnectWindow = false;
         cancelTimer();
         Player chosen = selectBanker();
+        if (cfg.gongNiu()) {
+            if (chosen.chips() / 100 < cfg.openingPot()) chosen = nextPotBanker();
+            openPot(chosen);
+        }
+        startBetting(chosen);
+    }
+
+    private void startBetting(Player chosen) {
+        startBetting(chosen, 0);
+    }
+
+    private void startBetting(Player chosen, int action) {
+        if (cfg.gongNiu()) pot = new Pot(chosen.uid(), pot.points(), pot.number(), pot.rounds() + 1, pot.raises(), pot.tenure() + 1);
         for (Player p : seats.values()) {
             p.setBanker(p == chosen);
         }
         banker = chosen;
         lastBankerSeat = chosen.seatId();
         changeState(GameState.CALL_TIMES);
+        if (action == 1 || action == 4) fire(l -> l.onPot(this, action == 4));
         fire(l -> l.onBankerDecided(this, chosen));
+        if (cfg.gongNiu()) for (Player player : seats.values()) fire(l -> l.onDeal(this, player));
         fire(l -> l.onPhaseDeadline(this, GameState.CALL_TIMES, betDeadlineMs()));
         if (running) {
             schedule(betDeadlineMs(), this::onBetTimeout);
@@ -350,11 +531,18 @@ public final class NiuNiuTable {
     }
 
     public int pushBet(Player p) {
+        if (cfg.gongNiu()) return 0;
         int offer = pushOption(p);
         return canAfford(p, offer) ? offer : 0;
     }
 
+    public int minPotBet() {
+        long minimum = pot.rounds() <= 1 ? (long)pot.points() * cfg.firstBetLimit() : (long)cfg.openingPot() * cfg.afterBetLimit();
+        return (int)Math.max(1, minimum / 100);
+    }
+
     public List<Integer> displayedBets(Player p) {
+        if (cfg.gongNiu()) return List.of(minPotBet(), Math.max(minPotBet(), pot.points() / 3));
         List<Integer> choices = new ArrayList<>();
         int scale = betScale(p);
         for (int value : cfg.betOptions()) {
@@ -367,6 +555,7 @@ public final class NiuNiuTable {
     }
 
     public List<Integer> betChoices(Player p) {
+        if (cfg.gongNiu()) return displayedBets(p).stream().map(n -> (int)Math.min(n, p.chips() / 100)).distinct().toList();
         return displayedBets(p).stream().filter(value -> canAfford(p, value)).toList();
     }
 
@@ -378,7 +567,11 @@ public final class NiuNiuTable {
         if (p == null || p == banker || betDecided.contains(uid)) {
             return;
         }
-        if (!betChoices(p).contains(times)) throw new IllegalArgumentException("该玩家没有此下注档位");
+        if (cfg.gongNiu()) {
+            int cap = (int)(p.chips() / 100);
+            if (times < Math.min(cap, minPotBet()) || times > Math.min(cap, Math.max(minPotBet(), pot.points() / 3)))
+                throw new IllegalArgumentException("下注超出锅底范围");
+        } else if (!betChoices(p).contains(times)) throw new IllegalArgumentException("该玩家没有此下注档位");
         int t = times;
         p.setBetTimes(t);
         totalBetThisRound += (long) cfg.guodi() * t;
@@ -412,9 +605,7 @@ public final class NiuNiuTable {
     // ---------------------------------------------------------------- 亮牌/结算
 
     public synchronized void openAndSettle() {
-        if (state != GameState.CALL_TIMES) {
-            return;
-        }
+        if (state != GameState.CALL_TIMES && state != GameState.SIDE_BET) return;
         cancelTimer();
         reconnectWindow = false;
         for (Player p : seats.values()) {
@@ -425,6 +616,11 @@ public final class NiuNiuTable {
                 fire(l -> l.onBet(this, p, p.betTimes()));
             }
             if (p.hand() == null) p.setHand(CardLogic.evaluate(p.cards(), cfg));
+        }
+        if (cfg.waiweiEnabled() && state == GameState.CALL_TIMES) {
+            changeState(GameState.SIDE_GRAB);
+            sideDeadline();
+            return;
         }
         // 在亮牌广播和 data 写入前冻结整局金额，恢复时沿用原局明细。
         pendingSettlement = Settlement.calculate(this);
@@ -460,9 +656,18 @@ public final class NiuNiuTable {
             }
         }
         Settlement.apply(this, result);
+        lastSide = result.side();
         if (cfg.subGameType() == GameConfig.SubGameType.NIU_NIU_BANKER) {
             Player winner = seats.values().stream().max((a, b) -> CardLogic.compare(a.hand(), b.hand(), cfg)).orElseThrow();
             if (winner.hand().type().id() >= CardType.NIU_NIU.id()) niuBankerSeat = winner.seatId();
+        }
+        if (cfg.gongNiu()) pot = new Pot(pot.owner(), Math.max(0, Math.toIntExact(pot.points() + (result.bankerDelta() + result.entries().stream().filter(Settlement.Entry::banker).findFirst().orElseThrow().commission()
+                        - (result.side() == null ? 0 : result.side().delta(banker.uid()))) / 100)),
+                pot.number(), pot.rounds(), pot.raises(), pot.tenure());
+        if (cfg.gongNiu()) {
+            var entry = result.entries().stream().filter(Settlement.Entry::banker).findFirst().orElseThrow();
+            bankerProfit += entry.delta() + entry.commission() - (result.side() == null ? 0 : result.side().delta(banker.uid()));
+            bankerBalance = banker.chips();
         }
         fire(l -> l.onSettled(this, result));
         for (Player p : seats.values()) {
@@ -580,6 +785,7 @@ public final class NiuNiuTable {
         default void onReady(NiuNiuTable t, Player p) { }
         default void onDeal(NiuNiuTable t, Player p) { }
         default void onGrab(NiuNiuTable t, Player p, int times) { }
+        default void onPot(NiuNiuTable table, boolean raised) {}
         default void onBankerDecided(NiuNiuTable t, Player p) { }
         default void onBet(NiuNiuTable t, Player p, int times) { }
         default void onOpenCard(NiuNiuTable t, Player p) { }
@@ -596,7 +802,7 @@ public final class NiuNiuTable {
     public record Snapshot(GameState phase, int round, UUID roundId, int bankerSeat, int lastBankerSeat,
                            long totalBet, Set<Long> grabbed, Set<Long> bet, List<Seat> players,
                            Settlement.Result pendingSettlement, Set<Long> revealed, Map<Long,Integer> pushLimits,
-                           int niuBankerSeat) {}
+                           int niuBankerSeat, List<Integer> lepers, Pot pot, SideBets.Book side, SideBets.Posting lastSide, Set<Long> paidStart, List<TableCharge> charges, long bankerProfit, long bankerBalance) {}
 
     public synchronized Snapshot snapshot() {
         // 发牌/亮牌是同步广播；恢复到广播后玩家下一步实际能操作的阶段。
@@ -611,7 +817,7 @@ public final class NiuNiuTable {
         seats.values().stream().filter(p -> p.pushLimit() > 0).forEach(p -> pushLimits.put(p.uid(), p.pushLimit()));
         return new Snapshot(phase, roundNo, roundId, banker == null ? -1 : banker.seatId(), lastBankerSeat,
                 totalBetThisRound, Set.copyOf(grabDecided), Set.copyOf(betDecided), players, pendingSettlement,
-                Set.copyOf(revealed), pushLimits, niuBankerSeat);
+                Set.copyOf(revealed), pushLimits, niuBankerSeat, lepers, pot, side.snapshot(), lastSide, Set.copyOf(paidStart), List.copyOf(charges), bankerProfit, bankerBalance);
     }
 
     public synchronized void restore(Snapshot saved) {
@@ -623,12 +829,19 @@ public final class NiuNiuTable {
         niuBankerSeat = saved.niuBankerSeat();
         totalBetThisRound = saved.totalBet();
         if (saved.pushLimits() != null) returningPush.putAll(saved.pushLimits());
+        if (saved.paidStart() != null) paidStart.addAll(saved.paidStart());
+        if (saved.charges() != null) charges.addAll(saved.charges());
+        bankerProfit = saved.bankerProfit();
+        bankerBalance = saved.bankerBalance();
+        lastSide = saved.lastSide();
+        if (saved.pot() != null) pot = saved.pot();
+        lepers = saved.lepers() == null ? List.of() : List.copyOf(saved.lepers());
         if (!inRound()) return; // 等待开局时玩家重新进房，从 data 读取当前筹码。
         if (roundId == null || roundNo == 0 || saved.players().size() < 2
-                || !(state == GameState.GRAB_DEALER || state == GameState.CALL_TIMES || state == GameState.OPEN_CARD || state == GameState.SETTLE)) {
+                || !(state == GameState.SIDE_BET || state == GameState.SIDE_GRAB || state == GameState.BANKER_OPTION || state == GameState.GRAB_DEALER || state == GameState.CALL_TIMES || state == GameState.OPEN_CARD || state == GameState.SETTLE)) {
             throw new IllegalArgumentException("无法恢复该局阶段");
         }
-        Set<Integer> deck = new HashSet<>();
+        var deck = Deck.forRound(cfg, lepers).cards();
         Set<Long> uids = new HashSet<>();
         for (Seat seat : saved.players()) {
             if (seat.seat() < 0 || seat.seat() >= Math.min(MAX_SEATS, cfg.maxSeatCount())
@@ -638,7 +851,7 @@ public final class NiuNiuTable {
             }
             Player player = new Player(seat.uid(), seat.name(), seat.chips(), seat.robot());
             player.setSeatId(seat.seat());
-            player.setOnline(false);
+            player.setOnline(seat.robot());
             player.setReady(seat.ready());
             player.setAutoPlay(seat.autoPlay());
             player.setPortrait(seat.portrait());
@@ -651,8 +864,7 @@ public final class NiuNiuTable {
             player.addTotalDelta(seat.total());
             for (int code : seat.cards()) {
                 Card card = Card.of(code);
-                if (code != card.code() || !deck.add(code) || (!card.isJoker()
-                        && ((code >>> 4) > 3 || card.value() < 1 || card.value() > 13))) {
+                if (code != card.code() || !deck.remove(card)) {
                     throw new IllegalArgumentException("手牌快照无效");
                 }
                 player.cards().add(card);
@@ -666,6 +878,22 @@ public final class NiuNiuTable {
             throw new IllegalArgumentException("无效庄家或操作记录");
         }
         if (banker != null) banker.setBanker(true);
+        if (saved.side() != null) {
+            var book = saved.side();
+            if (book.dealer() > 0) side.claim(book.dealer(), book.dealerBefore());
+            for (var stake : book.stakes()) {
+                if (bySeat(stake.seat()) == null || bySeat(stake.seat()) == banker)
+                    throw new IllegalArgumentException("外围目标无效");
+                Player buyer = byUid(stake.uid());
+                Long before = book.standingBalances().get(stake.uid());
+                if (before != null) {
+                    if (buyer != null || before < 0 || before > Integer.MAX_VALUE) throw new IllegalArgumentException("站起玩家余额无效");
+                    buyer = new Player(stake.uid(), "", before, false);
+                    buyer.setSeatId(-2);
+                }
+                side.bet(buyer, stake.seat(), stake.amount(), sideLimit());
+            }
+        }
         grabDecided.addAll(saved.grabbed());
         betDecided.addAll(saved.bet());
         if (saved.revealed() != null) {
@@ -687,13 +915,25 @@ public final class NiuNiuTable {
                         || after < 0 || after > Integer.MAX_VALUE) throw new IllegalArgumentException("结算明细与座位不符");
                 net += entry.delta();
             }
+            if (pendingSettlement.side() != null) {
+                var posting = pendingSettlement.side();
+                net += posting.dealerDelta();
+                for (long uid : posting.standingBalances().keySet()) net += posting.delta(uid);
+            }
+            net += pendingSettlement.commissionTotal();
             if (net != 0) throw new IllegalArgumentException("结算明细总额不符");
         }
     }
 
     /** 重新注册后给玩家一个重连窗口；已经开始结算的牌局继续核账。 */
     public synchronized void resume() {
-        if (state == GameState.SETTLE) {
+        if (state == GameState.SIDE_GRAB || state == GameState.SIDE_BET) {
+            sideDeadline();
+        } else if (state == GameState.BANKER_OPTION) {
+            bankerDeadline();
+        } else if (state == GameState.GRAB_DEALER && cfg.gongNiu() && roundNo > 1) {
+            continuePot();
+        } else if (state == GameState.SETTLE) {
             schedule(0, () -> finishSettlement(roundId, pendingSettlement));
         } else if (state == GameState.OPEN_CARD) {
             UUID id = roundId;

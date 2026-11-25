@@ -48,6 +48,7 @@ function ItremGame:initGame()
     for i, v in ipairs( child or {} ) do
         v:setVisible(false)
     end
+    if PURE_JAVA_HALL then require("hall.FriendTable").addEntries(self.listView,self.item) end
     for k, v in ipairs(  self.showSortGameId or {} ) do
         if ((k-1) % 4) == 0 then
             tempValue = 1

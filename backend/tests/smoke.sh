@@ -126,8 +126,8 @@ SQL
   -cp /srv/joker/joker-api.jar org.springframework.boot.loader.launch.PropertiesLauncher
 # A second invocation must preserve both the test record and the migration history.
 "${dc[@]}" up -d --force-recreate --wait --wait-timeout 300
-applied=$(mysql_query <<<"SELECT COUNT(*) FROM flyway_schema_history WHERE version IN ('1','2','3','4','5','6','7','8','9') AND type='SQL' AND success=1")
-[[ $applied == 9 ]]
+applied=$(mysql_query <<<"SELECT COUNT(*) FROM flyway_schema_history WHERE version IN ('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18') AND type='SQL' AND success=1")
+[[ $applied == 18 ]]
 [[ $(mysql_query <<<"SELECT COUNT(*) FROM t_game g JOIN t_group_game gg ON gg.game_id=g.game_Id JOIN t_game_config c ON c.level=g.level JOIN t_game_type t ON t.game_id=g.game_Id WHERE g.code='niuniu' AND gg.port=11603 AND JSON_EXTRACT(c.content,'$.level')=302") == 1 ]]
 [[ $(mysql_query <<<"SELECT COUNT(*) FROM t_game_server") == 0 ]]
 "${dc[@]}" exec -T api wget -qO- 'http://127.0.0.1:8080/hbiInterface/version/queryVersion?type=2&interfaceType=J' | python3 -c 'import json,sys; r=json.load(sys.stdin); assert r["returnCode"]=="0" and r["data"]["version"]=="ci-smoke"'

@@ -37,12 +37,12 @@ public final class RoomJournal implements com.j.joker.game.niuniu.application.Ro
         }
     }
 
-    private void write(String operation, List<String> args) {
+    private Object write(String operation, List<String> args) {
         var values = new ArrayList<String>(args.size() + 1);
         values.add(writer);
         values.addAll(args);
         try (var redis = pool.getResource()) {
-            redis.eval("if redis.call('GET',KEYS[1]) ~= ARGV[1] then return redis.error_reply('room writer changed') end\n" + operation,
+            return redis.eval("if redis.call('GET',KEYS[1]) ~= ARGV[1] then return redis.error_reply('room writer changed') end\n" + operation,
                     List.of(prefix + ":writer", prefix + ":rooms", prefix + ":ends", "USER_GAME_STATUS"), values);
         }
     }
@@ -69,9 +69,65 @@ public final class RoomJournal implements com.j.joker.game.niuniu.application.Ro
         write("return redis.call('HSET',KEYS[2],ARGV[2],ARGV[3])", List.of(Integer.toString(room.tid()), json(room)));
     }
 
-    @Override public void route(int tid, int activity, long uid) {
-        write("return redis.call('HSET',KEYS[4],ARGV[2],ARGV[3])",
-                List.of(Long.toString(uid), RedisRoomAssignments.encode(level, tid, activity)));
+    @Override public boolean robotRoom() { return localAllocator; }
+
+    @Override public boolean claimRobot(int club,int uid,int tid,int activity) {
+        String route = RedisRoomAssignments.encode(level,tid,activity);
+        return Long.valueOf(1).equals(write("""
+                local uid=ARGV[2]
+                if redis.call('HGET','ROBOT_STATUS',uid)~=ARGV[4] or
+                   redis.call('HGET','TEMP_ROBOT_STATUS',uid)~='0_0' or
+                   redis.call('HEXISTS','JOKER_ROBOT_TABLE',uid)==1 or
+                   redis.call('EXISTS','JOKER_GIFT_LOCK:'..uid)==1 then return 0 end
+                local old=redis.call('HGET',KEYS[4],uid)
+                if old and old:match('^%d+_[1-9]%d*_[1-9]%d*$') then return 0 end
+                redis.call('HSET','JOKER_ROBOT_TABLE',uid,ARGV[3])
+                redis.call('HSET','TEMP_ROBOT_STATUS',uid,ARGV[5])
+                redis.call('HSET',KEYS[4],uid,ARGV[3])
+                return 1
+                """, List.of(Integer.toString(uid),route,"0_"+club+"_1_"+level,level+"_1")));
+    }
+
+    @Override public boolean ownsActiveRobot(int club,int uid,int tid,int activity) {
+        return Long.valueOf(1).equals(write("""
+                local uid=ARGV[2]
+                if redis.call('HGET','JOKER_ROBOT_TABLE',uid)==ARGV[3]
+                   and redis.call('HGET',KEYS[4],uid)==ARGV[3]
+                   and redis.call('HGET','ROBOT_STATUS',uid)==ARGV[4]
+                   and redis.call('HGET','TEMP_ROBOT_STATUS',uid)==ARGV[5] then return 1 end
+                return 0
+                """,List.of(Integer.toString(uid),RedisRoomAssignments.encode(level,tid,activity),
+                            "0_"+club+"_1_"+level,level+"_1")));
+    }
+
+    @Override public void releaseRobot(long uid,int tid,int activity) {
+        write("""
+                if redis.call('HGET','JOKER_ROBOT_TABLE',ARGV[2])==ARGV[3] then
+                    redis.call('HDEL','JOKER_ROBOT_TABLE',ARGV[2])
+                    if redis.call('HGET',KEYS[4],ARGV[2])==ARGV[3] then redis.call('HDEL',KEYS[4],ARGV[2]) end
+                    redis.call('HSET','TEMP_ROBOT_STATUS',ARGV[2],'0_0')
+                end
+                """,List.of(Long.toString(uid),RedisRoomAssignments.encode(level,tid,activity)));
+    }
+
+    @Override public void enableRobot(int club,int uid,int requestedLevel,int status) {
+        if (club<=0 || uid<=0 || requestedLevel!=0 && requestedLevel!=level || status!=1) return;
+        write("""
+                if redis.call('HEXISTS','JOKER_ROBOT_TABLE',ARGV[2])==0
+                   and redis.call('HGET','ROBOT_STATUS',ARGV[2])==ARGV[3]
+                   then redis.call('HSET','TEMP_ROBOT_STATUS',ARGV[2],'0_0') end
+                """,List.of(Integer.toString(uid),"0_"+club+"_1_"+level));
+    }
+
+    @Override public boolean route(int tid, int activity, long uid) {
+        return Long.valueOf(1).equals(write("""
+                if redis.call('EXISTS','JOKER_GIFT_LOCK:'..ARGV[2])==1 or
+                   redis.call('HEXISTS','JOKER_ROBOT_TABLE',ARGV[2])==1 then return 0 end
+                local old=redis.call('HGET',KEYS[4],ARGV[2])
+                if old and old~=ARGV[3] and old:match('^[1-9]%d*_[1-9]%d*_[1-9]%d*$') then return 0 end
+                redis.call('HSET',KEYS[4],ARGV[2],ARGV[3])
+                return 1
+                """,List.of(Long.toString(uid), RedisRoomAssignments.encode(level, tid, activity))));
     }
 
     @Override public void leave(int tid, int activity, long uid) {
@@ -92,6 +148,10 @@ public final class RoomJournal implements com.j.joker.game.niuniu.application.Ro
         write("""
                 if ARGV[6]=='1' then redis.call('HSET','WAIT_CLOSE_GROUP_NEW',ARGV[3],ARGV[7]) end
                 for i=8,#ARGV do
+                  if redis.call('HGET','JOKER_ROBOT_TABLE',ARGV[i])==ARGV[5] then
+                    redis.call('HDEL','JOKER_ROBOT_TABLE',ARGV[i])
+                    redis.call('HSET','TEMP_ROBOT_STATUS',ARGV[i],'0_0')
+                  end
                   if redis.call('HGET',KEYS[4],ARGV[i]) == ARGV[5] then redis.call('HDEL',KEYS[4],ARGV[i]) end
                 end
                 if ARGV[6]=='0' then redis.call('HSET',KEYS[3],ARGV[3],ARGV[4]) end

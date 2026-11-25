@@ -37,6 +37,11 @@ public final class LobbyNoticeProtocol extends SimpleChannelInboundHandler<ByteB
         frame.readBytes(body);
         var in = new BinaryReader(body);
         switch (cmd) {
+            case 0x165 -> {
+                if (in.remaining()!=9) { ctx.close(); return; }
+                int action=in.u8(),club=in.i32(),uid=in.i32();
+                if (action<=3 && club>0) lobby.membershipChanged(club,uid,action);
+            }
             case 0x168 -> {
                 int n = in.i32();
                 if (n < 1 || (long)n * 4 > in.remaining() - 4) { ctx.close(); return; }

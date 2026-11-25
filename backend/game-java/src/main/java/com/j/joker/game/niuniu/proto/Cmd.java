@@ -41,6 +41,9 @@ public final class Cmd {
     public static final int CLI_COMMAND_GRAB_WW_DEALER = 0x110A;
     public static final int CLI_MSG_FACE = 0x1104;
     public static final int CLI_SEND_TEST_CARD = 0x1110;
+    public static final int SERVER_NOTIFY_UP_BANK = 0x1110;
+    public static final int SERVER_BROADCAST_UP_BANK = 0x2014;
+    public static final int SERVER_BROADCAST_NEW_GUO = 0x2015;
     public static final int CLI_SEND_UP_BANK = 0x2014;
     public static final int CLI_SEND_DOWN_BANK = 0x2015;
     public static final int CLI_COMMAND_GAMERESULT_RECORD = 0x1050;

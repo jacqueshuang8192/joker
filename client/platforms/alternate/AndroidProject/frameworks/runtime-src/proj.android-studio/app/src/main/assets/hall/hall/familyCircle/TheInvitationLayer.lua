@@ -18,7 +18,8 @@ end
 
 
 function TheInvitationLayer:onClickBtnTongYi()
-    SCENENOW['scene'].hallMainLayer.familyMainlayer:CreateGameTable(2 , self.RoomInfo , nil, 0)
+    local mode = PURE_JAVA_HALL and tonumber(self.data.level) == 302 and 1 or 0
+    SCENENOW['scene'].hallMainLayer.familyMainlayer:CreateGameTable(2, self.RoomInfo, nil, mode)
     self:removeSelf()
 end
 
@@ -51,11 +52,15 @@ function TheInvitationLayer:SetInfo(data)
 
 	self.RoomInfo={}
 	self.RoomInfo.config={}
+	self.RoomInfo.config1={}
 	self.RoomInfo.config.id=dataC["id"]
 	self.RoomInfo.config.table_info={}
 	self.RoomInfo.config.level=data.level
 	self.RoomInfo.config.table_id=data.tid
 	self.RoomInfo.config.table_info.activityId=data.activityId
+	self.RoomInfo.config.m_strInviteCode=data.inviteCode or dataC.inviteCode
+	self.RoomInfo.config.table_info.inviteCode=self.RoomInfo.config.m_strInviteCode
+	self.RoomInfo.config.groupName=dataC.clubName or ""
 	--设置头像
 	local head_img=self.ImageHead
     local headSize = head_img:getContentSize().width

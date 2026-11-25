@@ -48,6 +48,8 @@ public class PureRoomsCheck {
                     .string(Json.write(Map.of("roomKey",t.owner.roomKey()))));
             DouniuCheck.check(PacketCodec.readFrame(hall.getInputStream()).cmd()==0x201,"login after closure");
             HallRoomCheck.Client.hallCommand(hall,0x668,new BinaryWriter());
+            var ip = PacketCodec.readFrame(hall.getInputStream());
+            DouniuCheck.check(ip.cmd() == 0x202 && "127.0.0.1".equals(new BinaryReader(ip.body()).string()), "observed hall peer");
             var status=PacketCodec.readFrame(hall.getInputStream());
             DouniuCheck.check(status.cmd()==0x668 && new BinaryReader(status.body()).u16()==0,"closed route removed");
             HallRoomCheck.Client.hallCommand(hall,0x113,new BinaryWriter().u16(302).i32(0).i32(0).i32(t.tid)

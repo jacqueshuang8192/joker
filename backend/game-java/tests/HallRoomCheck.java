@@ -50,7 +50,7 @@ public class HallRoomCheck {
         }
     }
 
-    private static Object post(String path, Map<String, ?> fields, boolean json) throws Exception {
+    static Object post(String path, Map<String, ?> fields, boolean json) throws Exception {
         String body = json ? Json.write(fields) : fields.entrySet().stream().map(e -> e.getKey() + "="
                 + URLEncoder.encode(e.getValue().toString(), StandardCharsets.UTF_8)).collect(Collectors.joining("&"));
         var req = HttpRequest.newBuilder(URI.create(API + path)).timeout(Duration.ofSeconds(20))
@@ -280,7 +280,7 @@ public class HallRoomCheck {
                 var group = (Map<?,?>)entry;
                 if (!"hasLeper".equals(group.get("config"))) continue;
                 var choices = (List<?>)group.get("configOption");
-                ordinary = choices.size() == 1 && "0".equals(((Map<?,?>)choices.getFirst()).get("optionValue").toString());
+                ordinary = choices.stream().map(o -> ((Map<?,?>)o).get("optionValue").toString()).toList().containsAll(List.of("0", "1", "2"));
                 DouniuCheck.check(ordinary, "only playable wildcard settings offered");
             }
             DouniuCheck.check(ordinary, "ordinary cards in catalog");
@@ -352,6 +352,19 @@ public class HallRoomCheck {
             Client.hallCommand(a, 0x801, new BinaryWriter().u16(302).string(message));
             var chat = Json.parseObject((String)DouniuCheck.waitFor(b, 0x801).get("msg"));
             DouniuCheck.check("同桌你好".equals(chat.get("textMessage")), "chat through hall");
+            if (Boolean.parseBoolean(System.getenv("JOKER_PURE_JAVA"))) {
+                for (boolean expression : List.of(true,false)) {
+                    String target = expression ? "uid_to" : "to_uid";
+                    String effect = expression ? "expressionType" : "type";
+                    var body = Json.write(Map.of("msgType", expression ? "expression" : "EmojiArmatureView",
+                            "uid", guest.uid, "uid_from", guest.uid, target, guest.uid, effect, 2));
+                    Client.hallCommand(a,0x801,new BinaryWriter().u16(302).string(body));
+                    var received = Json.parseObject((String)DouniuCheck.waitFor(b,0x801).get("msg"));
+                    DouniuCheck.check(((Number)received.get("uid")).intValue()==owner.uid &&
+                            ((Number)received.get(target)).intValue()==guest.uid, "interactive effect from a seated player");
+                    if (expression) DouniuCheck.check(((Number)received.get("uid_from")).intValue()==owner.uid, "effect sender");
+                }
+            }
             Client.hallCommand(a, 0x2001, new BinaryWriter().i32(1));
             DouniuCheck.waitFor(b, 0x6001);
             Client.hallCommand(a, 0x2001, new BinaryWriter().i32(0));

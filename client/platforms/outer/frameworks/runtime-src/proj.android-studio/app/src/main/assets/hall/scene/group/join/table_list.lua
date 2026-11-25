@@ -116,7 +116,7 @@ function table_list:updateTableData(pack, typ)
 	    if passwordList and next(passwordList) then
 	        for i,password in ipairs(passwordList) do
 	            if self.allTablesData[i] then
-	                self.allTablesData[i]["password"] = password
+	                self.allTablesData[i]["password"] = type(password) == "table" and password.password or password
 	            end
 	        end
 	    end
@@ -698,7 +698,11 @@ function table_list:addEnterRoomEvent(node, idx, data)
 					require(JoinGroup_filePath):showInputPasswordScene("join",joinFunc)
 
 				else
-					require(HallServer_filePath):loginGameNew(self._curLevel, tid, activity_id, self._curBaseChip)
+					if tonumber(self._curLevel) == 302 and PURE_JAVA_HALL then
+                        require("hall.groudgamemanager"):join_freegame(USER_INFO["uid"], invity_code, activity_id, false, self._curLevel, false)
+                    else
+                        require(HallServer_filePath):loginGameNew(self._curLevel, tid, activity_id, self._curBaseChip)
+                    end
 				end
 
 			else
@@ -773,6 +777,7 @@ function table_list:setTableItem(newPanel, data)
         for i, seatId in ipairs(data["userMap"]) do
 
         	-- local seatId = v.seatId
+            seatId = type(seatId) == "table" and seatId.seatId or seatId
             local player = newPanel:getChildByName("player_item_".. (seatId+1)):setVisible(true)
             local playerhead = player:getChildByName("playerhead"):setVisible(true)
             -- local playerhead = player:getChildByName("playerhead"):setVisible(true)

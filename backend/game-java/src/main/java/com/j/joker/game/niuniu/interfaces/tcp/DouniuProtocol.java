@@ -1,5 +1,6 @@
 package com.j.joker.game.niuniu.interfaces.tcp;
 
+import lombok.RequiredArgsConstructor;
 import com.j.joker.game.niuniu.application.DouniuService;
 import com.j.joker.game.niuniu.proto.BinaryReader;
 import com.j.joker.game.niuniu.proto.Cmd;
@@ -20,14 +21,11 @@ import java.util.Map;
  * <p>帧由 {@code LengthFieldBasedFrameDecoder(10240, 0, 4, 0, 0)} 切好；
  * 这里只做解密、分发与回包加密。
  */
+@RequiredArgsConstructor
 public class DouniuProtocol extends SimpleChannelInboundHandler<ByteBuf> {
 
     private final DouniuService service;
     protected DouniuService.Session session;
-
-    public DouniuProtocol(DouniuService service) {
-        this.service = service;
-    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -60,6 +58,12 @@ public class DouniuProtocol extends SimpleChannelInboundHandler<ByteBuf> {
     private static Map<String, Object> commandFields(int cmd, byte[] body) {
         var in = new BinaryReader(body);
         switch (cmd) {
+            case Cmd.CLI_COMMAND_GRAB_WW_DEALER, Cmd.CLI_COMMAND_REQ_WAIWEI_RESULT, Cmd.CLI_CMD_REQ_YAZHU_INFO -> {
+                return body.length == 0 ? Map.of() : null;
+            }
+            case Cmd.CLI_REQUEST_BET -> { if (body.length != 8) return null; }
+            case Cmd.CLI_CMD_REQ_YAZHU_DETAILS, Cmd.CLI_USER_BASES -> { if (body.length != 4) return null; }
+            case Cmd.CLI_SEND_DOWN_BANK, Cmd.CLI_SEND_UP_BANK -> { if (body.length != 1) return null; }
             case Cmd.CLI_LOGIN_ROOM -> { return roomLogin(body); }
             case Cmd.CLI_READYNOW_ROOM -> {
                 if (body.length == 0) return Map.of("ready", 1);

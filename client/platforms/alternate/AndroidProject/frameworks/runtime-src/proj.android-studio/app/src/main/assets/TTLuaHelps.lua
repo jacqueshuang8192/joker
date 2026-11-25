@@ -329,6 +329,7 @@ function cct.httpReq(parm)
                 end
             else
                 print("[httpReq] error - readyState=4 but status=", xhr.status)
+                if parm.onError then parm.onError(xhr.status) end
             end
             -- 只在 readyState==4 时解除注册，避免中间状态提前取消回调
             xhr:unregisterScriptHandler()
@@ -342,7 +343,11 @@ function cct.httpReq(parm)
         local postData = ""
         for k,v in pairs(date) do
             if postData ~= "" then postData = postData .. "&" end
-            postData = postData .. k .. "=" .. tostring(v)
+            local value = tostring(v)
+            if parm.encodeForm then
+                value = value:gsub("([^%w._~-])", function(c) return string.format("%%%02X", string.byte(c)) end)
+            end
+            postData = postData .. k .. "=" .. value
         end
         xhr:send(postData)
     else
@@ -783,15 +788,13 @@ function print_lua_table (lua_table, indent)
     end
     indent = indent or 0
     for k, v in pairs(lua_table) do
-        if type(k) == "string" then
-            k = string.format("%q", k)
-        end
+        local key = type(k) == "string" and string.format("%q", k) or tostring(k)
         local szSuffix = ""
         if type(v) == "table" then
             szSuffix = "{"
         end
         local szPrefix = string.rep("    ", indent)
-        formatting = szPrefix.."["..k.."]".." = "..szSuffix
+        local formatting = szPrefix.."["..key.."]".." = "..szSuffix
         if type(v) == "table" then
             print_func(formatting)
             print_lua_table(v, indent + 1)

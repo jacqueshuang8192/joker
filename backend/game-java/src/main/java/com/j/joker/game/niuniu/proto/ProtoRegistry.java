@@ -56,7 +56,7 @@ public final class ProtoRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<FieldSpec> fields(Map<String, Object> block) {
+    public static List<FieldSpec> fields(Map<String, Object> block) {
         Object fmt = block.get("fmt");
         if (fmt == null && block.get("_anon") instanceof List<?> anon) {
             fmt = anon;

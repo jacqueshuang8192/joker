@@ -357,14 +357,14 @@
  "CLI_COMMAND_REQ_WAIWEI_RESULT": {
   "cmd": "0x110B",
   "ver": 1,
-  "SERVER": {
+  "CLIENT": {
    "ver": 1
   }
  },
  "CLI_COMMAND_GRAB_WW_DEALER": {
   "cmd": "0x110A",
   "ver": 1,
-  "SERVER": {
+  "CLIENT": {
    "ver": 1
   }
  },
@@ -2427,5 +2427,64 @@
     }
    ]
   }
- }
+ },
+  "SERVER_NOTIFY_UP_BANK": {
+    "cmd": "0x1110",
+    "ver": 1,
+    "SERVER": {
+      "ver": 1,
+      "fmt": [
+        {
+          "name": "banker_uid",
+          "type": "INT"
+        },
+        {
+          "name": "state",
+          "type": "INT"
+        }
+      ]
+    }
+  },
+  "SERVER_BROADCAST_UP_BANK": {
+    "cmd": "0x2014",
+    "ver": 1,
+    "SERVER": {
+      "ver": 1,
+      "fmt": [
+        {
+          "name": "guodi",
+          "type": "INT"
+        },
+        {
+          "name": "banker_uid",
+          "type": "INT"
+        },
+        {
+          "name": "m_nGuoCount",
+          "type": "INT"
+        }
+      ]
+    }
+  },
+  "SERVER_BROADCAST_NEW_GUO": {
+    "cmd": "0x2015",
+    "ver": 1,
+    "SERVER": {
+      "ver": 1,
+      "fmt": [
+        {
+          "name": "guodi",
+          "type": "INT"
+        },
+        {
+          "name": "banker_uid",
+          "type": "INT"
+        },
+        {
+          "name": "m_nGuoCount",
+          "type": "INT"
+        }
+      ]
+    }
+  }
 }

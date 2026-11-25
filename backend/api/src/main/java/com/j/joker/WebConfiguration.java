@@ -28,6 +28,7 @@ class WebConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(tokenInterceptor).excludePathPatterns(
                 "/", "/playerUser/OAuthCheck", "/playerUser/quickRegister", "/playerUser/quickRegisterByPhone",
                 "/playerUser/username/register", "/playerUser/username/login",
+                "/playerUser/username/changePassword", "/playerUser/username/resetPassword",
                 "/playerUser/uploadPhoto", "/userLogin", "/sfPay/*Callback*", "/sfPay/rongZhouPayOrder",
                 "/payOrderCallback", "/version/queryVersion", "/roomCard/deductCard", "/freeGame/A2IcreateFreeGame");
     }

@@ -1,5 +1,6 @@
 package com.j.joker.rooms.interfaces;
 
+import lombok.RequiredArgsConstructor;
 import com.j.joker.rooms.application.DouniuRoomPasswordService;
 import com.j.joker.utils.InfServerException;
 import com.j.joker.vo.response.Response;
@@ -8,12 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class DouniuRoomPasswordController {
     private final DouniuRoomPasswordService passwords;
-
-    public DouniuRoomPasswordController(DouniuRoomPasswordService passwords) {
-        this.passwords = passwords;
-    }
 
     @PostMapping("/freeGame/unlockDouniuRoom")
     public Response unlock(@RequestParam("XYUid") long uid, @RequestParam("XYToken") String token,

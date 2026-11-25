@@ -20,17 +20,12 @@ public record RoomDefinition(int level, int activity, int owner, String invite, 
         settings.put("clubConfigId", configId);
         settings.put("clubGameType", gameType);
         settings.put("clubName", groupName);
+        if (settings.get("waiwei") instanceof Number value) settings.put("waiwei", value.toString());
         rules = Json.write(new java.util.TreeMap<>(settings));
         var config = GameConfig.fromMap(settings);
         if (!config.hasJQK() && seats * config.handSize() > 40)
             throw new IllegalArgumentException("无 JQK 的房间超过一副牌的张数");
-        if (nonzeroOption(settings.get("hasLeper")) || config.waiweiEnabled() || config.subGameType() == GameConfig.SubGameType.GONG_NIU
-                || nonzeroOption(settings.get("profit")))
-            throw new IllegalArgumentException("该牛牛变体尚未开放");
-    }
-
-    private static boolean nonzeroOption(Object value) {
-        if (value == null || value.toString().isBlank()) return false;
-        return new java.math.BigDecimal(value.toString().trim()).signum() != 0;
+        if ((config.clubFee().enabled() || config.clubFee().hasTableCharges()) && (club <= 0 || configId <= 0))
+            throw new IllegalArgumentException("收费桌须绑定所属俱乐部的模板");
     }
 }

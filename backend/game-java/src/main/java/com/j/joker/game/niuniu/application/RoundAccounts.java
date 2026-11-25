@@ -8,7 +8,13 @@ import java.util.UUID;
 /** 筹码和战绩用例的出站接口。相同局号的重复提交必须返回相同结果。 */
 public interface RoundAccounts {
     record History(int latest, RoundRecord record) {}
+    boolean tableCharge(int activity, int club, int level, com.j.joker.game.niuniu.domain.table.NiuNiuTable.TableCharge event);
+    boolean reserveSide(UUID round, int uid, int chips);
+    boolean closeClub(int club, int activity, int level, int rounds, String rules);
     boolean enabled();
+    record Member(int uid,String name,String portrait,int sex) {}
+    java.util.List<Member> membersAfter(int club,int after,int limit);
+    java.util.List<Member> robotsAfter(int club,int level,int after);
     long chips(int uid);
     boolean settle(UUID round, Settlement.Result result, RoundRecord record);
     java.util.List<Integer> clubMembersAfter(int club, int after);

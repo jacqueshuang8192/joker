@@ -16,9 +16,13 @@ import java.util.Map;
 /** Each upgraded socket owns one upstream connection. Clients can only select a configured route. */
 final class Gateway extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final Map<String, InetSocketAddress> routes;
+    private final boolean forwardPeer;
+    private final java.util.Set<String> trustedProxies;
     private Channel upstream;
 
-    Gateway(Map<String, InetSocketAddress> routes) {
+    Gateway(Map<String, InetSocketAddress> routes, boolean forwardPeer, java.util.Set<String> trustedProxies) {
+        this.forwardPeer = forwardPeer;
+        this.trustedProxies = trustedProxies;
         this.routes = routes;
     }
 
@@ -53,6 +57,24 @@ final class Gateway extends SimpleChannelInboundHandler<FullHttpRequest> {
                 65536).newHandshaker(request);
         Channel front = ctx.channel();
         front.config().setAutoRead(false);
+        String peerHeader = null;
+        if (forwardPeer && "/ws/hall".equals(request.uri())) {
+            String ip = ProxyPeer.observed(front);
+            if (trustedProxies.contains(ip)) {
+                var values = request.headers().getAll("X-Real-IP");
+                if (values.size() != 1) { respond(ctx, HttpResponseStatus.BAD_REQUEST); return; }
+                try { ip = ProxyPeer.literal(values.getFirst()); }
+                catch (IllegalArgumentException invalid) { respond(ctx, HttpResponseStatus.BAD_REQUEST); return; }
+            }
+            var remote = (InetSocketAddress) front.remoteAddress();
+            var local = (InetSocketAddress) front.localAddress();
+            boolean ipv6 = ip.contains(":");
+            String destination = local.getAddress().getHostAddress();
+            if (destination.contains(":") != ipv6) destination = ipv6 ? "::" : "0.0.0.0";
+            peerHeader = "PROXY " + (ipv6 ? "TCP6 " : "TCP4 ") + ip + " " + destination
+                    + " " + remote.getPort() + " " + local.getPort() + "\r\n";
+        }
+        final String proxyLine = peerHeader;
         ChannelFuture dial = new Bootstrap().group(front.eventLoop()).channel(NioSocketChannel.class)
                 .option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(16384))
                 .option(ChannelOption.AUTO_READ, false).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
@@ -67,6 +89,8 @@ final class Gateway extends SimpleChannelInboundHandler<FullHttpRequest> {
                     respond(ctx, HttpResponseStatus.BAD_GATEWAY);
                     return;
                 }
+                if (proxyLine != null) upstream.writeAndFlush(Unpooled.copiedBuffer(proxyLine, java.nio.charset.StandardCharsets.US_ASCII))
+                        .addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                 var upgrade = handshake.handshake(front, request);
                 ctx.pipeline().addLast(new WebSocketFrameAggregator(65536), new GameTraffic(upstream, handshake));
                 ctx.pipeline().remove(this);

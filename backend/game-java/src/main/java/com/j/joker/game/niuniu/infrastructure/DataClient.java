@@ -15,6 +15,9 @@ import org.springframework.core.env.Environment;
 /** Java data 内部协议客户端，读取筹码并按整局提交余额。 */
 public final class DataClient implements com.j.joker.game.niuniu.application.RoundAccounts {
 
+    /** 十人桌的外围订单和长头像可能使内部 JSON 超出客户端的帧长。 */
+    public static final int MAX_FRAME_BYTES = 256 * 1024;
+
     private final String host;
     private final int port;
     private final boolean enabled;
@@ -78,18 +81,82 @@ public final class DataClient implements com.j.joker.game.niuniu.application.Rou
         }
     }
 
+    @Override public boolean tableCharge(int activity, int club, int level, com.j.joker.game.niuniu.domain.table.NiuNiuTable.TableCharge e) {
+        try (var socket = connect()) {
+            write(socket, 0x1019, body -> {
+                writeString(body,e.id().toString()); writeString(body,e.kind());
+                for (int value : new int[]{activity,club,level,e.round(),e.uid(),e.before(),e.amount()}) writeInt(body,value);
+            });
+            var reply = read(socket);
+            return reply != null && reply.length == 22 && cmd(reply)==0x2019 && ByteBuffer.wrap(reply).getInt(18)==0;
+        } catch (IOException unavailable) { return false; }
+    }
+
+    @Override public boolean reserveSide(java.util.UUID round, int uid, int chips) {
+        if (!enabled) return true;
+        try (Socket socket = connect()) {
+            write(socket, 0x1018, body -> {
+                writeString(body, round.toString());
+                writeInt(body, uid);
+                writeInt(body, chips);
+            });
+            var packet = read(socket);
+            return packet != null && packet.length == 22 && cmd(packet) == 0x2018 && ByteBuffer.wrap(packet).getInt(18) == 0;
+        } catch (IOException unavailable) { return false; }
+    }
+
+    @Override public boolean closeClub(int club, int activity, int level, int rounds, String rules) {
+        try (Socket socket = connect()) {
+            write(socket,0x1017, body -> {
+                writeInt(body,club); writeInt(body,activity); writeInt(body,level); writeInt(body,rounds);
+                body.write(rules.getBytes(StandardCharsets.UTF_8));
+            });
+            var reply=read(socket);
+            return reply!=null && reply.length==22 && cmd(reply)==0x2017 && ByteBuffer.wrap(reply).getInt(18)==0;
+        } catch(IOException unavailable) { return false; }
+    }
+
     @Override public boolean isClubOwner(int club, long uid) {
         return clubAccess(0x1014, club, uid);
     }
 
     @Override public java.util.List<Integer> clubMembersAfter(int club, int after) {
+        return members(0x1016,club,after,256);
+    }
+
+    @Override public java.util.List<Member> robotsAfter(int club,int level,int after) {
+        return profiles(0x101b, club, level, after);
+    }
+
+    @Override public java.util.List<Member> membersAfter(int club,int after,int limit) {
+        return profiles(0x101c, club, after, limit);
+    }
+
+    private java.util.List<Member> profiles(int command,int club,int second,int third) {
+        try (var socket = connect()) {
+            write(socket,command,body -> { writeInt(body,club); writeInt(body,second); writeInt(body,third); });
+            var packet=read(socket);
+            if (packet==null || cmd(packet)!=command+0x1000 || packet.length<22) throw new IOException("成员查询无响应");
+            var in=new com.j.joker.game.niuniu.proto.BinaryReader(java.util.Arrays.copyOfRange(packet,18,packet.length));
+            int count=in.i32();
+            if (count<0 || count>64) throw new IOException("成员分页数量无效");
+            var profiles=new java.util.ArrayList<Member>(count);
+            for (int i=0; i<count; i++) {
+                int uid=in.i32(),sex=in.i32();
+                profiles.add(new Member(uid,in.string(),in.string(),sex));
+            }
+            return profiles;
+        } catch (IOException e) { throw new java.io.UncheckedIOException(e); }
+    }
+
+    private java.util.List<Integer> members(int command,int club,int after,int limit) {
         try (Socket socket = connect()) {
-            write(socket, 0x1016, body -> { writeInt(body,club); writeInt(body,after); });
+            write(socket, command, body -> { writeInt(body,club); writeInt(body,after); });
             byte[] packet = read(socket);
-            if (packet == null || cmd(packet) != 0x2016 || packet.length < 22) throw new IOException("联盟成员响应无效");
+            if (packet == null || cmd(packet) != command+0x1000 || packet.length < 22) throw new IOException("联盟成员响应无效");
             var in = ByteBuffer.wrap(packet,18,packet.length-18);
             int count = in.getInt();
-            if (count < 0 || count > 256 || in.remaining() != count * 4) throw new IOException("联盟成员数量无效");
+            if (count < 0 || count > limit || in.remaining() != count * 4) throw new IOException("联盟成员数量无效");
             var result = new java.util.ArrayList<Integer>(count);
             for (int i=0;i<count;i++) result.add(in.getInt());
             return result;
@@ -183,7 +250,7 @@ public final class DataClient implements com.j.joker.game.niuniu.application.Rou
         in.readFully(head);
         int length = ByteBuffer.wrap(head).getInt();
         int total = length + 4;
-        if (total < 18 || total > 65536) {
+        if (total < 18 || total > MAX_FRAME_BYTES) {
             return null;
         }
         byte[] packet = new byte[total];

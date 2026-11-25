@@ -29,7 +29,7 @@ DATA_GOLD_RUNTIME=game-java
 DOUNIU_RUNTIME=game-java
 ```
 
-1. 在 1Panel 确认 `api` 已完成 Flyway V9，`hall-4700` 和 `douniu` 均显示 healthy。
+1. 在 1Panel 确认 `api` 已完成 Flyway V18，`hall-4700` 和 `douniu` 均显示 healthy。
 2. 检查配置卷的 `runtime/hall-server.xml`。302 场次应同时有 `gameID="1"` 和 `gameID="0"` 两个 Node，均指向同一个 alloc。面板粘贴模式的 prepare 在 `PANEL_INI` 完全相同时会沿用卷内文件。旧卷若只有 1，备份该文件，复制现有 302 的 Node 并把副本的 gameID 改为 0，保存后重建 `hall-4700`。全新卷会直接使用新版模板。[大厅配置模板](../../config/hall-server.xml.in)
 3. 在本次源码实际打包的 `config.lua` 中设置 `JAVA_DOUNIU = true`，重新导出桌面资源或重打移动包，并重新登录。新版客户端将大厅消息发往路由 0，与 alloc 回包一致。使用两个账号创建、加入同一个邀请码房间，依次核对准备、结算和战绩。密码房可在 302 开房页勾选“设置六位密码”，再用第二个账号核验输错重试、入座和重连。
 4. 切回原生前先结束活动桌。将 `DOUNIU_RUNTIME` 恢复为 `native`，客户端使用 `JAVA_DOUNIU = false` 的资源重新登录。data 与 gold 的切换见上方步骤。
@@ -68,3 +68,9 @@ python3 backend/game-java/tests/compare.py joker-native:local joker-game-java:lo
 ```
 
 普通牛牛的开房、邀请码入房、原生大厅分桌、双人结算和战绩已在隔离 Docker 环境用协议客户端联通。Java 房间进程重启可以从相同场次、服务编号和 Redis 的快照恢复。正式切换前仍需使用目标客户端及业务规则验收，尤其是非明牌抢庄玩法及俱乐部抽水规则。[当前功能与验证范围](../../backend/game-java/README.md#可验收的玩法)
+
+### 纯 Java 大厅获取玩家 IP
+
+在 WSS 部署上启用俱乐部同 IP 限制时，给网关预留固定的面板网络地址。纯 Java 主编排的 `TRUSTED_HALL_GATEWAY_IPS` 填写该地址，网关编排的 `HALL_PROXY_PROTOCOL` 填 `true`。大厅仅对列表中的连接解析 PROXY v1，普通 TCP 客户端继续直接连接 4700。网关只向 `/ws/hall` 的上游发送地址。
+
+通过 OpenResty 接入时，网关的 `TRUSTED_HTTP_PROXY_IPS` 填写网关实际看到的 OpenResty 固定对端地址。OpenResty 应使用 `proxy_set_header X-Real-IP $remote_addr` 覆盖请求头。若前面还有 Cloudflare，应先在 OpenResty 的 realip 模块限定可信的 Cloudflare 回源网段，并从 `CF-Connecting-IP` 还原客户端地址。网关只从已登记的 HTTP 代理接收一个 IPv4 或 IPv6 字面地址。可信代理头缺失或无效时，握手返回 400。更新两个编排后，可用不同网络的测试账号验证玩家 IP 和入桌限制。原生或混合大厅保持网关的 `HALL_PROXY_PROTOCOL=false`。[Cloudflare 访客地址还原配置](https://developers.cloudflare.com/support/troubleshooting/restoring-visitor-ips/restoring-original-visitor-ips/)

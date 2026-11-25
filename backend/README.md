@@ -1,6 +1,6 @@
 # Joker 服务端
 
-[`game-java/`](game-java/) 是可独立构建的 Java 23 游戏工程。纯 Java 编排将大厅、分桌、在线查询和牛牛牌桌放在 `rooms` 进程，`data` 负责玩家账务。需要与旧游戏服务互通时可单独运行 `douniu`，另有 `gold` 和 `gateway` 可选。[DDD 代码结构](game-java/README.md#ddd-代码结构) · [纯 Java 部署](../DEPLOYMENT.md#纯-java-牛牛部署)
+[`game-java/`](game-java/) 是 Java 23 游戏工程，与 API 共用 [table-rules/](table-rules/) 中的好友桌领域规则。纯 Java 编排将大厅、分桌、在线查询和牛牛牌桌放在 `rooms` 进程，`data` 负责玩家账务。需要与旧游戏服务互通时可单独运行 `douniu`，另有 `gold` 和 `gateway` 可选。[DDD 代码结构](game-java/README.md#ddd-代码结构) · [纯 Java 部署](../DEPLOYMENT.md#纯-java-牛牛部署)
 
 以下路径相对于 `backend/`。
 

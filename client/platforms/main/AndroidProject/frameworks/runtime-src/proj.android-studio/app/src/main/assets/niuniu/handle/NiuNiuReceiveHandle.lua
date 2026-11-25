@@ -232,6 +232,7 @@ function NiuNiuReceiveHandle:SVR_LOGIN_ROOM_FAIL(pack)
         [15] = '对不起，您不是VIP',
         [13] = '您当前不能进低分场',
         [12] = '相同IP',
+        [19] = '玩家距离过近或缺少定位',
         [16] = '密码错误',
         [17] = '要求携带积分不足',
         [18] = '游戏已开始，无法加入游戏',
@@ -1046,6 +1047,8 @@ function NiuNiuReceiveHandle:BROADCAST_ERROR_TIPS(pack)
         [21] = '下注超过上限',
         [22] = '您在座位上时不能坐庄！',
         [24] = '此牌已被使用！',
+        [109] = '相同IP禁止入座',
+        [110] = '玩家距离过近或缺少定位',
         [100] = '不能进行升庄',
         [101] = '小于最小下注金额',
         [102] = '超过最大下注金额',
@@ -2323,7 +2326,7 @@ function NiuNiuReceiveHandle:showExpression(msg)
     local expressionType = tonumber(msg['expressionType']) or 1
 
     --屏蔽和围观玩家有关的互动表情
-    if NIUNIU_SEAT_TABLE[uid_from] < 0 or NIUNIU_SEAT_TABLE[uid_to] < 0 then
+    if (NIUNIU_SEAT_TABLE[uid_from] or -1) < 0 or (NIUNIU_SEAT_TABLE[uid_to] or -1) < 0 then
         return
     end
     ---------------------------------不同游戏需修改的部分----------------------------

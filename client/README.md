@@ -32,3 +32,5 @@ Windows 运行还需要从本地配套运行包补入 EXE、DLL，并使用自�
 移动工程各自使用自己的资源集。Android 可通过 `COCOS2DX_ROOT` 指定完整引擎位置，旧项目还依赖包含 GNU STL 的相应 NDK。iOS 工程需适配部署目标、接入匹配的引擎、游戏资源及业务桥接后再签名打包。GitHub Actions 构建的是后端 Java 和 C++ 镜像。
 
 Java 普通牛牛客户端需要在实际打包使用的 `config.lua` 设置 `JAVA_DOUNIU = true`，填写 `HttpAddr`，重新导出资源或打包并登录。该开关影响入房凭据、大厅路由编号和准备操作。纯 Java 部署由 API 的 `pureJavaHall` 指示大厅登录时携带会话凭据，需同时发布本次 `Request.lua` 和 `HallServer.lua`。原生牛牛的 `JAVA_DOUNIU` 默认值为 `false`。[纯 Java 部署](../DEPLOYMENT.md#纯-java-牛牛部署) · [混合版切换](../deploy/java/README.md#在测试环境切换牛牛房间)
+
+纯 Java 大厅提供 35 个好友积分场次和三种百人桌。带“独立规则”标记的入口会在开桌或加入前显示本服规则，百家乐在下注前显示赔率。好友凭八位房号加入，重新登录后从服务端恢复。点“我的战绩”按账号查看已结束的房间、逐局积分和操作回放，换设备后也可查看。游戏栏的“兑换筹码”先显示扣款金额；遇到断网，重新进入并点“确认原订单”即可。[场次清单](../backend/game-java/README.md#其他游戏的-java-实现范围) · [部署与查分](../DEPLOYMENT.md#部署好友积分桌)

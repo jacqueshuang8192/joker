@@ -1,5 +1,6 @@
 package com.j.joker.game;
 
+import lombok.RequiredArgsConstructor;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import static com.j.joker.game.DataPacket.string;
 
+@RequiredArgsConstructor
 final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
     static final class Store implements AutoCloseable {
         final Map<Short, DataGame> games = new HashMap<>();
@@ -26,7 +28,7 @@ final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
                     var section = (Element) sections.item(i);
                     short game = Short.parseShort(section.getAttribute("GameID"));
                     if (games.containsKey(game)) throw new IllegalArgumentException("Duplicate GameID " + game);
-                    games.put(game, new DataGame(section));
+                    games.put(game, new DataGame(section, env.getProperty("JOKER_PURE_JAVA", Boolean.class, false)));
                 }
             } catch (Exception failure) { close(); throw failure; }
         }
@@ -34,8 +36,6 @@ final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
     }
     private final Store store;
     private DataGame game;
-
-    DataProtocol(Store store) { this.store = store; }
 
     @Override protected void channelRead0(ChannelHandlerContext ctx, ByteBuf input) throws Exception {
         if (input.readableBytes() < 18 || input.getShort(4) != 0x4259) { ctx.close(); return; }
@@ -46,7 +46,29 @@ final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
         input.skipBytes(18);
         try (var redis = store.redis.getResource()) {
             game.rounds.recover(game, redis);
+            if (game.balances != null) game.balances.recover(game, redis);
             DataPacket response = switch (command) {
+                case 0x101d -> {
+                    if (game.hundred == null) yield null;
+                    var result = game.hundred.handle(redis, input);
+                    game.balances.recover(game, redis);
+                    yield new DataPacket(0x201d).utf8Text(com.j.joker.game.niuniu.util.Json.write(result));
+                }
+                case 0x101a -> new DataPacket(0x201a).ints(game.rounds.gift(game,redis,input));
+                case 0x1019 -> new DataPacket(0x2019).ints(game.rounds.tableCharge(game,redis,input));
+                case 0x1018 -> new DataPacket(0x2018).ints(game.rounds.reserve(game, redis, input));
+                case 0x1017 -> new DataPacket(0x2017).ints(game.rounds.closeClub(game,redis,input));
+                case 0x101b, 0x101c -> {
+                    if (input.readableBytes()!=12) throw new IllegalArgumentException("成员查询格式错误");
+                    int club = input.readInt(), second = input.readInt(), third = input.readInt();
+                    var members = command == 0x101b ? game.robotsAfter(redis,club,second,third)
+                            : game.membersAfter(club,second,third);
+                    var packet = new DataPacket(command+0x1000).ints(members.size());
+                    for (var member : members) {
+                        packet.ints(member.uid(),member.sex()).utf8Text(member.name()).utf8Text(member.portrait());
+                    }
+                    yield packet;
+                }
                 case 0x1016 -> {
                     if (input.readableBytes() != 8) throw new IllegalArgumentException("联盟成员分页长度无效");
                     var members = game.clubMembersAfter(input.readInt(), input.readInt());
@@ -71,7 +93,7 @@ final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
                     input.readInt();
                     string(input);
                     int uid = input.readInt();
-                    yield new DataPacket(0x2003).ints(uid, game.delete(redis, uid) ? 0 : 1);
+                    yield new DataPacket(0x2003).ints(uid, !game.rounds.held(uid) && game.delete(redis, uid) ? 0 : 1);
                 }
                 case 0x1004 -> get(redis, input, 0x2004);
                 case 0x1011 -> get(redis, input, 0x2011); // 宣告支持整局结算的筹码查询
@@ -95,7 +117,7 @@ final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
         }
     }
 
-    private DataPacket create(Jedis redis, ByteBuf in) {
+    private DataPacket create(Jedis redis, ByteBuf in) throws SQLException {
         int source = in.readInt();
         String reason = string(in);
         int uid = in.readInt();
@@ -103,15 +125,17 @@ final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
         int exp = in.readInt(), score = in.readInt(), wins = in.readInt(), losses = in.readInt();
         String client = string(in);
         int chips = in.readInt();
-        boolean duplicate = game.players.containsKey(uid);
-        if (!duplicate) game.save(redis, uid, new DataGame.Player(money, exp, score, wins, losses, chips),
-                null, false, source, reason, client);
+        boolean duplicate = game.players.containsKey(uid) || game.rounds.held(uid);
+        if (!duplicate) duplicate = !game.save(redis, uid, new DataGame.Player(money, exp, score, wins, losses, chips),
+                null, false, source, reason, client, null, false);
         return new DataPacket(0x2001).ints(uid, duplicate ? 1 : 0);
     }
 
     private DataPacket get(Jedis redis, ByteBuf in, int responseCommand) throws SQLException {
         in.readInt(); // Caller source
         int uid = in.readInt();
+        if (responseCommand == 0x2011 && game.hundred != null && game.hundred.holds(uid))
+            return new DataPacket(responseCommand).ints(uid, 1);
         var player = game.find(redis, uid);
         if (player == null) return null;
         return new DataPacket(responseCommand).ints(uid, 0).text(Long.toString(player.money()))
@@ -133,12 +157,13 @@ final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
         if (before == null) return null;
         boolean shortfall = before.money() + money < 0;
         var out = new DataPacket(0x2002).ints(uid);
+        if (chips != 0 && game.rounds.held(uid)) return out.ints(2);
         if (moneyOnly && shortfall) return out.ints(2);
         if (shortfall) money = (int) -before.money();
         else if (before.score() + score < 0) { score = -before.score(); shortfall = true; }
         else if (before.chips() + chips < 0) { chips = -before.chips(); shortfall = true; }
         var p = before.delta(money, exp, score, wins, losses, chips);
-        game.save(redis, uid, p, before, moneyOnly, source, reason, client);
+        if (!game.save(redis, uid, p, before, moneyOnly, source, reason, client, null, true)) return out.ints(2);
         out.ints(shortfall ? 2 : 0).number(p.money()).ints(p.exp(), p.score(), p.wins(), p.losses());
         // Native DUpdateProcess appends the status again on a partial debit.
         return shortfall ? out.ints(money, score, p.chips(), 2) : out.ints(p.chips());
@@ -148,15 +173,32 @@ final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
         int uid = in.readInt(), activity = in.readInt(), wanted = in.readInt();
         in.readInt(); // Original server applies a fixed purchase rate of 1200 per thousand.
         int bring = in.readInt();
+        if (game.balances != null) {
+            String key;
+            if (in.isReadable()) {
+                key = string(in);
+                if (in.isReadable() || !key.matches("[a-zA-Z0-9_-]{8,64}"))
+                    throw new IllegalArgumentException("购买订单号无效");
+            } else {
+                // 旧调用方没有序号。同一账号、活动和购买参数只接受一次成功购买。
+                key = "legacy:" + activity + ":" + wanted + ":" + bring;
+            }
+            var receipt = game.balances.buy(uid, activity, wanted, bring, key,
+                    game.rounds.held(uid), game.find(redis, uid));
+            game.balances.recover(game, redis);
+            if (receipt.newlyApplied()) game.logBalance(uid,game.find(redis,uid),false,0,"","");
+            return new DataPacket(0x301a).ints(receipt.accepted() ? 1 : 0, receipt.chips(), (int)receipt.money(), wanted);
+        }
         var p = game.find(redis, uid);
         if (p == null) return null;
         int cost = (int) ((float) wanted * 1200 / 1000);
         if (wanted < 0 || cost < 0) throw new IllegalArgumentException("Invalid chip purchase");
-        boolean allowed = cost <= p.money();
+        boolean allowed = cost <= p.money() && !game.rounds.held(uid);
         if (allowed) {
-            p = p.balance(p.money() - cost, Math.addExact(p.chips(), wanted));
-            game.activity(uid, activity, p.chips(), bring);
-            game.save(redis, uid, p, null, false, 0, "", "");
+            var next = p.balance(p.money() - cost, Math.addExact(p.chips(), wanted));
+            allowed = game.save(redis, uid, next, p, false, 0, "", "",
+                    new GoldStore.Chips(uid, activity, next.chips(), bring), false);
+            if (allowed) p = next;
         }
         return new DataPacket(0x301a).ints(allowed ? 1 : 0, p.chips(), (int) p.money(), wanted);
     }
@@ -168,9 +210,12 @@ final class DataProtocol extends SimpleChannelInboundHandler<ByteBuf> {
         if (rate != 0) in.skipBytes(8); // Bring and activity have no persistent effect here.
         if (rate < 0) throw new IllegalArgumentException("Invalid exchange rate");
         // DChip2MoneyProcess divides the integer rate before applying it to the chips.
+        if (game.rounds.held(uid)) return new DataPacket(0x301d).ints(1, (int)p.money());
         int credit = rate == 0 ? p.chips() : (int) (p.chips() * (float) (rate / 1000));
-        p = p.balance(p.money() + credit, 0);
-        game.save(redis, uid, p, null, false, 0, "", "");
+        var next = p.balance(Math.addExact(p.money(), credit), 0);
+        if (!game.save(redis, uid, next, p, false, 0, "", "", null, false))
+            return new DataPacket(0x301d).ints(1, (int)p.money());
+        p = next;
         return new DataPacket(0x301d).ints(0, (int) p.money());
     }
 

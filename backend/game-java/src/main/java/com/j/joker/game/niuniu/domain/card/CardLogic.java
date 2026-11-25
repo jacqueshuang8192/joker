@@ -44,16 +44,14 @@ public final class CardLogic {
         List<Card> cards = sorted(hand);
         int total = sum(cards);
 
+        if (cfg != null && cfg.isLeperEnabled() && cards.stream().anyMatch(c -> c.suit() == Suit.LAI_ZI)) {
+            if (cards.size() != 5) throw new IllegalArgumentException("癞子牌型需要五张手牌");
+            return evaluateWithLeper(cards, cfg);
+        }
+
         CardType special = detectSpecial(cards, total, cfg);
         if (special != null) {
             return new HandResult(cards, special, List.of(), total, 0);
-        }
-
-        if (cfg != null && cfg.isLeperEnabled()) {
-            HandResult leper = evaluateWithLeper(cards, cfg);
-            if (leper != null) {
-                return leper;
-            }
         }
 
         HandResult normal = detectNormalNiu(cards);
@@ -212,31 +210,48 @@ public final class CardLogic {
         return null;
     }
 
-    /** 癞子：枚举替换成 52 张中的任意一张，取牌型最强的一种。 */
+    /** 只统计实牌。普通牛最多检查十组三张牌，四张同码癞子也无需枚举替代牌。 */
     private static HandResult evaluateWithLeper(List<Card> cards, GameConfig cfg) {
-        int idx = -1;
-        for (int i = 0; i < cards.size(); i++) {
-            if (cards.get(i).suit() == Suit.LAI_ZI) {
-                idx = i;
-                break;
+        List<Card> natural = cards.stream().filter(c -> c.suit() != Suit.LAI_ZI).toList();
+        int wild = cards.size() - natural.size();
+        var ranks = rankCount(natural);
+        boolean flush = isSameSuit(natural);
+        boolean highAce = natural.stream().anyMatch(c -> c.value() >= 10);
+        var points = natural.stream().mapToInt(c -> highAce ? c.rank() : c.value()).summaryStatistics();
+        boolean straight = ranks.size() == natural.size() && points.getMax() - points.getMin() < 5;
+        CardType type;
+        if (allowed(cfg, 8) && flush && straight) type = CardType.TONG_HUA_SHUN;
+        else if (allowed(cfg, 6) && sum(natural) + wild <= 10 && natural.stream().allMatch(c -> c.value() <= 5)) type = CardType.WU_XIAO;
+        else if (allowed(cfg, 5) && ranks.values().stream().anyMatch(n -> n + wild >= 4)) type = CardType.SI_ZHA;
+        else if (allowed(cfg, 4) && ranks.size() <= 2) type = CardType.HU_LU;
+        else if (allowed(cfg, 3) && flush) type = CardType.TONG_HUA;
+        else if (allowed(cfg, 2) && isAllFace(natural)) type = CardType.WU_HUA;
+        else if (allowed(cfg, 1) && straight) type = CardType.SHUN_ZI;
+        else {
+            int best = 0;
+            List<Card> triple = List.of();
+            for (int mask = 1; mask < 32; mask++) {
+                if (Integer.bitCount(mask) != 3) continue;
+                int three = 0, two = 0, inThree = 0;
+                var part = new ArrayList<Card>(3);
+                for (int i = 0; i < cards.size(); i++) {
+                    Card card = cards.get(i);
+                    if ((mask & (1 << i)) != 0) {
+                        part.add(card);
+                        if (card.suit() == Suit.LAI_ZI) inThree++;
+                        else three += card.logicValue();
+                    } else if (card.suit() != Suit.LAI_ZI) two += card.logicValue();
+                }
+                if (inThree == 0 && three % 10 != 0) continue;
+                int point = wild > inThree || two % 10 == 0 ? 10 : two % 10;
+                if (point > best) {
+                    best = point;
+                    triple = List.copyOf(part);
+                }
             }
+            return new HandResult(cards, CardType.ofId(best + 1), triple, sum(cards), best);
         }
-        if (idx < 0) {
-            return null;
-        }
-        HandResult best = null;
-        for (int code = 0x01; code <= 0x3D; code++) {
-            if ((code & 0x0F) == 0 || (code & 0x0F) > 13) {
-                continue;
-            }
-            List<Card> trial = new ArrayList<>(cards);
-            trial.set(idx, Card.of(code));
-            HandResult r = evaluate(trial, cfg);
-            if (best == null || compare(r, best) > 0) {
-                best = r;
-            }
-        }
-        return best;
+        return new HandResult(cards, type, List.of(), sum(cards), 0);
     }
 
     private static Map<Integer, Integer> rankCount(List<Card> cards) {
@@ -295,7 +310,7 @@ public final class CardLogic {
     private static Card maxCard(List<Card> cards) {
         Card best = null;
         for (Card c : cards) {
-            if (best == null || c.compareTo(best) > 0) {
+            if (c.suit() != Suit.LAI_ZI && (best == null || c.compareTo(best) > 0)) {
                 best = c;
             }
         }
@@ -304,9 +319,12 @@ public final class CardLogic {
 
     /** 四炸代表牌：排序后取四张同点中的那张。 */
     private static int siZhaValue(List<Card> cards) {
-        Map<Integer, Integer> count = rankCount(cards);
+        var natural = cards.stream().filter(c -> c.suit() != Suit.LAI_ZI).toList();
+        int wild = cards.size() - natural.size();
+        var count = new java.util.TreeMap<Integer,Integer>();
+        natural.forEach(card -> count.merge(card.value(), 1, Integer::sum));
         for (Map.Entry<Integer, Integer> e : count.entrySet()) {
-            if (e.getValue() == 4) {
+            if (e.getValue() + wild >= 4) {
                 return e.getKey() == 14 ? 1 : e.getKey();
             }
         }

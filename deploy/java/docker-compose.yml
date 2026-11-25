@@ -11,6 +11,10 @@ services:
     environment:
       GAME_ROLE: gateway
       # 大厅和牛牛与 api 共用网络。如果面板网络上有多套部署，请填写目标 API 的容器名。
+      # 仅连接纯 Java 大厅时可启用，配合大厅的 TRUSTED_HALL_GATEWAY_IPS 传递玩家 IP。
+      HALL_PROXY_PROTOCOL: ${HALL_PROXY_PROTOCOL:-false}
+      # 填直接连接网关的 OpenResty 固定内网 IP。该代理应覆盖 X-Real-IP，多个 IP 用逗号分隔。
+      TRUSTED_HTTP_PROXY_IPS: ${TRUSTED_HTTP_PROXY_IPS:-}
       HALL_HOST: ${GAME_HOST:-api}
       DOUNIU_HOST: ${GAME_HOST:-api}
 

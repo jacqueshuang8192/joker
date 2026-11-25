@@ -6,6 +6,24 @@ FROM (
   UNION ALL
   SELECT 'joker_douniu_room_password' AS table_name
   UNION ALL
+  SELECT 'joker_douniu_settlement'
+  UNION ALL SELECT 'joker_douniu_side_ledger'
+  UNION ALL SELECT 'joker_douniu_club_bill'
+  UNION ALL SELECT 'joker_douniu_club_debit'
+  UNION ALL SELECT 'joker_douniu_side_hold'
+  UNION ALL SELECT 'joker_chip_purchase'
+  UNION ALL SELECT 'joker_friend_replay'
+  UNION ALL SELECT 'joker_friend_round_score'
+  UNION ALL SELECT 'joker_hundred_room'
+  UNION ALL SELECT 'joker_hundred_banker'
+  UNION ALL SELECT 'joker_hundred_round'
+  UNION ALL SELECT 'joker_hundred_order'
+  UNION ALL SELECT 'joker_friend_table'
+  UNION ALL SELECT 'joker_friend_seat'
+  UNION ALL SELECT 'joker_table_charge'
+  UNION ALL SELECT 'joker_player_cache_sync'
+  UNION ALL SELECT 't_username_credential'
+  UNION ALL
   SELECT 'ims_msg' AS table_name
   UNION ALL
   SELECT 'ims_tpagentgoldreport' AS table_name

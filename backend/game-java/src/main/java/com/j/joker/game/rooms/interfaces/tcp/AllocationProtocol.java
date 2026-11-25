@@ -13,7 +13,11 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public final class AllocationProtocol extends SimpleChannelInboundHandler<ByteBuf> {
     private final RoomAllocation allocation;
 
-    public AllocationProtocol(RoomAllocation allocation) { this.allocation = allocation; }
+    private final com.j.joker.game.niuniu.application.RoomRepository journal;
+    public AllocationProtocol(RoomAllocation allocation, com.j.joker.game.niuniu.application.RoomRepository journal) {
+        this.allocation = allocation;
+        this.journal = journal;
+    }
 
     public static void reply(ChannelHandlerContext ctx, int command, BinaryWriter body) {
         var packet = Unpooled.buffer(18 + body.size());
@@ -30,6 +34,11 @@ public final class AllocationProtocol extends SimpleChannelInboundHandler<ByteBu
         frame.readBytes(raw);
         var in = new BinaryReader(raw);
         switch (command) {
+            case 0x40 -> {
+                if (in.remaining()!=16) { ctx.close(); return; }
+                int club=in.i32(),level=in.i32(),uid=in.i32(),status=in.i32();
+                journal.enableRobot(club,uid,level,status);
+            }
             case 0x160, 0x260 -> {
                 int result;
                 try {

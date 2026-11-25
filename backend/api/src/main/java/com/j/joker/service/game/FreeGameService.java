@@ -49,6 +49,8 @@ import java.util.*;
  */
 @Service
 public class FreeGameService {
+    @org.springframework.beans.factory.annotation.Value("${JOKER_PURE_JAVA:false}")
+    private boolean pureJava;
 	@Autowired
 	private com.j.joker.rooms.application.DouniuRoomPasswordService douniuPasswords;
 	private static Logger log = Logger.getLogger(FreeGameService.class);
@@ -96,6 +98,36 @@ public class FreeGameService {
 	private static final String GAME_ROUND_KEY = "USERPLAY_ROUND_";
 	public static final String GAME_EXTEND_ACTIVITY = "GAME_EXTEND_ACTIVITY";
 	static final transient Object lock = new Object();
+
+    /** 收费及赠分参数统一来自当前俱乐部启用的模板。 */
+    private void applyClubFeeTemplate(JSONObject rules, Integer group, Integer config, Integer level) throws InfServerException {
+        JSONObject template = null;
+        if (group != null && group > 0 && config != null && config > 0) {
+            TGroupGameconfig stored = gameconfigService.selectOne(config);
+            if (stored == null || !group.equals(stored.getGroupId()) || !level.equals(stored.getLevel())
+                    || !Integer.valueOf(1).equals(stored.getStatus())) {
+                throw new InfServerException(Constants.RETURN_CODE_FAIL, "俱乐部玩法模板不存在或已停用");
+            }
+            template = JSONObject.parseObject(stored.getConfig());
+        }
+        if (template != null) {
+            for (String field : java.util.List.of("ipXz", "juLi")) {
+                rules.remove(field);
+                Object value = template.get(field);
+                if (value instanceof JSONObject option) value = option.get("optionValue");
+                if (value != null) rules.put(field, value);
+            }
+        }
+        for (String field : java.util.List.of("groupType", "profit", "profitType", "profitLimit", "oneOrAll", "rateOrConstant",
+                "additionalPoint", "secConstant", "startCost", "startCostOneOrAll", "upBankWater", "downBankWater", "additional_point_from")) {
+            rules.remove(field);
+            if (template == null || !template.containsKey(field)) continue;
+            Object value = template.get(field);
+            if (value instanceof JSONObject option) value = option.get("optionValue");
+            if (value != null) rules.put(field, value);
+        }
+
+    }
 
 	/**
 	 *  将游戏服json中的数据和录像脚本分离的处理过程，处理后content不包含录像脚本,录像脚本存储至oss
@@ -1217,7 +1249,8 @@ public class FreeGameService {
 			}
 			if (Integer.valueOf(302).equals(level)) {
 				JSONObject rules = JSONObject.parseObject(json);
-				rules.remove("douniuPasswordRequired");
+				if (pureJava) applyClubFeeTemplate(rules, groupId, configId, level);
+                rules.remove("douniuPasswordRequired");
 				if (roomPasswordHash != null) rules.put("douniuPasswordRequired", 1);
 				json = rules.toJSONString();
 			}
@@ -1444,7 +1477,13 @@ public class FreeGameService {
 			if (StringUtil.isEmpty(groupId)) {
 				groupId = 0;
 			}
-			tid = gameService.createRoom(Long.parseLong(userId), level, baseChip, gg.getOriCoins(), inviteCode,
+			if (pureJava && Integer.valueOf(302).equals(level)) {
+                JSONObject settings = JSONObject.parseObject(json);
+                settings.put("publicGoldTable", Integer.valueOf(1).equals(isGold) && groupId == 0 && roomPasswordHash == null);
+                settings.put("reserveOwnerRoute", others == 1 && roomType == 2);
+                json = settings.toJSONString();
+            }
+            tid = gameService.createRoom(Long.parseLong(userId), level, baseChip, gg.getOriCoins(), inviteCode,
 					t.getActivityId(), round, json, discription,toServer,minCoinsGold,SeatCount,creatorNickname,creatorPortrait,password,groupId,configId,gameType,groupName);
 //			}
 
@@ -1475,7 +1514,7 @@ public class FreeGameService {
 				}
 
 				//如果是自己开房,就要把重连状态给设置进去
-				if (others == 1 ) {
+				if (!pureJava && others == 1) {
 					//以后如果有代开列表的时候删除  房卡场的房卡场用
 					if(StringUtil.isNotEmpty(roomType) && roomType==2) {
 						String s = level + "_" + tid + "_" + t.getActivityId();

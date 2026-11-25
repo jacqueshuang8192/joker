@@ -36,6 +36,13 @@ final class DataPacket {
         body.write(0);
         return this;
     }
+    DataPacket utf8Text(String value) {
+        byte[] bytes=value.getBytes(StandardCharsets.UTF_8);
+        ints(bytes.length+1);
+        body.writeBytes(bytes);
+        body.write(0);
+        return this;
+    }
     DataPacket utf8(String value) {
         body.writeBytes(value.getBytes(StandardCharsets.UTF_8));
         return this;

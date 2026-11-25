@@ -94,9 +94,16 @@ final class GoldStore implements AutoCloseable {
     }
 
     private void writeCachedPlayer(Connection db, String table, int uid) throws SQLException {
-        try (var check = db.prepareStatement("SELECT 1 FROM joker_douniu_settlement WHERE projected=0 LIMIT 1");
-             var pending = check.executeQuery()) {
-            if (pending.next()) throw new SQLException("等待牛牛整局缓存补记");
+        try (var check = db.prepareStatement("""
+                SELECT 1 FROM joker_douniu_settlement WHERE projected=0
+                UNION ALL SELECT 1 FROM joker_douniu_club_debit WHERE projected=0
+                UNION ALL SELECT 1 FROM joker_table_charge WHERE projected=0
+                UNION ALL SELECT 1 FROM joker_player_cache_sync WHERE uid=?
+                UNION ALL SELECT 1 FROM t_gift_room_card WHERE projected=0 LIMIT 1""")) {
+            check.setInt(1, uid);
+            try (var pending = check.executeQuery()) {
+                if (pending.next()) throw new SQLException("等待玩家余额缓存补记");
+            }
         }
         List<String> values;
         try (Jedis client = redis.getResource()) {
@@ -120,7 +127,7 @@ final class GoldStore implements AutoCloseable {
         }
     }
 
-    private static void updateChips(Connection db, Chips chips) throws SQLException {
+    static void updateChips(Connection db, Chips chips) throws SQLException {
         String sql = chips.bring() == 0
                 ? "UPDATE t_activity_user SET present_chip=? WHERE userid=? AND activity_id=?"
                 : "UPDATE t_activity_user SET present_chip=?,bring_chip=? WHERE userid=? AND activity_id=?";

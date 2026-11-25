@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /** 已结算的一局。大厅读取 userinfos，房间协议使用同一份明细生成 0x1050。 */
-public record RoundRecord(int activity, int level, int club, int index, List<Seat> userinfos) {
+public record RoundRecord(int activity, int level, int club, int index, List<Seat> userinfos, com.j.joker.game.niuniu.domain.table.SideBets.Posting side,
+                          com.j.joker.game.niuniu.domain.rules.ClubFee.Plan fees) {
     private static final ObjectMapper JSON = new ObjectMapper();
     public record Seat(int uid, String nickName, String photo_url, int isZhuang, int cardType,
                        int grab, int xiazhu, int score, List<Integer> cards, int sex) {
@@ -37,7 +38,7 @@ public record RoundRecord(int activity, int level, int club, int index, List<Sea
                     e.banker() ? 1 : 0, player.hand().type().id(), player.grabTimes(), player.betTimes(),
                     Math.toIntExact(e.delta()), player.cards().stream().map(Card::code).toList(), player.sex());
         }).toList();
-        return new RoundRecord(activity, level, club, result.roundNo(), seats);
+        return new RoundRecord(activity, level, club, result.roundNo(), seats, result.side(), result.fees());
     }
 
     // 十人桌的回看仍须装进客户端单帧，截取时保留完整 Unicode 字符。

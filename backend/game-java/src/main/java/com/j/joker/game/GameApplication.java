@@ -72,13 +72,15 @@ public class GameApplication {
             int port;
             switch (role) {
                 case "gateway" -> {
+                    boolean forwardPeer = env.getProperty("HALL_PROXY_PROTOCOL", Boolean.class, false);
+                    var trustedProxies = ProxyPeer.trusted(env.getProperty("TRUSTED_HTTP_PROXY_IPS"));
                     Map<String, InetSocketAddress> routes = Map.of(
                             "/ws/hall", endpoint(env, "HALL", 4700),
                             "/ws/douniu", endpoint(env, "DOUNIU", 13600));
                     initializer = new ChannelInitializer<>() {
                         protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(new ReadTimeoutHandler(90), new HttpServerCodec(),
-                                    new HttpObjectAggregator(8192), new Gateway(routes));
+                                    new HttpObjectAggregator(8192), new Gateway(routes, forwardPeer, trustedProxies));
                         }
                     };
                     port = 8090;
@@ -89,14 +91,21 @@ public class GameApplication {
                     dataExecutor = new DefaultEventExecutorGroup(1);
                     dataExecutor.scheduleWithFixedDelay(() -> {
                         try (var redis = data.redis.getResource()) {
-                            for (var game : data.games.values()) game.rounds.recover(game, redis);
+                            for (var game : data.games.values()) {
+                                game.rounds.recover(game, redis);
+                                if (game.hundred != null) {
+                                    game.balances.recover(game, redis);
+                                    game.hundred.tick(redis);
+                                    game.balances.recover(game, redis);
+                                }
+                            }
                         } catch (Exception ex) {
                             org.slf4j.LoggerFactory.getLogger(DataProtocol.class).warn("牛牛缓存补记待重试", ex);
                         }
                     }, 0, 5, java.util.concurrent.TimeUnit.SECONDS);
                     initializer = new ChannelInitializer<>() {
                         protected void initChannel(SocketChannel ch) {
-                            ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(65536, 0, 4, 0, 0));
+                            ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(DataClient.MAX_FRAME_BYTES, 0, 4, 0, 0));
                             ch.pipeline().addLast(dataExecutor, new DataProtocol(data));
                         }
                     };
@@ -134,12 +143,18 @@ public class GameApplication {
                                 return redis.incr("JOKER_DOUNIU:" + level + ":" + serverId + ":sequence");
                             }
                         }, douniu);
-                        listenFrames("127.0.0.1", 11603, () -> new AllocationProtocol(directory));
+                        var roomJournal = journal;
+                        listenFrames("127.0.0.1", 11603, () -> new AllocationProtocol(directory,roomJournal));
                         listenFrames("127.0.0.1", 4701,
                                 () -> new LobbyNoticeProtocol(lobby, accounts));
-                        listenFrames("127.0.0.1", 7500, () -> new OnlineUserProtocol(lobby));
+                        listenFrames("127.0.0.1", 7500, () -> new OnlineUserProtocol(lobby,douniuRedis));
+                        var hundred = new com.j.joker.game.hundred.interfaces.HundredHall(
+                                new com.j.joker.game.hundred.infrastructure.HundredClient(env.getProperty("DATA_HOST","data"),
+                                        env.getProperty("DATA_PORT",Integer.class,6001)));
+                        dataExecutor.scheduleWithFixedDelay(hundred::poll,1,1,java.util.concurrent.TimeUnit.SECONDS);
                         listenFrames(env.getProperty("GAME_BIND_ADDRESS", "0.0.0.0"), 4700,
-                                () -> new HallProtocol(douniu, lobby, address, DouniuSettings.port(env), level));
+                                () -> new HallProtocol(douniu, lobby, address, DouniuSettings.port(env), level,hundred),
+                                ProxyPeer.trusted(env.getProperty("TRUSTED_HALL_GATEWAY_IPS")));
                         douniu.registered();
                         hallRegistration = Json.write(Map.of("SVID", 1, "IP", address, "PORT", 4700,
                                 "instance", java.util.UUID.randomUUID().toString()));
@@ -188,9 +203,16 @@ public class GameApplication {
 
         private void listenFrames(String host, int port, java.util.function.Supplier<io.netty.channel.ChannelHandler> handler)
                 throws InterruptedException {
+            listenFrames(host, port, handler, java.util.Set.of());
+        }
+
+        private void listenFrames(String host, int port, java.util.function.Supplier<io.netty.channel.ChannelHandler> handler,
+                                  java.util.Set<String> trustedGateways) throws InterruptedException {
             bind(host, port, new ChannelInitializer<>() {
                 @Override protected void initChannel(SocketChannel ch) {
-                    ch.pipeline().addLast(new ReadTimeoutHandler(120), new LengthFieldBasedFrameDecoder(65536, 0, 4, 0, 0));
+                    ch.pipeline().addLast(new ReadTimeoutHandler(120));
+                    ProxyPeer.install(ch, trustedGateways);
+                    ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(65536, 0, 4, 0, 0));
                     ch.pipeline().addLast(dataExecutor, handler.get());
                 }
             });

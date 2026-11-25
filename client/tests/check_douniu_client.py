@@ -23,6 +23,15 @@ for socket in sockets:
     keypad = socket.parent / "scene/group/join/group_join.lua"
     subprocess.run(["lua", tests / "douniu_password.lua", keypad], check=True)
     subprocess.run(["lua", tests / "hall_login.lua", socket.parent / "HallServer.lua"], check=True)
+    subprocess.run(["lua", tests / "hall_gold_list.lua", socket.parent, byte_array], check=True)
+    friend = socket.parent / "FriendTable.lua"
+    assert 'require("hall.FriendTable").addEntries' in (socket.parent / "ItremGame.lua").read_text()
+    subprocess.run(["lua", tests / "friend_table.lua", friend], check=True)
+    subprocess.run(["lua", tests / "username_password.lua", socket.parent / "login/UsernameView.lua"], check=True)
     bootstrap = root / "hall/network/Request.lua"
+    invitation = socket.parent / "familyCircle/TheInvitationLayer.lua"
+    xhr = root / "TTLuaHelps.lua"
+    args = [xhr] if xhr.is_file() else []
+    subprocess.run(["lua", tests / "douniu_gift.lua", bootstrap, invitation, *args], check=True)
     assert 'PURE_JAVA_HALL = responseData["data"]["pureJavaHall"] == true' in bootstrap.read_text(), bootstrap
-print(f"Verified heartbeat, room PIN and hall login in {len(sockets)} packaged halls.")
+print(f"Verified username recovery, history navigation, heartbeat, room PIN, hall login, gift retries, invitations and gold table lists in {len(sockets)} packaged halls.")

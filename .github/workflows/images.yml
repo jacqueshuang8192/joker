@@ -24,13 +24,24 @@ jobs:
             /client/**/ByteArray.lua
             /client/**/group_join.lua
             /client/**/HallServer.lua
+            /client/**/ItremGame.lua
+            /client/**/FriendTable.lua
+            /client/**/ChipPurchase.lua
+            /client/**/HundredTable.lua
+            /client/**/HALL_PROTOCOL.lua
+            /client/**/network/PacketParser.lua
+            /client/**/network/PACKET_DATA_TYPE.lua
+            /client/**/login/UsernameView.lua
             /client/**/network/Request.lua
-      - name: Check packaged Cocos hall login, heartbeat and password-room flows
+            /client/**/familyCircle/TheInvitationLayer.lua
+            /client/**/assets/TTLuaHelps.lua
+      - name: Check packaged Cocos hall, room, gift and invitation flows
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y lua5.4
           python3 client/tests/check_douniu_client.py
-  build:
+  pure-java:
+    name: Verify and publish pure Java images
     needs: client-protocol
     runs-on: ubuntu-24.04
     permissions:
@@ -41,39 +52,17 @@ jobs:
         with:
           # Build backend images without downloading client artwork.
           sparse-checkout: |
+            .github/actions/build-java-images
             backend/api
-            backend/native
             backend/game-java
-            deploy/java
+            backend/table-rules
             backend/tests
             config
             deploy/1panel
             tools
-      - uses: actions/setup-java@v6.3.0
-        with:
-          distribution: temurin
-          java-version: '23'
-          cache: maven
-      - name: Compile the API from source
-        run: mvn -B -f backend/api/pom.xml clean package
-      - name: Compile the Java game services
-        run: mvn -B -f backend/game-java/pom.xml clean package
-      - name: Build and validate backend images
-        shell: bash
+      - uses: ./.github/actions/build-java-images
+      - name: Exercise Java rooms and WebSocket gateway
         run: |
-          set -euo pipefail
-          prefix="ghcr.io/${GITHUB_REPOSITORY,,}"
-          tag="sha-${GITHUB_SHA}"
-          echo "PREFIX=$prefix" >> "$GITHUB_ENV"
-          echo "TAG=$tag" >> "$GITHUB_ENV"
-          build=(docker build --platform linux/amd64 --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" --label "org.opencontainers.image.revision=$GITHUB_SHA")
-          "${build[@]}" -t "$prefix-api:$tag" backend/api
-          "${build[@]}" -f backend/native/Dockerfile -t "$prefix-native:$tag" .
-          "${build[@]}" -t "$prefix-game-java:$tag" -f backend/game-java/Dockerfile .
-          docker run --rm --entrypoint java "$prefix-api:$tag" -version
-      - name: Compare Java services with native and exercise the WebSocket gateway
-        run: |
-          python3 backend/game-java/tests/compare.py "$PREFIX-native:$TAG" "$PREFIX-game-java:$TAG"
           java -cp backend/game-java/target/classes backend/game-java/tests/DouniuCheck.java backend/game-java/target/joker-game-java.jar
           java backend/game-java/tests/GatewayCheck.java backend/game-java/target/joker-game-java.jar
       - name: Verify the pure Java 1Panel stack and room recovery
@@ -101,16 +90,56 @@ jobs:
           done
       - name: Prepare versioned pure Java Compose
         if: github.event_name != 'pull_request'
+        env:
+          ADVERTISE_IP: 127.0.0.1
+          MYSQL_PASSWORD: compose-validation
         run: |
           sed 's/${IMAGE_TAG:?填写内置初始化脚本的发布标签}/java-'"$TAG"'/g' deploy/1panel/pure-java.yml > "$RUNNER_TEMP/docker-compose.yml"
+          diff <(printf '%s\n' "$PREFIX-api:java-$TAG" "$PREFIX-game-java:java-$TAG" | sort) \
+               <(IMAGE_PREFIX="$PREFIX" docker compose -p validate -f "$RUNNER_TEMP/docker-compose.yml" --profile gold config --images | sort -u)
       - uses: actions/upload-artifact@v7.0.2
         if: github.event_name != 'pull_request'
         with:
           name: 1panel-pure-java
           path: ${{ runner.temp }}/docker-compose.yml
+
+  native-mixed:
+    name: Verify and publish native and mixed images
+    needs: pure-java
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          # Build backend images without downloading client artwork.
+          sparse-checkout: |
+            .github/actions/build-java-images
+            backend/api
+            backend/native
+            backend/game-java
+            backend/table-rules
+            deploy/java
+            backend/tests
+            config
+            deploy/1panel
+            tools
+      - uses: ./.github/actions/build-java-images
+      - name: Build native image and compare Java services
+        run: |
+          docker build --platform linux/amd64 --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" --label "org.opencontainers.image.revision=$GITHUB_SHA" -f backend/native/Dockerfile -t "$PREFIX-native:$TAG" .
+          python3 backend/game-java/tests/compare.py "$PREFIX-native:$TAG" "$PREFIX-game-java:$TAG"
       - name: Smoke test the stack on a fresh database
         env: {CHECK_JAVA_VARIANT: "1"}
         run: bash backend/tests/smoke.sh
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish the verified images
         if: github.event_name != 'pull_request'
         shell: bash

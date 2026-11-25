@@ -15,7 +15,7 @@ final class RoomMessages {
         return (id >= 1 && id <= 11) || (id >= 51 && id <= 65);
     }
 
-    static String message(Player sender, String raw, boolean location) {
+    static String message(Player sender, String raw, boolean location, java.util.function.LongPredicate seated) {
         if (raw == null || raw.length() > 2048) return null;
         try {
             JsonNode source = JSON.readTree(raw);
@@ -36,6 +36,16 @@ final class RoomMessages {
                     int id = source.path("type").asInt();
                     if (!knownFace(id)) return null;
                     out.put("type", id);
+                } else if ("expression".equals(type) || "EmojiArmatureView".equals(type)) {
+                    boolean expression = "expression".equals(type);
+                    String targetKey = expression ? "uid_to" : "to_uid";
+                    String effectKey = expression ? "expressionType" : "type";
+                    long target = source.path(targetKey).asLong(0);
+                    int effect = source.path(effectKey).asInt(0);
+                    if (effect < 1 || effect > (expression ? 7 : 9) || target <= 0 || !seated.test(target)) return null;
+                    if (expression) out.put("uid_from", sender.uid());
+                    out.put(targetKey, target);
+                    out.put(effectKey, effect);
                 } else if ("text".equals(type)) {
                     String content = source.path("textMessage").asText("");
                     if (content.isBlank() || content.codePointCount(0, content.length()) > 60) return null;

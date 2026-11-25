@@ -152,44 +152,44 @@ P.CLISVR_HEART_BEAT              = 0x0110    --server心跳包
 -------------------  服务端返回  --------------------------
 -----------------------------------------------------------
 ----登录Alloc 返回
---P.SERVER_CMD_LOGIN_ALLOC                    = 0x151
---SERVER[P.SERVER_CMD_LOGIN_ALLOC] = {
---    ver = 1,
---    fmt = {
---        {name = "returnCode",type = T.BYTE},  -- 返回码
---        {name = "tableListSize",type = T.SHORT},
---        {name = "tableList",type = T.ARRAY,fixedLengthParser = "tableListSize",fixedLength = 0,
---            fmt = {
---                {name = "tid",type = T.INT},
---                {name = "activity_id",type = T.INT},
---                {name = "invity_code",type = T.STRING},
---                {name = "description",type = T.STRING},
---                {name = "play_nums",type = T.BYTE},
---                {name = "in_coin",type = T.INT},
---                {name = "baseChip",type = T.INT},
---                {name = "max_nums",type = T.BYTE},
---                {name = "ower_uid",type = T.INT},
---                {name = "creator_nikename",type = T.STRING},
---                {name = "creator_portrait",type = T.STRING},
---                {name = "bonus_pool",type = T.INT},
---                {name = "userMapSize",type = T.BYTE},
---                {name = "userMap",type = T.ARRAY,fixedLengthParser = "userMapSize",fixedLength = 0,
---                    fmt = {
---                        -- {name = "uid",type = T.INT},
---                        {name = "seatId",type = T.INT}
---                        -- {name = "nickname",type = T.STRING},
---                        -- {name = "portrait",type = T.STRING}
---                    }
---                },
---            }
---        },
---        {name = "tablePasswordList",type = T.ARRAY,fixedLengthParser = "tableListSize",fixedLength = 0,
---            fmt = {
---                {name = "password",type = T.STRING}
---            }
---        },
---    }
---}
+P.SERVER_CMD_LOGIN_ALLOC                    = 0x151
+SERVER[P.SERVER_CMD_LOGIN_ALLOC] = {
+    ver = 1,
+    fmt = {
+        {name = "returnCode",type = T.BYTE},  -- 返回码
+        {name = "tableListSize",type = T.SHORT},
+        {name = "tableList",type = T.ARRAY,fixedLengthParser = "tableListSize",fixedLength = 0,
+            fmt = {
+                {name = "tid",type = T.INT},
+                {name = "activity_id",type = T.INT},
+                {name = "invity_code",type = T.STRING},
+                {name = "description",type = T.STRING},
+                {name = "play_nums",type = T.BYTE},
+                {name = "in_coin",type = T.INT},
+                {name = "baseChip",type = T.INT},
+                {name = "max_nums",type = T.BYTE},
+                {name = "ower_uid",type = T.INT},
+                {name = "creator_nikename",type = T.STRING},
+                {name = "creator_portrait",type = T.STRING},
+                {name = "bonus_pool",type = T.INT},
+                {name = "userMapSize",type = T.BYTE},
+                {name = "userMap",type = T.ARRAY,fixedLengthParser = "userMapSize",fixedLength = 0,
+                    fmt = {
+                        -- {name = "uid",type = T.INT},
+                        {name = "seatId",type = T.INT}
+                        -- {name = "nickname",type = T.STRING},
+                        -- {name = "portrait",type = T.STRING}
+                    }
+                },
+            }
+        },
+        {name = "tablePasswordList",type = T.ARRAY,fixedLengthParser = "tableListSize",fixedLength = 0,
+            fmt = {
+                {name = "password",type = T.STRING}
+            }
+        },
+    }
+}
 
 
 P.SERVER_CMD_LOGOUT_ALLOC               = 0x153    --登出Alloc

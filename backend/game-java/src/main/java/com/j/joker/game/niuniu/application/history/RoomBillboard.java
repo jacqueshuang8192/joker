@@ -21,6 +21,12 @@ public final class RoomBillboard {
         rounds = round.index();
     }
 
+    public void deduct(int uid, long amount) {
+        var p = players.get(uid);
+        if (p == null || amount < 0) throw new IllegalArgumentException("整桌费用与参与者不符");
+        players.put(uid,new Standing(p.profile(),p.score() - amount));
+    }
+
     public Map<String,Object> packet(int expectedRounds) {
         if (rounds != expectedRounds || players.size() > Byte.MAX_VALUE) return null;
         // 原生大厅转发的是 8192 字节包。换桌人数多时优先保留每人的身份和净分。

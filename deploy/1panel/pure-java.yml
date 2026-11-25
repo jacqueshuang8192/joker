@@ -75,8 +75,10 @@ services:
   # 玩家数据与结算账本仅供本编排内调用。
   data:
     <<: *game
-    depends_on: {api: {condition: service_healthy}}
-    environment: {GAME_ROLE: data, GAME_BIND_ADDRESS: 127.0.0.1, JOKER_REDIS_CONFIG: /srv/redis.json}
+    # data 与 API 共用网络空间，由 Compose 重启 API 时需随之重新连接。
+    depends_on: {api: {condition: service_healthy, restart: true}}
+    # 旧换筹码接口与牌桌结算共用 MySQL 分表，事务提交后再同步 Redis。
+    environment: {JOKER_PURE_JAVA: "true", GAME_ROLE: data, GAME_BIND_ADDRESS: 127.0.0.1, JOKER_REDIS_CONFIG: /srv/redis.json}
     volumes:
       - *redis-settings
       - {<<: *settings-file, target: /srv/data/bin/config.xml, volume: {nocopy: true, subpath: runtime-java/data.xml}}
@@ -87,6 +89,8 @@ services:
     depends_on: {data: {condition: service_healthy}}
     environment:
       GAME_ROLE: rooms
+      # WSS 网关启用 PROXY 协议时才填写其固定内网 IP，多个用逗号分隔。
+      TRUSTED_HALL_GATEWAY_IPS: ${TRUSTED_HALL_GATEWAY_IPS:-}
       DATA_HOST: 127.0.0.1
       ADVERTISE_IP: ${ADVERTISE_IP:?填写玩家可达的IPv4地址}
       JOKER_REDIS_CONFIG: /srv/redis.json

@@ -59,6 +59,10 @@ public class TokenInterceptor implements HandlerInterceptor{
             String uid = req.getParameter(XYUid);
             boolean requiresPlayerSession = arg2 instanceof HandlerMethod handler
                     && (HallReadController.class.isAssignableFrom(handler.getBeanType())
+                    || com.j.joker.wallet.ChipPurchaseController.class.isAssignableFrom(handler.getBeanType())
+                    || com.j.joker.wallet.DiamondGiftController.class.isAssignableFrom(handler.getBeanType())
+                    || com.j.joker.tables.interfaces.HundredTableController.class.isAssignableFrom(handler.getBeanType())
+                    || com.j.joker.tables.interfaces.FriendTableController.class.isAssignableFrom(handler.getBeanType())
                     || DouniuRoomPasswordController.class.isAssignableFrom(handler.getBeanType()));
             if (!requiresPlayerSession && ("1".equals(cache.hget(SYSCONFIG, DEBUG))
                     || (uid != null && Boolean.TRUE.equals(cache.sismember(SYSCONFIGUSERS, uid))))) return true;

@@ -30,6 +30,15 @@ function Request:ctor()
         date = date or {}
         date.XYToken = token
         date.XYUid = USER_INFO.uid
+        local diamondGift = HttpAddr and url == HttpAddr .. "/playerXXX"
+        if diamondGift and not date.requestId then
+            -- 同一请求发生网络重试时沿用编号。每次新的赠送操作使用独立编号。
+            local defaults = cc.UserDefault:getInstance()
+            local sequence = defaults:getIntegerForKey("diamondGiftSequence", 0) + 1
+            defaults:setIntegerForKey("diamondGiftSequence", sequence)
+            defaults:flush()
+            date.requestId = crypto.md5(table.concat({tostring(token), tostring(os.time()), tostring(sequence)}, ":"), false)
+        end
 
         local callBack = parm.callBack
         local type_ = parm.type_ or "POST"
@@ -54,10 +63,15 @@ function Request:ctor()
 
             --判断请求是否为失败 网络不好的情况下触发
             if event.name == "failed" then
+                if parm.onFailure then parm.onFailure(); return end
 
                 require("hall.GameCommon"):landLoading(false)
                 print(event.name, "-----failed-----")
-                if interfaceName == "getUserInfo4GameServer" then
+                if diamondGift and PURE_JAVA_HALL then
+                    require(CommonTips_filePath):showTips({type = 2, title = "赠钻回执待确认",
+                        content = "可重试本次赠送，也可在赠送记录中查询结果。",
+                        callBackSure = function() cct.createHttRq(parm) end})
+                elseif interfaceName == "getUserInfo4GameServer" then
                     local data = {type = 1, title = "提示", content = "当前网络异常，请检查网络后登录..."}
                     require(CommonTips_filePath):showTips(data)
                     require(LoginScene_filePath):show()
@@ -82,6 +96,7 @@ function Request:ctor()
             --请求结束，根据请求码进行操作  请求成功了,后端报错,没有返回200的处理
             local code = request:getResponseStatusCode()
             if code ~= 200 then
+                if parm.onFailure then parm.onFailure(); return end
                 -- 没有返回 200 响应代码
                 print(code, "-----ResponseStatusCode-----")
 

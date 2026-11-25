@@ -13,7 +13,8 @@ public enum GameState {
     CALL_TIMES(5, "CallTimes"),
     OPEN_CARD(6, "OpenCard"),
     SETTLE(7, "Settle"),
-    STOP_GAME(8, "StopGame");
+    STOP_GAME(8, "StopGame"),
+    BANKER_OPTION(9, "BankerOption"), SIDE_GRAB(10, "SideGrab"), SIDE_BET(11, "SideBet");
 
     private final int code;
     private final String logName;

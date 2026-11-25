@@ -47,11 +47,7 @@ public final class Card implements Comparable<Card> {
 
     /** 比牌用的牌力值：A=1，10/J/Q/K=10。 */
     public int logicValue() {
-        int v = rank();
-        if (v == 14) {
-            return 1;
-        }
-        return Math.min(v, 10);
+        return Math.min(value(), 10);
     }
 
     public Suit suit() {

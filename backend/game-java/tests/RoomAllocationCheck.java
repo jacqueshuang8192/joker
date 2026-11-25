@@ -26,7 +26,7 @@ public class RoomAllocationCheck {
     public static void main(String[] args) {
         for (String rule : new String[]{"{}", "{\"profit\":null}", "{\"profit\":\" \"}", "{\"profit\":\"0.00\"}"})
             new RoomDefinition(302, 1, 2, "123456", 0, 2, 4, 1, 0, 0, 15, "", rule);
-        for (String rule : new String[]{"{\"profit\":0.25}", "{\"hasLeper\":1}", "{\"hasLeper\":2}", "{\"subGameType\":5}"}) {
+        for (String rule : new String[]{"{\"profit\":0.25}", "{\"hasLeper\":-1}", "{\"hasLeper\":3}"}) {
             try {
                 new RoomDefinition(302, 1, 2, "123456", 0, 2, 4, 1, 0, 0, 15, "", rule);
                 throw new AssertionError("unsupported rules accepted " + rule);

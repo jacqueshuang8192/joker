@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import com.j.joker.game.niuniu.domain.rules.GameConfig;
 
 /** 一副 52 张牌（不含大小王），对应服务端 CGameLogic::ShulffleCard / GetPokerList。 */
 public final class Deck {
@@ -23,8 +24,39 @@ public final class Deck {
         }
     }
 
-    public static Deck forConfig(com.j.joker.game.niuniu.domain.rules.GameConfig cfg) {
-        return new Deck(cfg.hasJQK() ? 13 : 10);
+    public static List<Integer> chooseLepers(GameConfig cfg, Random random) {
+        return switch (cfg.leperMode()) {
+            case 1 -> List.of(Card.SMALL_JOKER, Card.BIG_JOKER);
+            case 2 -> List.of(0x40 | (1 + random.nextInt(cfg.hasJQK() ? 13 : 10)));
+            default -> List.of();
+        };
+    }
+
+    public static Deck forConfig(GameConfig cfg) {
+        return forRound(cfg, chooseLepers(cfg, java.util.concurrent.ThreadLocalRandom.current()));
+    }
+
+    /** 验证本局实际公布的癞子，恢复时逐张核销同一副牌。 */
+    public static Deck forRound(GameConfig cfg, List<Integer> lepers) {
+        int max = cfg.hasJQK() ? 13 : 10;
+        Deck deck = new Deck(max);
+        switch (cfg.leperMode()) {
+            case 0 -> {
+                if (!lepers.isEmpty()) throw new IllegalArgumentException("普通牌桌含癞子");
+            }
+            case 1 -> {
+                if (!lepers.equals(List.of(Card.SMALL_JOKER, Card.BIG_JOKER)))
+                    throw new IllegalArgumentException("大小王配置无效");
+                lepers.forEach(code -> deck.cards.add(Card.of(code)));
+            }
+            case 2 -> {
+                if (lepers.size() != 1 || lepers.getFirst() < 0x41 || lepers.getFirst() > 0x40 + max)
+                    throw new IllegalArgumentException("随机癞子点数无效");
+                Card wild = Card.of(lepers.getFirst());
+                deck.cards.replaceAll(card -> card.value() == wild.value() ? wild : card);
+            }
+        }
+        return deck;
     }
 
     public static Deck shuffled(Random random) {

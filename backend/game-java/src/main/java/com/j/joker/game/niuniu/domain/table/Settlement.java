@@ -31,7 +31,7 @@ public final class Settlement {
     }
 
     public record Result(int roundNo, long bankerUid, long bankerDelta, long commissionTotal, long totalAmount,
-                         List<Entry> entries) {
+                         List<Entry> entries, SideBets.Posting side, com.j.joker.game.niuniu.domain.rules.ClubFee.Plan fees) {
     }
 
     private Settlement() {
@@ -73,7 +73,8 @@ public final class Settlement {
 
         BigInteger unit = BigInteger.valueOf(cfg.baseChip()).multiply(BigInteger.TEN)
                 .multiply(BigInteger.valueOf(cfg.forDecimal()));
-        int grab = Math.max(1, banker.grabTimes());
+        if (cfg.gongNiu()) unit = BigInteger.valueOf(100);
+        int grab = cfg.gongNiu() ? 1 : Math.max(1, banker.grabTimes());
         HandResult bankerHand = banker.hand();
 
         List<Player> ordered = new ArrayList<>(table.players());
@@ -104,12 +105,13 @@ public final class Settlement {
             if (d == 0) {
                 d = 1;
             }
-            BigInteger units = BigInteger.valueOf((long) Math.max(1, p.betTimes()) * grab)
+            BigInteger units = BigInteger.valueOf((long) (cfg.gongNiu() ? p.betTimes() : Math.max(1, p.betTimes())) * grab)
                     .multiply(BigInteger.valueOf(Math.abs((long) d)));
             BigInteger signed = bankerWins ? units.negate() : units;
             winTimes.put(p, signed);
             bankTimes = bankTimes.subtract(signed);
             long limit = bankerWins ? p.chips() : Math.min(p.chips(), Integer.MAX_VALUE - p.chips());
+            limit -= table.side().reserved(p.uid());
             long amount = unit.multiply(units).min(BigInteger.valueOf(limit)).longValueExact();
             if (bankerWins) amount = -amount;
             amounts.put(p, amount);
@@ -122,17 +124,33 @@ public final class Settlement {
         }
 
         long diff = totalLosers - totalWinners;
-        long bankerDelta = Math.clamp(diff, -banker.chips(), Math.min(banker.chips(), Integer.MAX_VALUE - banker.chips()));
-        if (diff > bankerDelta) {
+        long bankerDelta = Math.clamp(diff, -banker.chips() + table.side().reserved(banker.uid()), Math.min(banker.chips(), Integer.MAX_VALUE - banker.chips()) - table.side().reserved(banker.uid()));
+        if (cfg.gongNiu()) {
+            // 先收闲家输分，再按牌力从强到弱赔付，锅底和庄家筹码同时封顶。
+            long collected = Math.min(totalLosers, Integer.MAX_VALUE - banker.chips() - table.side().reserved(banker.uid()));
+            if (collected < totalLosers) distribute(amounts, -1, totalLosers, collected);
+            long available = Math.min(100L * table.potPoints(), banker.chips() - table.side().reserved(banker.uid())) + collected;
+            var winners = ordered.stream().filter(p -> amounts.getOrDefault(p, 0L) > 0)
+                    .sorted((a,b) -> CardLogic.compare(b.hand(), a.hand(), cfg)).toList();
+            bankerDelta = collected;
+            for (Player player : winners) {
+                long paid = Math.min(available, amounts.get(player));
+                amounts.put(player, paid);
+                available -= paid;
+                bankerDelta -= paid;
+            }
+        } else if (diff > bankerDelta) {
             distribute(amounts, -1, totalLosers, totalWinners + bankerDelta);
         } else if (diff < bankerDelta) {
             distribute(amounts, 1, totalWinners, totalLosers - bankerDelta);
         }
 
         // 落账
+        var side = table.side().settle(table);
         List<Entry> entries = new ArrayList<>();
         for (Player p : ordered) {
             long delta = p == banker ? bankerDelta : amounts.getOrDefault(p, 0L);
+            if (side != null) delta += side.delta(p.uid());
             int mult = p == banker ? cfg.cardTypeTimes(bankerHand.type()) : typeMult.getOrDefault(p, 1);
             BigInteger signed = p == banker ? bankTimes : winTimes.getOrDefault(p, BigInteger.ZERO);
             // calTuizhu 取未乘金币单位的输赢倍数。用完推注档位或输牌后，下一局清零。
@@ -148,7 +166,27 @@ public final class Settlement {
         for (long v : amounts.values()) {
             totalAmount += Math.abs(v);
         }
-        return new Result(table.roundNo(), banker.uid(), bankerDelta, 0, totalAmount, entries);
+        com.j.joker.game.niuniu.domain.rules.ClubFee.Plan fees = null;
+        if (cfg.gongNiu() && cfg.clubFee().enabled()) {
+            var scores = new LinkedHashMap<Integer,Long>();
+            var balances = new LinkedHashMap<Integer,Long>();
+            for (var entry : entries) {
+                int uid = Math.toIntExact(entry.uid());
+                scores.put(uid, entry.delta() - (side == null ? 0 : side.delta(entry.uid())));
+                balances.put(uid, entry.before() + entry.delta());
+            }
+            fees = cfg.clubFee().calculate(scores,balances);
+            for (int i = 0; i < entries.size(); i++) {
+                var e = entries.get(i);
+                var charge = fees.charges().get((int)e.uid());
+                if (charge == null) continue;
+                if (e.banker()) bankerDelta -= charge.total();
+                entries.set(i,new Entry(e.uid(), e.seatId(), e.nick(), e.banker(), e.betTimes(), e.grabTimes(),
+                        e.cardType(), e.typeMultiplier(), e.before(), e.delta()-charge.total(), charge.total(), e.winTimes(), e.nextPush()));
+            }
+        }
+        if (side != null) side = side.withClosingBalances(entries);
+        return new Result(table.roundNo(), banker.uid(), bankerDelta + (side == null ? 0 : side.delta(banker.uid())), fees == null ? 0 : fees.total(), totalAmount, entries, side, fees);
     }
 
     private static void distribute(Map<Player, Long> amounts, int sign, long total, long available) {

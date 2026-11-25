@@ -39,6 +39,21 @@ public final class DouniuAdmission implements DouniuService.Admission {
         }
     }
 
+    @Override public com.j.joker.game.rooms.domain.SeatRestrictions.Position position(long uid) {
+        try (var redis = pool.getResource()) {
+            var values = redis.hmget("TOKEN_" + uid, "hallPeer", "hallLatitude", "hallLongitude");
+            return com.j.joker.game.rooms.domain.SeatRestrictions.Position.of(values.get(0), values.get(1), values.get(2));
+        }
+    }
+
+    @Override public boolean disablePlayer(int club,int actor,int target,int status,boolean owner) {
+        try (var redis = pool.getResource()) {
+            if (!owner && !redis.sismember("Club2UserIsManagerSet"+club,Integer.toString(actor))) return false;
+            redis.hset("DISABLE_USER_"+club,Integer.toString(target),Integer.toString(status));
+            return true;
+        }
+    }
+
     @Override public boolean allowedAtClubTable(int club, long uid, java.util.List<Long> seated) {
         if (club <= 0) return true;
         try (var redis = pool.getResource()) {

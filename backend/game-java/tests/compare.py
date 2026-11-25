@@ -10,6 +10,7 @@ import secrets
 import socket
 import struct
 import subprocess
+import sys
 import tempfile
 import time
 import xml.etree.ElementTree as ET
@@ -51,6 +52,15 @@ def run_suite(native, java, tmp, scope):
     scope.callback(docker, "network", "rm", network)
 
     def run(name, *args):
+        # macOS 的 Docker 在虚拟机内分配随机端口，可能与宿主 MySQL 等服务重号。
+        # 由宿主选取空闲的回环端口。Linux 继续让 Docker 原子分配发布端口。
+        if sys.platform == "darwin":
+            args = list(args)
+            for index, arg in enumerate(args):
+                if index and args[index-1] == "-p" and arg.startswith("127.0.0.1::"):
+                    with socket.socket() as probe:
+                        probe.bind(("127.0.0.1", 0))
+                        args[index] = f"127.0.0.1:{probe.getsockname()[1]}:{arg.rsplit(':',1)[1]}"
         cid = docker("run", "-d", "--platform", "linux/amd64", "--network", network, "--network-alias", name, *args)
         scope.callback(docker, "rm", "-fv", cid)
         return cid
@@ -72,11 +82,14 @@ def run_suite(native, java, tmp, scope):
     (tmp / "redis.json").write_text(json.dumps(dict(host="redis", port=6379, user="", password=password)))
     sql((root / "backend/api/src/main/resources/db/migration/V5__douniu_round_settlement.sql").read_text())
     migrations = root / "backend/api/src/main/resources/db/migration"
-    for version, table in [("V1", "t_free_game_round"), ("V1", "t_activity"), ("V2", "t_free_game_singleresult")]:
+    for version, table in [("V1", "t_gift_room_card"), ("V1", "t_free_game_round"), ("V1", "t_activity"), ("V2", "t_free_game_singleresult")]:
         schema = next(migrations.glob(version + "__*.sql")).read_text()
         start = schema.index("CREATE TABLE IF NOT EXISTS `" + table + "`")
         sql(schema[start:schema.index(";", start) + 1])
     sql((migrations / "V7__douniu_round_history.sql").read_text())
+    sql((migrations / "V10__douniu_variants.sql").read_text())
+    sql((migrations / "V11__table_charges_and_gifts.sql").read_text())
+    sql((migrations / "V12__player_cache_sync.sql").read_text())
     for role in ["gold", "data"]:
         template = root / "config" / ("gold-example.xml.in" if role == "gold" else "data.xml.in")
         xml = ET.fromstring(template.read_bytes())

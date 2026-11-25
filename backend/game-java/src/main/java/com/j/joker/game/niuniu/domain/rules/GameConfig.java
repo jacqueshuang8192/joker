@@ -65,7 +65,7 @@ public final class GameConfig {
     private final Set<Integer> speType = new LinkedHashSet<>(Set.of(1, 2, 3, 4, 5, 6, 7));
     private final Set<Integer> gaoji = new LinkedHashSet<>();
     private boolean passwordRequired;
-    private boolean leperEnabled;
+    private int leperMode;
     private boolean noFlowerNiu;
     private boolean waiweiEnabled;
     private int tuizhu = 5;
@@ -73,18 +73,23 @@ public final class GameConfig {
     private List<Integer> grabOptions = List.of(1, 2, 3, 4);
     private boolean doubleBet;
     private int grabDealerChips;
-    private int profit;
-    private int profitLimit = 5000;
-    private int profitType;
-    private int oneOrAll = 2;
-    private int rateOrConstant = 1;
-    private int additionalPoint;
+    private String secConstant = "";
+    private ClubFee clubFee = ClubFee.from(Map.of());
+    public ClubFee clubFee() { return clubFee; }
     private int tgTime;
     private int pointMode;
     private int firstBetLimit;
     private int afterBetLimit;
-    private int[] waiweiBetChips = {10, 50, 100};
-    private String secConstant = "";
+    private int upBankTimes;
+    private int upBankGuodiTimes;
+    private int linkBankPattern;
+    public boolean gongNiu() { return subGameType == SubGameType.GONG_NIU; }
+    public int upBankTimes() { return upBankTimes; }
+    public int upBankGuodiTimes() { return upBankGuodiTimes; }
+    public int linkBankPattern() { return linkBankPattern; }
+    public int openingPot() { return Math.multiplyExact(baseChip, guodi); }
+    private int[] waiweiBetChips = {1, 2, 5};
+    public int sideLimitTimes() { return 10; }
 
     // ---- DB 配置（bullfight_gameconfig_table） ----
     private double commissionRate = 0.05;
@@ -176,7 +181,7 @@ public final class GameConfig {
             }
             return this;
         }
-        public Builder leper(boolean v) { c.leperEnabled = v; return this; }
+        public Builder leper(boolean v) { c.leperMode = v ? 1 : 0; return this; }
         public Builder noFlowerNiu(boolean v) { c.noFlowerNiu = v; return this; }
         public Builder waiwei(boolean v) { c.waiweiEnabled = v; return this; }
         public Builder commissionRate(double v) { c.commissionRate = v; return this; }
@@ -230,7 +235,18 @@ public final class GameConfig {
         if (i(m, "guodi", 0) > 0) {
             b.guodi(i(m, "guodi", 0));
         }
-        b.leper(i(m, "hasLeper", 0) == 1);
+        if (b.c.gongNiu()) {
+            if ((long)b.c.baseChip * b.c.guodi > Integer.MAX_VALUE / 100) throw new IllegalArgumentException("锅底超出筹码范围");
+            b.c.firstBetLimit = range(m,"firstBetLimit",0,100,0);
+            b.c.afterBetLimit = range(m,"afterBetLimit",0,100,0);
+            b.c.upBankTimes = range(m,"upBankTimes",0,24,1);
+            b.c.upBankGuodiTimes = range(m,"upBankGuodiTimes",0,Integer.MAX_VALUE,0);
+            b.c.linkBankPattern = range(m,"linkBankPattern",1,2,1);
+            b.c.grabOptions = List.of(1);
+        }
+        Object leper = m.get("hasLeper");
+        b.c.leperMode = leper == null ? 0 : Integer.parseInt(leper.toString());
+        if (b.c.leperMode < 0 || b.c.leperMode > 2) throw new IllegalArgumentException("癞子模式无效");
         if (m.get("speType") instanceof String sp) {
             b.speType(sp);
         }
@@ -245,9 +261,10 @@ public final class GameConfig {
             }
             b.times(arr);
         }
-        if (m.get("waiwei") instanceof String w && w.contains("1")) {
-            b.waiwei(true);
-        }
+        b.c.clubFee = ClubFee.from(m);
+        b.c.secConstant = s(m, "secConstant", "");
+        Object side = m.get("waiwei");
+        if (side != null) b.waiwei(java.util.Arrays.stream(side.toString().split(",")).anyMatch(v -> "1".equals(v.trim())));
         if (m.get("gaoji") instanceof String) {
             b.pointDValue(b.c.gaoji.contains(7));   // gaoji 含 7 = 点差
             b.hasJQK(!b.c.gaoji.contains(6));       // gaoji 含 6 = 无 JQK
@@ -255,6 +272,12 @@ public final class GameConfig {
         if (b.c.times.length == 0 || b.c.times.length > 125 || java.util.Arrays.stream(b.c.times)
                 .anyMatch(n -> n < 1 || n > Integer.MAX_VALUE / 2)) throw new IllegalArgumentException("下注倍数无效");
         return b.build();
+    }
+
+    private static int range(Map<String,Object> m, String key, int low, int high, int fallback) {
+        int value = m.get(key) == null ? fallback : Integer.parseInt(m.get(key).toString());
+        if (value < low || value > high) throw new IllegalArgumentException(key + " 超出范围");
+        return value;
     }
 
     private static int positiveMultiplier(Map<String,Object> settings, String key, int fallback) {
@@ -285,8 +308,10 @@ public final class GameConfig {
 
     public boolean passwordRequired() { return passwordRequired; }
 
+    public int leperMode() { return leperMode; }
+
     public boolean isLeperEnabled() {
-        return leperEnabled;
+        return leperMode != 0;
     }
 
     /**
@@ -416,12 +441,12 @@ public final class GameConfig {
     public Set<Integer> gaoji() { return Set.copyOf(gaoji); }
     public boolean waiweiEnabled() { return waiweiEnabled; }
     public int tuizhu() { return tuizhu; }
-    public int profit() { return profit; }
-    public int profitLimit() { return profitLimit; }
-    public int profitType() { return profitType; }
-    public int oneOrAll() { return oneOrAll; }
-    public int rateOrConstant() { return rateOrConstant; }
-    public int additionalPoint() { return additionalPoint; }
+    public int profit() { return clubFee.profit().intValue(); }
+    public int profitLimit() { return Math.toIntExact(clubFee.threshold()); }
+    public int profitType() { return clubFee.winners(); }
+    public int oneOrAll() { return clubFee.share() ? 2 : 1; }
+    public int rateOrConstant() { return clubFee.mode(); }
+    public int additionalPoint() { return clubFee.additional(); }
     public int tgTime() { return tgTime; }
     public int pointMode() { return pointMode; }
     /** 外围首注下限百分比：floor(guodi * firstBetLimit / 100)。 */

@@ -90,7 +90,7 @@ function HallHandle:ctor()
         [PROTOCOL.SERVER_CMD_HALL_GET_MESSAGE] = {handler(self, HallHandle.SERVER_CMD_HALL_GET_MESSAGE)}, 
 
         --登录alloc返回
-        --[PROTOCOL.SERVER_CMD_LOGIN_ALLOC] = {handler(self, HallHandle.SERVER_CMD_LOGIN_ALLOC)},
+        [PROTOCOL.SERVER_CMD_LOGIN_ALLOC] = {handler(self, HallHandle.SERVER_CMD_LOGIN_ALLOC)},
 
         --创建桌子返回
         --[PROTOCOL.SERVER_CMD_CREAT_TABLE] = {handler(self, HallHandle.SERVER_CMD_CREAT_TABLE)},
@@ -678,6 +678,10 @@ end
 
 
 --用户当前IP
+function HallHandle:SERVER_CMD_LOGIN_ALLOC(pack)
+    require("hall.scene.group.join.table_list"):updateTableData(pack, "allroom")
+end
+
 function HallHandle:SERVER_USER_IP(pack)
 
     dump(pack, "-----SERVER_USER_IP-----")
